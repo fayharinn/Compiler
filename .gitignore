@@ -31,4 +31,5 @@ build.xml
 manifest.mf
 
 # Eclipse ignore
-bin/*
+Compiler_Project/bin/*
+Compiler_Project/RemoteSystemsTempFiles/*
