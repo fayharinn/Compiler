@@ -25,3 +25,7 @@ hs_err_pid*
 Compiler_Project/.idea/*
 Compiler_Project/Compiler_Project.iml
 
+# Netbeans ignore
+Compiler_Project/nbproject/*
+build.xml
+manifest.mf
