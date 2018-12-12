@@ -2,6 +2,7 @@ package visitor;
 
 import ast.*;
 import ast.Float;
+import java.util.List;
 import type.Type;
 import utils.Id;
 
@@ -45,51 +46,115 @@ public class KNormVisitor implements ObjVisitor<Exp> {
         Id new_var2 = Id.gen();
         Type new_type2 = Type.gen();
         Let res = new Let(new_var1, new_type1, e1,
-                  new Let(new_var2, new_type2, e2,
-                    new Add(new Var(new_var1), new Var(new_var2))));
+                    new Let(new_var2, new_type2, e2,
+                        new Add(new Var(new_var1), new Var(new_var2))));
         return res;
     }
 
-	
     public Let visit(Sub e) {
 		//TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new Sub(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
-
+    
     public Exp visit(FNeg e){
-      
-       //TO DO
-        return null;
+       //TO DO ?????????????????????????
+       Exp e1 = e.e.accept(this);
+       Id new_var = Id.gen();
+       Type new_type = Type.gen();
+       return new Let(new_var, new_type, e1, new FNeg(new Var(new_var))) ;
     }
 
     public Let visit(FAdd e){
        //TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new FAdd(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
 
     public Let visit(FSub e){
         //TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new FSub(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
 
     public Let visit(FMul e) {
        //TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new FMul(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
 
     public Let visit(FDiv e){
         //TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new FDiv(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
 
     public Let visit(Eq e){
         //TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new Eq(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
 
     public Let visit(LE e){
         //TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                        new Let(new_var2, new_type2, e2,
+                            new LE(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
 
     public If visit(If e){
@@ -100,42 +165,79 @@ public class KNormVisitor implements ObjVisitor<Exp> {
     }
 
     public Let visit(Let e) {
-      //TO DO
-       return null;
+      Exp e1 = e.e1.accept(this);
+      Exp e2 = e.e2.accept(this);
+      Id new_var1 = Id.gen();
+      Type new_type1 = Type.gen();
+      Let res = new Let(new_var1, new_type1, e1, e2);
+       return res;
     }
 
     public Var visit(Var e){
         return e;
     }
 
-    public Exp visit(LetRec e){
+    public LetRec visit(LetRec e){
        //TO DO
-        return null;
+       Exp e2 = e.e.accept(this);//suite du code
+       Exp e1 = e.fd.e.accept(this);//code de la fct
+       Id idF = Id.gen();
+       Type typeF = Type.gen();
+       LetRec res = new LetRec(new FunDef(idF,typeF,e.fd.args,e1),e2);
+       return res;
     }
 
     public Exp visit(App e){
-        //TO DO
-        return null;
+        //TO DO 
+        Exp e1 = e.e.accept(this);
+      
+        Let tempLet = null;
+        for(int i = e.es.size() - 1; i >= 0; i--){
+            Exp tempE = e.es.get(i).accept(this);
+            Let let = new Let(Id.gen(), Type.gen(), tempE, tempLet);
+            tempLet = let;
+        }
+        
+        return tempLet;
     }
 
     public Tuple visit(Tuple e){
        //TO DO
-        return null;
+       
+        return e;
     }
 
     public LetTuple visit(LetTuple e){
-        //TO DO
+       
         return null;
     }
 
     public Let visit(Array e){
         //TO DO
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new Array(new Var(new_var1), new Var(new_var2))));
+        return res;
    }
 
     public Let visit(Get e){
         //TO DO
-        return null; 
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+        Id new_var1 = Id.gen();
+        Type new_type1 = Type.gen();
+        Id new_var2 = Id.gen();
+        Type new_type2 = Type.gen();
+        Let res = new Let(new_var1, new_type1, e1,
+                  new Let(new_var2, new_type2, e2,
+                  new Get(new Var(new_var1), new Var(new_var2))));
+        return res;
     }
 
     public Let visit(Put e){
