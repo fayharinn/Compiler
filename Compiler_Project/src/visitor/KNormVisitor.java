@@ -2,6 +2,8 @@ package visitor;
 
 import ast.*;
 import ast.Float;
+
+import java.util.ArrayList;
 import java.util.List;
 import type.Type;
 import utils.Id;
@@ -202,9 +204,11 @@ public class KNormVisitor implements ObjVisitor<Exp> {
     }
 
     public Tuple visit(Tuple e){
-       //TO DO
-       
-        return e;
+        ArrayList<Exp> expKNormed = new ArrayList<Exp>();
+        for(Exp exp : e.es){
+            expKNormed.add(exp.accept(this));
+        }
+        return new Tuple(expKNormed);
     }
 
     public LetTuple visit(LetTuple e){
