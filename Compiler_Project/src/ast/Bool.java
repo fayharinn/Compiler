@@ -27,6 +27,8 @@ public class Bool extends Exp {
 	public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<Id, Type> env, Type exptype,
 			HashMap<Type, Type> genEqs) {
 		// TODO Auto-generated method stub
+
+
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
 }
