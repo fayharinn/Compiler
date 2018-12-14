@@ -1,14 +1,10 @@
 package visitor;
 import ast.*;
 import ast.Float;
-import type.TFun;
-import type.TVar;
-import type.Type;
 import utils.Id;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class AlphaConvVisitor implements ObjVisitor<Exp> {
     private HashMap<Id,Id> hashmap = new HashMap<>();
