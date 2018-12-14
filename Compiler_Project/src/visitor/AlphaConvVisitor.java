@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AlphaConvVisitor implements ObjVisitor<Exp> {
-    private HashMap<Id,Id> hashmap = new HashMap<>();
+    private HashMap<String,String> hashmap = new HashMap<>();
 
     public Unit visit(Unit e) {
         return e;
@@ -95,32 +95,33 @@ public class AlphaConvVisitor implements ObjVisitor<Exp> {
 
     public Let visit(Let e) {
         Exp e1 = e.e1.accept(this);
-        hashmap.put(e.id,e.id);
+        hashmap.put(e.id.toString(),e.id.toString());
         Exp e2 = e.e2.accept(this);
         return new Let(e.id, e.t,e1,e2);
     }
 
 
     public Var visit(Var e){
-        Id new_id = hashmap.get(e.id);
-        return new Var(new_id);
+        String new_id = hashmap.getOrDefault(e.id.toString(),e.id.toString());
+        return new Var(new Id(new_id));
     }
 
 
     public LetRec visit(LetRec e){
-        HashMap<Id,Id> old_values = new HashMap<>();
+        HashMap<String,String> old_values = new HashMap<>();
         ArrayList<Id> new_args = new ArrayList<>();
+        hashmap.put(e.fd.id.toString(),e.fd.id.toString());
         for (Id id : e.fd.args) {
-            if (hashmap.containsKey(id)) {
+            if (hashmap.containsKey(id.toString())) {
                 Id new_id = Id.gen();
-                Id old_id = hashmap.put(id,new_id);
-                old_values.put(id,old_id);
+                String old_id = hashmap.put(id.toString(),new_id.toString());
+                old_values.put(id.toString(),old_id);
                 new_args.add(new_id);
             }
         }
         Exp efd = e.fd.e.accept(this);
         for (Id id : e.fd.args) {
-            hashmap.put(id,old_values.get(id));
+            hashmap.put(id.toString(),old_values.get(id.toString()));
         }
         FunDef fd = new FunDef(e.fd.id,e.fd.type,new_args,efd);
         Exp e1 = e.e.accept(this);
@@ -147,7 +148,7 @@ public class AlphaConvVisitor implements ObjVisitor<Exp> {
 
     public LetTuple visit(LetTuple e){
         for (Id id : e.ids) {
-            hashmap.put(id,id);
+            hashmap.put(id.toString(),id.toString());
         }
         Exp e1 = e.e1.accept(this);
         Exp e2 = e.e2.accept(this);
