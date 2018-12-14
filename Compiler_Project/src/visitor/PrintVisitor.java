@@ -6,6 +6,8 @@ import ast.Float;
 import java.util.*;
 
 public class PrintVisitor implements Visitor {
+	ArrayList<Let> tableSymboles = new ArrayList<Let>();
+	
     public void visit(Unit e) {
         System.out.print("()");
     }
@@ -16,11 +18,13 @@ public class PrintVisitor implements Visitor {
 
     public void visit(Int e) {
         System.out.print(e.i);
+        System.out.println(" (int) ");
     }
 
     public void visit(Float e) {
         String s = String.format("%.2f", e.f);
         System.out.print(s);
+        System.out.println(" (Float) ");
     }
 
     public void visit(Not e) {
@@ -116,13 +120,16 @@ public class PrintVisitor implements Visitor {
     }
 
     public void visit(Let e) {
+    	tableSymboles.add(e);
         System.out.print("(let ");
+        System.out.println(" (Declaration de var) ");
         System.out.print(e.id);
         System.out.print(" = ");
         e.e1.accept(this);
         System.out.print(" in ");
         e.e2.accept(this);
         System.out.print(")");
+        
     }
 
     public void visit(Var e){

@@ -8,192 +8,328 @@ import type.*;
 import java.util.*;
 
 
-public class TypeCheckVisitor implements ObjVisitor<Set<String>> {
-	HashMap<Id, Type> hash = new HashMap<>();
+public class TypeCheckVisitor implements TypeVisitor<Type>, Visitor {
+	HashMap<Id, Type> env ;
+	HashMap<Type,Type> equations;
 
-    public Set<String> visit(Unit e) {
-        return new HashSet<String>();
+    public TypeCheckVisitor() {
+		this.env = new HashMap<>();
+		this.equations =  new HashMap<>();
+	}
+
+	public Type visit(Unit e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+        return new TUnit();
     }
 
-    public Set<String> visit(Bool e) {
-        return new HashSet<String>();
+    public Type visit(Bool e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+        return new TBool();
     }
 
-    public Set<String> visit(Int e) {
+    public Type visit(Int e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
     	
-        return new HashSet<String>();
+        return new TInt();
     }
 
-    public Set<String> visit(Float e) {
-        return new HashSet<String>();
+    public Type visit(Float e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+        return new TFloat();
     }
 
-    public Set<String> visit(Not e) {
-        Set<String> fv = e.e.accept(this);
-        return e.e.accept(this);
+    public Type visit(Not e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    	e.e.accept(this,env,new TBool(), genEqs);
+    	genEqs.put(new TBool(), exptype);
+    	return new TBool();
     }
 
-    public Set<String> visit(Neg e) {
-        Set<String> fv = e.e.accept(this);
-        return fv;
+    public Type visit(Neg e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    	e.e.accept(this,env,new TInt(), genEqs);
+    	genEqs.put(new TInt(), exptype);
+    	return new TInt();
     }
 
-    public Set<String> visit(Add e) {
-    	// si des variables -> on verifie dans la table -> retourne erreur si variable de type diff
-    	//System.out.println(e.e1.getClass());
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(Add e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    	e.e1.accept(this,env,new TInt(), genEqs);
+    	e.e2.accept(this,env,new TInt(), genEqs);
+    	genEqs.put(new TInt(), exptype);
+    	return new TInt();
     }
 
-    public Set<String> visit(Sub e) {
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(Sub e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    	e.e1.accept(this,env,new TInt(), genEqs);
+    	e.e2.accept(this,env,new TInt(), genEqs);
+    	genEqs.put(new TInt(), exptype);
+    	return new TInt();
     }
 
-    public Set<String> visit(FNeg e){
-        Set<String> fv = e.e.accept(this);
-        return fv;
+    public Type visit(FNeg e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+        e.e.accept(this,env,new TFloat(),genEqs);
+        return new TFloat();
     }
 
-    public Set<String> visit(FAdd e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(FAdd e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	e.e1.accept(this,env,new TFloat(), genEqs);
+    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	genEqs.put(new TFloat(), exptype);
+    	return new TFloat();
     }
 
-    public Set<String> visit(FSub e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(FSub e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	e.e1.accept(this,env,new TFloat(), genEqs);
+    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	genEqs.put(new TFloat(), exptype);
+    	return new TFloat();
     }
 
-    public Set<String> visit(FMul e) {
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(FMul e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    	e.e1.accept(this,env,new TFloat(), genEqs);
+    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	genEqs.put(new TFloat(), exptype);
+    	return new TFloat();
     }
 
-    public Set<String> visit(FDiv e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(FDiv e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	e.e1.accept(this,env,new TFloat(), genEqs);
+    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	genEqs.put(new TFloat(), exptype);
+    	return new TFloat();
     }
 
-    public Set<String> visit(Eq e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(Eq e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	e.e1.accept(this,env,new TInt(), genEqs);
+    	e.e2.accept(this,env,new TInt(), genEqs);
+    	genEqs.put(new TBool(), exptype);
+    	return new TBool();
     }
 
-    public Set<String> visit(LE e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(LE e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	e.e1.accept(this,env,new TInt(), genEqs);
+    	e.e2.accept(this,env,new TInt(), genEqs);
+    	genEqs.put(new TBool(), exptype);
+    	return new TBool();
     }
 
-    public Set<String> visit(If e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        Set<String> fv3 = e.e3.accept(this);
-        fv1.addAll(fv2);
-        fv1.addAll(fv3);
-        return fv1;
+    public Type visit(If e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	e.e1.accept(this,env,new TBool(), genEqs);
+    	e.e2.accept(this,env,new TInt(), genEqs);
+    	e.e3.accept(this,env,new TInt(), genEqs);
+    	genEqs.put(new TInt(), exptype);
+        return new TInt();
     }
 
-    public Set<String> visit(Let e) {
-        Set<String> res = new HashSet<String>();
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        //System.out.println(e.id+ " "+e.e1.getClass().getName());
-        hash.put(e.id,findType.find(e.e1));
-        System.out.println(hash);
-        fv2.remove(e.id.toString());
-        res.addAll(fv1);
-        res.addAll(fv2);
-        return res;
+    public Type visit(Let e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    	Type t1 = e.e1.accept(this,env,e.t, genEqs);
+    	env.put(e.id, t1);
+    	Type t2 = e.e2.accept(this,env,exptype, genEqs);
+    	genEqs.put(new TInt(), exptype);
+    	return t2;
     }
 
-    public Set<String> visit(Var e){
-        Set<String> res = new HashSet<String>();
-        res.add(e.id.toString());
-        return res;
+    public Type visit(Var e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    	Type t = e.accept(this, env, exptype, genEqs);
+    	if(env.containsKey(e.id)){
+			genEqs.put(t, exptype);
+			return t;
+    	} else
+			try {
+				throw new Exception("Undefined Variable");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	return null;
+    		
     }
 
-    public Set<String> visit(LetRec e){
-        Set<String> res = new HashSet<String>();
-        Set<String> fv = e.e.accept(this);
-        Set<String> fv_fun = e.fd.e.accept(this);
-        for (Id id : e.fd.args) {
-            fv_fun.remove(id.toString());
-        }
-        fv.remove(e.fd.id.toString());
-        fv_fun.remove(e.fd.id.toString());
-        res.addAll(fv);
-        res.addAll(fv_fun);
-        return res;
+    public Type visit(LetRec e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+        return null;
     }
 
-    public Set<String> visit(App e){
-        Set<String> res = new HashSet<String>();
-        res.addAll(e.e.accept(this));
-        for (Exp exp : e.es) {
-            res.addAll(exp.accept(this));
-        }
-        return res;
+    public Type visit(App e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	return null;
     }
 
-    public Set<String> visit(Tuple e){
-        Set<String> res = new HashSet<String>();
-        for (Exp exp : e.es) {
-            res.addAll(exp.accept(this));
-        }
-        return res;
+    public Type visit(Tuple e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	return null;
     }
 
-    public Set<String> visit(LetTuple e){
-        Set<String> res = new HashSet<String>();
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        for (Id id : e.ids) {
-            fv2.remove(id.toString());
-        }
-        res.addAll(fv1);
-        res.addAll(fv2);
-        return res;
+    public Type visit(LetTuple e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	return null;
     }
 
-    public Set<String> visit(Array e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(Array e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	return null;
     }
 
-    public Set<String> visit(Get e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        fv1.addAll(fv2);
-        return fv1;
+    public Type visit(Get e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    	return null;
     }
 
-    public Set<String> visit(Put e){
-        Set<String> fv1 = e.e1.accept(this);
-        Set<String> fv2 = e.e2.accept(this);
-        Set<String> fv3 = e.e3.accept(this);
-        fv1.addAll(fv2);
-        fv1.addAll(fv3);
-        return fv1;
+    public Type visit(Put e,HashMap<Id,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+        return null;
     }
+
+	@Override
+	public void visit(Unit e) {
+		System.out.println("eee");
+		
+	}
+
+	@Override
+	public void visit(Bool e) {
+		System.out.println("eee");
+		
+	}
+
+	@Override
+	public void visit(Int e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Float e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Not e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Neg e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Add e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Sub e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FNeg e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FAdd e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FSub e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FMul e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(FDiv e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Eq e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(LE e) {
+		System.out.println("eee");
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(If e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Let e) {
+    	Type t1 = e.e1.accept(this,env,e.t, equations);
+    	env.put(e.id, t1);
+    	Type t2 = e.e2.accept(this,env,e.t, equations);
+    	equations.put(new TInt(), e.t);
+
+		
+	}
+
+	@Override
+	public void visit(Var e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(LetRec e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(App e) {
+		System.out.print("tesrtrtrrettret");
+		e.e.accept(this,env,null, equations);
+		
+	}
+
+	@Override
+	public void visit(Tuple e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(LetTuple e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Array e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Get e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(Put e) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 
