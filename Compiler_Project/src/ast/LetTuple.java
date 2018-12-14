@@ -8,7 +8,7 @@ import java.util.List;
 
 public class LetTuple extends Exp {
     public final List<Id> ids;
-    public final List<Type> ts;
+    final List<Type> ts;
     public final Exp e1;
     public final Exp e2;
 
