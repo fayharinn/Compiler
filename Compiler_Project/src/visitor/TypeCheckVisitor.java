@@ -14,7 +14,6 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
     public TypeCheckVisitor() {
 		this.env = new HashMap<>();
-		this.equations =  new HashMap<>();
 	}
 
     public HashMap<Id, Type> getEnv() {
