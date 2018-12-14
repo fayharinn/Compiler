@@ -1,4 +1,5 @@
 import ast.Exp;
+import type.TUnit;
 import type.Type;
 import utils.*;
 import visitor.*;
@@ -16,7 +17,8 @@ public class Main {
             System.out.println("------ AST ------");
             expression.accept(new PrintVisitor());
             System.out.println();
-            expression.accept(new TypeCheckVisitor());
+            TypeCheckVisitor typeCheking = new TypeCheckVisitor();
+            expression.accept(typeCheking,typeCheking.getEnv(),new TUnit(),new HashMap<Type,Type>());
             System.out.println();
             
             System.out.println("------ utils.Height of the AST ----");
