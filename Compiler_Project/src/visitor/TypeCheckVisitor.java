@@ -8,7 +8,7 @@ import type.*;
 import java.util.*;
 
 
-public class TypeCheckVisitor implements TypeVisitor<Type>, Visitor {
+public class TypeCheckVisitor implements TypeVisitor<Type> {
 	HashMap<String, Type> env ;
 	HashMap<Type,Type> equations;
 
@@ -168,161 +168,11 @@ public class TypeCheckVisitor implements TypeVisitor<Type>, Visitor {
         return null;
     }
 
-	@Override
-	public void visit(Unit e) {
-		System.out.println("eee");
-		
-	}
 
-	@Override
-	public void visit(Bool e) {
-		
-		
-	}
 
-	@Override
-	public void visit(Int e) {
 	
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Float e) {
-	
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Not e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Neg e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Add e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Sub e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(FNeg e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(FAdd e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(FSub e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(FMul e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(FDiv e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Eq e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(LE e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(If e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Let e) {
-    	Type t1 = e.e1.accept(this,env,e.t, equations);
-    	equations.put(new TInt(), e.t);
-    	env.put(e.id.id, t1);
-    	Type t2 = e.e2.accept(this,env,e.t, equations);
-    	
-		
-	}
-
-	@Override
-	public void visit(Var e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(LetRec e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(App e) {
-		System.out.print("tesrtrtrrettret");
-		e.e.accept(this,env,null, equations);
-		
-	}
-
-	@Override
-	public void visit(Tuple e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(LetTuple e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Array e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Get e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(Put e) {
-		// TODO Auto-generated method stub
-		
+	public HashMap<Type,Type> getEq(){
+		return equations;
 	}
 }
 

@@ -4,6 +4,7 @@ import ast.*;
 import type.Type;
 import type.*;
 
+// OBSOLETE
 public class findType {
 	
 	public static Type find(Exp e) {

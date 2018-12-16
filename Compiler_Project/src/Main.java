@@ -16,8 +16,7 @@ public class Main {
             System.out.println("------ AST ------");
             expression.accept(new PrintVisitor());
             System.out.println();
-            expression.accept(new TypeCheckVisitor());
-            System.out.println();
+
             
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);
@@ -26,6 +25,8 @@ public class Main {
             ObjVisitor<Integer> v = new HeightVisitor();
             height = expression.accept(v);
             System.out.println("using HeightVisitor: " + height);
+            
+            TypeCheck.check(expression);
 
         } catch (Exception e) {
             e.printStackTrace();
