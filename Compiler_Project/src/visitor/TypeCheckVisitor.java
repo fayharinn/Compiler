@@ -34,27 +34,28 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
     public Type visit(Not e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	e.e.accept(this,env,new TBool(), genEqs);
+    	e.e.accept(this,env,new TBool(), this.equations);
     	genEqs.put(new TBool(), exptype);
     	return new TBool();
     }
 
     public Type visit(Neg e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	e.e.accept(this,env,new TInt(), genEqs);
+    	e.e.accept(this,env,new TInt(), this.equations);
     	genEqs.put(new TInt(), exptype);
     	return new TInt();
     }
 
     public Type visit(Add e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	e.e1.accept(this,env,new TInt(), genEqs);
-    	e.e2.accept(this,env,new TInt(), genEqs);
-    	genEqs.put(new TInt(), exptype);
+    	Type t1= e.e1.accept(this,env,new TInt(), this.equations);
+    	Type t2= e.e2.accept(this,env,new TInt(), this.equations);
+    	genEqs.put(t1, new TInt());
+    	genEqs.put(t2, new TInt());
     	return new TInt();
     }
 
     public Type visit(Sub e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	e.e1.accept(this,env,new TInt(), genEqs);
-    	e.e2.accept(this,env,new TInt(), genEqs);
+    	e.e1.accept(this,env,new TInt(), this.equations);
+    	e.e2.accept(this,env,new TInt(), this.equations);
     	genEqs.put(new TInt(), exptype);
     	return new TInt();
     }
@@ -65,69 +66,71 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
     public Type visit(FAdd e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TFloat(), genEqs);
-    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	e.e1.accept(this,env,new TFloat(), this.equations);
+    	e.e2.accept(this,env,new TFloat(), this.equations);
     	genEqs.put(new TFloat(), exptype);
     	return new TFloat();
     }
 
     public Type visit(FSub e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TFloat(), genEqs);
-    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	e.e1.accept(this,env,new TFloat(), this.equations);
+    	e.e2.accept(this,env,new TFloat(), this.equations);
     	genEqs.put(new TFloat(), exptype);
     	return new TFloat();
     }
 
     public Type visit(FMul e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	e.e1.accept(this,env,new TFloat(), genEqs);
-    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	e.e1.accept(this,env,new TFloat(), this.equations);
+    	e.e2.accept(this,env,new TFloat(), this.equations);
     	genEqs.put(new TFloat(), exptype);
     	return new TFloat();
     }
 
     public Type visit(FDiv e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TFloat(), genEqs);
-    	e.e2.accept(this,env,new TFloat(), genEqs);
+    	e.e1.accept(this,env,new TFloat(), this.equations);
+    	e.e2.accept(this,env,new TFloat(), this.equations);
     	genEqs.put(new TFloat(), exptype);
     	return new TFloat();
     }
 
     public Type visit(Eq e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TInt(), genEqs);
-    	e.e2.accept(this,env,new TInt(), genEqs);
+    	e.e1.accept(this,env,new TInt(), this.equations);
+    	e.e2.accept(this,env,new TInt(), this.equations);
     	genEqs.put(new TBool(), exptype);
     	return new TBool();
     }
 
     public Type visit(LE e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TInt(), genEqs);
-    	e.e2.accept(this,env,new TInt(), genEqs);
+    	e.e1.accept(this,env,new TInt(), this.equations);
+    	e.e2.accept(this,env,new TInt(), this.equations);
     	genEqs.put(new TBool(), exptype);
     	return new TBool();
     }
 
     public Type visit(If e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TBool(), genEqs);
-    	e.e2.accept(this,env,new TInt(), genEqs);
-    	e.e3.accept(this,env,new TInt(), genEqs);
+    	e.e1.accept(this,env,new TBool(), this.equations);
+    	e.e2.accept(this,env,new TInt(), this.equations);
+    	e.e3.accept(this,env,new TInt(), this.equations);
     	genEqs.put(new TInt(), exptype);
         return new TInt();
     }
 
     public Type visit(Let e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	Type t1 = e.e1.accept(this,env,e.t, genEqs);
+    	Type t1 = e.e1.accept(this,env,e.t, this.equations);
     	env.put(e.id.id, t1);
-    	Type t2 = e.e2.accept(this,env,exptype, genEqs);
+    	Type t2 = e.e2.accept(this,env,exptype, this.equations);
     	genEqs.put(new TInt(), exptype);
     	return t2;
     }
+    
+
 
     public Type visit(Var e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
     	System.out.println(env);
     	System.out.println(e.id.id);
     	if(env.containsKey(e.id.id)){
     		Type t = new TInt();
-			genEqs.put(new TInt(), exptype);
+			genEqs.put(t, exptype);
 			return t;
     	} else
 			try {
