@@ -11,7 +11,7 @@ public class Main {
             Exp expression = (Exp) p.parse().value;
             assert (expression != null);
 
-            System.out.println("------ AST ------");
+            System.out.println("------ Avant KNormalisation ------");
             expression.accept(new PrintVisitor());
             System.out.println();
 
@@ -21,6 +21,20 @@ public class Main {
 
             ObjVisitor<Integer> v = new HeightVisitor();
             height = expression.accept(v);
+            System.out.println("using HeightVisitor: " + height);
+
+            //Knormalisation
+
+            Exp knorm = expression.accept(new KNormVisitor());
+            System.out.println("\n------ Après KNormalisation ------");
+            knorm.accept(new PrintVisitor());
+            System.out.println();
+
+            System.out.println("------ utils.Height of the AST ----");
+            height = Height.computeHeight(knorm);
+            System.out.println("using utils.Height.computeHeight: " + height);
+
+            height = knorm.accept(v);
             System.out.println("using HeightVisitor: " + height);
 
         } catch (Exception e) {
