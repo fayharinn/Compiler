@@ -11,10 +11,11 @@ import java.util.*;
 public class TypeCheckVisitor implements TypeVisitor<Type> {
 	public HashMap<String, Type> env ;
 	public HashMap<Type,Type> equations;
-
+	public ArrayList<HashMap<String,Type>> allEnv;
     public TypeCheckVisitor() {
 		this.env = new HashMap<>();
 		this.equations =  new HashMap<>();
+		this.allEnv = new ArrayList<>();
 	}
 
 	public Type visit(Unit e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
@@ -156,6 +157,8 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			}
     	}
     	env.put(e.id.id, t1);
+    	HashMap<String,Type> shallowcopy = new HashMap<>(env);
+    	allEnv.add(shallowcopy);
     	genEqs.put(t1, exptype);// remove?
     	Type t2 = e.e2.accept(this,env,exptype, this.equations);
     	return t2;
@@ -164,8 +167,6 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 
     public Type visit(Var e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	System.out.println(env);
-    	System.out.println(e.id.id);
     	if(env.containsKey(e.id.id)){
     		Type t = new TInt();
 			genEqs.put(t, exptype);

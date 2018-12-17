@@ -17,7 +17,7 @@ public class TypeCheck {
 		TypeCheckVisitor tcv = new TypeCheckVisitor();
 		expression.accept(tcv,new HashMap<String,Type>(),new TUnit(), new HashMap<Type,Type>());
         System.out.println();
-        System.out.println(tcv.env);
+        System.out.println(tcv.allEnv);
         Iterator it = tcv.getEq().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
