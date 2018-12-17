@@ -60,9 +60,17 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
     public Type visit(Sub e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
-    	e.e1.accept(this,env,new TInt(), this.equations);
-    	e.e2.accept(this,env,new TInt(), this.equations);
+    	Type t1 = e.e1.accept(this,env,new TInt(), this.equations);
+    	Type t2 = e.e2.accept(this,env,new TInt(), this.equations);
     	genEqs.put(new TInt(), exptype);
+    	if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
+    		try {
+				throw new Exception("Error in sub between "+t1.getClass()+" and "+t2.getClass() +" : Int expected");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	}
     	return new TInt();
     }
 
@@ -87,9 +95,17 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
     public Type visit(FSub e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TFloat(), this.equations);
-    	e.e2.accept(this,env,new TFloat(), this.equations);
+    	Type t1 = e.e1.accept(this,env,new TFloat(), this.equations);
+    	Type t2 = e.e2.accept(this,env,new TFloat(), this.equations);
     	genEqs.put(new TFloat(), exptype);
+    	if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
+    		try {
+				throw new Exception("Error in sub between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	}
     	return new TFloat();
     }
 
@@ -108,8 +124,8 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
     public Type visit(Eq e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TInt(), this.equations);
-    	e.e2.accept(this,env,new TInt(), this.equations);
+    	Type t1 = e.e1.accept(this,env,new TInt(), this.equations);
+    	Type t2 = e.e2.accept(this,env,new TInt(), this.equations);
     	genEqs.put(new TBool(), exptype);
     	return new TBool();
     }
@@ -131,10 +147,17 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
     public Type visit(Let e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
     	Type t1 = e.e1.accept(this,env,e.t, this.equations);
+    	if(env.containsKey(e.id.id)) {
+    		try {
+				throw new Exception("Error in Let declaration : "+e.id.id+" already defined");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	}
     	env.put(e.id.id, t1);
-    	genEqs.put(t1, exptype);
+    	genEqs.put(t1, exptype);// remove?
     	Type t2 = e.e2.accept(this,env,exptype, this.equations);
-    	
     	return t2;
     }
     
