@@ -12,9 +12,12 @@ public class TypeCheck {
 
 	
 	public static void check(Exp expression) {
+		
+		// check 1
 		TypeCheckVisitor tcv = new TypeCheckVisitor();
 		expression.accept(tcv,new HashMap<String,Type>(),new TUnit(), new HashMap<Type,Type>());
         System.out.println();
+        System.out.println(tcv.env);
         Iterator it = tcv.getEq().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
@@ -26,6 +29,8 @@ public class TypeCheck {
             }
             it.remove(); // avoids a ConcurrentModificationException
         }
+        
+        //check 2
         
 	}
 }

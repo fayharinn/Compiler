@@ -9,8 +9,8 @@ import java.util.*;
 
 
 public class TypeCheckVisitor implements TypeVisitor<Type> {
-	HashMap<String, Type> env ;
-	HashMap<Type,Type> equations;
+	public HashMap<String, Type> env ;
+	public HashMap<Type,Type> equations;
 
     public TypeCheckVisitor() {
 		this.env = new HashMap<>();
@@ -48,8 +48,14 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     public Type visit(Add e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
     	Type t1= e.e1.accept(this,env,new TInt(), this.equations);
     	Type t2= e.e2.accept(this,env,new TInt(), this.equations);
-    	genEqs.put(t1, new TInt());
-    	genEqs.put(t2, new TInt());
+    	if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
+    		try {
+				throw new Exception("Error in addition between "+t1.getClass()+" and "+t2.getClass() +" : Int expected");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	}
     	return new TInt();
     }
 
@@ -118,8 +124,9 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     public Type visit(Let e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
     	Type t1 = e.e1.accept(this,env,e.t, this.equations);
     	env.put(e.id.id, t1);
+    	genEqs.put(t1, exptype);
     	Type t2 = e.e2.accept(this,env,exptype, this.equations);
-    	genEqs.put(new TInt(), exptype);
+    	
     	return t2;
     }
     
