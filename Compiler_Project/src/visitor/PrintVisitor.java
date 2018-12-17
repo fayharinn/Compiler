@@ -62,7 +62,7 @@ public class PrintVisitor implements Visitor {
     }
 
     public void visit(FAdd e){
-        System.out.print("(");
+        System.out.print("(Fadd)(");
         e.e1.accept(this);
         System.out.print(" +. ");
         e.e2.accept(this);

@@ -72,9 +72,17 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
     public Type visit(FAdd e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
-    	e.e1.accept(this,env,new TFloat(), this.equations);
-    	e.e2.accept(this,env,new TFloat(), this.equations);
+    	Type t1 = e.e1.accept(this,env,new TFloat(), this.equations);
+    	Type t2 = e.e2.accept(this,env,new TFloat(), this.equations);
     	genEqs.put(new TFloat(), exptype);
+    	if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
+    		try {
+				throw new Exception("Error in addition between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	}
     	return new TFloat();
     }
 
@@ -141,7 +149,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			return t;
     	} else
 			try {
-				throw new Exception("Undefined Variable");
+				throw new Exception("Undefined Variable "+e.id.id);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
