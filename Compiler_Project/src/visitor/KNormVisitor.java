@@ -227,8 +227,17 @@ public class KNormVisitor implements ObjVisitor<Exp> {
     }
 
     public LetTuple visit(LetTuple e){
-       
-        return null;
+        Exp e1 = e.e1.accept(this);
+        Exp e2 = e.e2.accept(this);
+
+        ArrayList<Type> ts = new ArrayList<Type>();
+        ArrayList<Id> ids = new ArrayList<Id>();
+        for(Id id : e.ids){
+            ids.add(Id.gen());
+            ts.add(Type.gen());
+        }
+
+        return new LetTuple(ids, ts, e1, e2);
     }
 
     public Let visit(Array e){
