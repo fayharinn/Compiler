@@ -15,6 +15,12 @@ public class Main {
             expression.accept(new PrintVisitor());
             System.out.println();
 
+            Exp exp_alpha_conv = expression.accept(new AlphaConvVisitor());
+
+            System.out.println("------ AST AlphaConverted ------");
+            exp_alpha_conv.accept(new PrintVisitor());
+            System.out.println();
+
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);
             System.out.println("using utils.Height.computeHeight: " + height);

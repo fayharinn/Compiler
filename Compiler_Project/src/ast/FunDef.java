@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FunDef {
     public final Id id;
-    final Type type;
+    public final Type type;
     public final List<Id> args;
     public final Exp e;
 

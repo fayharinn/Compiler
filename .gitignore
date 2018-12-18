@@ -21,7 +21,15 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# Aurel ignore
+# IntelliJ ignore
 Compiler_Project/.idea/*
 Compiler_Project/Compiler_Project.iml
 
+# Netbeans ignore
+Compiler_Project/nbproject/*
+build.xml
+manifest.mf
+
+# Eclipse ignore
+Compiler_Project/bin/*
+Compiler_Project/RemoteSystemsTempFiles/*
