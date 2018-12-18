@@ -10,7 +10,7 @@ import type.*;
 
 public class TypeCheck {
 
-	
+	/*
 	public static void check(Exp expression) {
 		
 		// check 1
@@ -33,4 +33,5 @@ public class TypeCheck {
         //check 2
         
 	}
+	*/
 }

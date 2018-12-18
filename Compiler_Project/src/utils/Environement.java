@@ -36,4 +36,8 @@ public class Environement {
         return gho.get(id);
     }
 
+    public  boolean containsKey(String id){
+        return gho.containsKey(id);
+    }
+
 }

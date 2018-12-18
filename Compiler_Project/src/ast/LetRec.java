@@ -25,9 +25,8 @@ public class LetRec extends Exp {
     }
     
 	@Override
-	public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<String, Type> env, Type exptype,
-			HashMap<Type, Type> genEqs) {
-		// TODO Auto-generated method stub
-		return typeCheckVisitor.visit(this, env, exptype, genEqs);
-	}
+    public Type accept(TypeCheckVisitor typeCheckVisitor, Type expType) {
+        // TODO Auto-generated method stub
+        return typeCheckVisitor.visit(this, expType);
+    }
 }

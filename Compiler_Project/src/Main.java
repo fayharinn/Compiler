@@ -1,8 +1,10 @@
 import ast.Exp;
+import type.TUnit;
 import type.Type;
 import utils.*;
 import visitor.*;
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Main {
@@ -18,7 +20,8 @@ public class Main {
             System.out.println();
 
             TypeCheckVisitor typeChecker = new TypeCheckVisitor();
-            typeChecker.firstAccept(expression);
+            expression.accept(typeChecker,new TUnit());
+            typeChecker.printEnvironement();
 
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);
@@ -28,7 +31,7 @@ public class Main {
             height = expression.accept(v);
             System.out.println("using HeightVisitor: " + height);
             
-            TypeCheck.check(expression);
+            //TypeCheck.check(expression);
 
         } catch (Exception e) {
             e.printStackTrace();
