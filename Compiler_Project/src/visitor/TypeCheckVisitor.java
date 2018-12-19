@@ -10,11 +10,13 @@ import java.util.*;
 public class TypeCheckVisitor implements TypeVisitor<Type> {
 	private Environement environement ;
 	private HashMap<Type,Type> equations;
+	private  HashMap<String,Environement> localsEnvironements;
 
 
     public TypeCheckVisitor() {
 		this.environement = new Environement();
 		this.equations =  new HashMap<>();
+		this.localsEnvironements = new HashMap<>();
 	}
 
 
@@ -205,17 +207,25 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 				e1.printStackTrace();
 			}
     	}
-    	environement.ajouterVar(e.id.id, t1);
-    	equations.put(t1, expType);
+		try {
+			environement.ajouterVar(e.id.id, t1);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		equations.put(t1, expType);
     	Type t2 = e.e2.accept(this,expType);
     	return t2;
     }
     
 
-
     public Type visit(Var e,Type expType) {
 		if(environement.containsKey(e.id.id)){
-			Type t = environement.getTypeofVar(e.id.id);
+			Type t = null;
+			try {
+				t = environement.getTypeofVar(e.id.id);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 			equations.put(t, expType);
 			return t;
 		} else
@@ -228,8 +238,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 	}
 
+
 	public Type visit(LetRec e,Type expType){
-		return null;
+
+    	return null;
 	}
 
 	public Type visit(App e,Type expType){
@@ -256,7 +268,23 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		return null;
 	}
 
-
+	@Override
+	public Type visit(FunDef e, Type expType) {
+		Type t =  e.e.accept(this, new TUnit());
+		ArrayList<Type> argsType = new ArrayList<Type>();
+		try {
+			for (Id vars : e.args){argsType.add(environement.getTypeofVar(vars.toString()));}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		Type functionType = new TFun(argsType,t);
+		try {
+			this.environement.ajouterVar(e.id.id,functionType);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return functionType;
+	}
 }
 
 
