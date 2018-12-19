@@ -1,4 +1,5 @@
 import ast.Exp;
+import type.TInt;
 import type.TUnit;
 import type.Type;
 import utils.*;
@@ -19,10 +20,14 @@ public class Main {
             expression.accept(new PrintVisitor());
             System.out.println();
 
-            TypeCheckVisitor typeChecker = new TypeCheckVisitor();
+            Environement env = new Environement();
+            env.ajouterVar("x",new TInt());
+            env.ajouterVar("x",new TUnit());
+
+            /*TypeCheckVisitor typeChecker = new TypeCheckVisitor();
             expression.accept(typeChecker,new TUnit());
             typeChecker.printEnvironement();
-
+            */
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);
             System.out.println("using utils.Height.computeHeight: " + height);

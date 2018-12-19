@@ -4,11 +4,9 @@ import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
 
-import java.util.HashMap;
 import java.util.List;
 
 import type.Type;
-import utils.Id;
 
 public class App extends Exp {
     public final Exp e;

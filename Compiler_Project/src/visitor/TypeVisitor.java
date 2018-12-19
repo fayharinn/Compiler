@@ -33,4 +33,5 @@ public interface TypeVisitor<E>  {
     E visit(Array e,Type expType);
     E visit(Get e,Type expType);
     E visit(Put e,Type expType);
+    E visit(FunDef e,Type expType);
 }

@@ -24,7 +24,8 @@ public class Environement {
         this.gho = gho;
     }
 
-    public void ajouterVar(String id, Type t){
+    public void ajouterVar(String id, Type t) throws Exception {
+        if (gho.containsKey(id)) throw new Exception("Variable already exist");
         this.gho.put(id,t);
     }
 
@@ -32,7 +33,8 @@ public class Environement {
         gho.remove(id);
     }
 
-    public Type getTypeofVar(String id){
+    public Type getTypeofVar(String id) throws Exception {
+        if (!gho.containsKey(id)) throw new Exception("Undefined Variable");
         return gho.get(id);
     }
 
