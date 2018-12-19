@@ -83,10 +83,11 @@ public class LetExpressionsVisitor implements ObjVisitor<Exp> {
         if (e.e1 instanceof  Let) {
             Exp e1 = e.e1.accept(this);
             Exp e2 = e.e2.accept(this);
+            Exp new_e = new Let(e.id,e.t,e1,e2);
             if (((Let) e1).e2 instanceof Let) {
-                return new Let(((Let) e1).id, ((Let) e1).t, ((Let) e1).e1, concat((Let) ((Let) e1).e2, e));
+                return new Let(((Let) e1).id, ((Let) e1).t, ((Let) e1).e1, concat((Let) ((Let) e1).e2, (Let) new_e));
             } else {
-                Exp new_e = new Let(e.id,e.t,((Let) e1).e2,e2);
+                new_e = new Let(e.id,e.t,((Let) e1).e2,e2);
                 return new Let(((Let) e1).id, ((Let) e1).t, ((Let) e1).e1, new_e);
             }
         } else {
