@@ -21,6 +21,12 @@ public class Main {
             exp_alpha_conv.accept(new PrintVisitor());
             System.out.println();
 
+            Exp letexp= expression.accept(new LetExpressionsVisitor());
+
+            System.out.println("------ AST Let Expressions ------");
+            letexp.accept(new PrintVisitor());
+            System.out.println();
+
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);
             System.out.println("using utils.Height.computeHeight: " + height);
