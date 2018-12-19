@@ -5,6 +5,14 @@ import ast.Float;
 
 public class LetExpressionsVisitor implements ObjVisitor<Exp> {
 
+    public Exp concat(Let e2, Let e) {
+        if (e2.e2 instanceof Let) {
+            return new Let(e2.id,e2.t,e2.e1, concat((Let) e2.e2,e));
+        } else {
+            Exp new_e = new Let(e.id,e.t,e2.e2,e.e2);
+            return new Let(e2.id,e2.t,e2.e1,new_e);
+        }
+    }
 
     public Unit visit(Unit e) {
         return e;
@@ -72,13 +80,18 @@ public class LetExpressionsVisitor implements ObjVisitor<Exp> {
 
 
     public Let visit(Let e) {
-        Exp e1 = e.e1.accept(this);
-        Exp e2 = e.e2.accept(this);
-        if (e1 instanceof Let) {
-            Exp e_temp = new Let(e.id, e.t, ((Let) e1).e2, e.e2);
-            return new Let(((Let) e1).id, ((Let) e1).t, ((Let) e1).e1, e_temp);
+        if (e.e1 instanceof  Let) {
+            Exp e1 = e.e1.accept(this);
+            Exp e2 = e.e2.accept(this);
+            if (((Let) e1).e2 instanceof Let) {
+                return new Let(((Let) e1).id, ((Let) e1).t, ((Let) e1).e1, concat((Let) ((Let) e1).e2, e));
+            } else {
+                Exp new_e = new Let(e.id,e.t,((Let) e1).e2,e2);
+                return new Let(((Let) e1).id, ((Let) e1).t, ((Let) e1).e1, new_e);
+            }
         } else {
-            return new Let(e.id, e.t, e1, e2);
+            Exp e2 = e.e2.accept(this);
+            return new Let(e.id,e.t,e.e1,e2);
         }
     }
 
