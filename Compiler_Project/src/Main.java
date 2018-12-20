@@ -15,11 +15,22 @@ public class Main {
             expression.accept(new PrintVisitor());
             System.out.println();
 
+            //Knormalisation
+
+            Exp knorm = expression.accept(new KNormVisitor());
+            System.out.println("\n------ Après KNormalisation ------");
+            knorm.accept(new PrintVisitor());
+            System.out.println();
+
+            //Alpha Conversion
+
             Exp exp_alpha_conv = expression.accept(new AlphaConvVisitor());
 
             System.out.println("------ AST AlphaConverted ------");
             exp_alpha_conv.accept(new PrintVisitor());
             System.out.println();
+
+            //Let-expression/Linearisation du Let
 
             Exp letexp= expression.accept(new LetExpressionsVisitor());
 
@@ -35,12 +46,7 @@ public class Main {
             height = expression.accept(v);
             System.out.println("using HeightVisitor: " + height);
 
-            //Knormalisation
 
-            Exp knorm = expression.accept(new KNormVisitor());
-            System.out.println("\n------ Après KNormalisation ------");
-            knorm.accept(new PrintVisitor());
-            System.out.println();
 
             System.out.println("------ utils.Height of the AST ----");
             height = Height.computeHeight(knorm);
