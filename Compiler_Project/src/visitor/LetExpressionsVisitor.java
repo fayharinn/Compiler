@@ -101,10 +101,11 @@ public class LetExpressionsVisitor implements ObjVisitor<Exp> {
         return e;
     }
 
-    //A REVOIR POUR SAVOIR SI ON VISITE FD OU PAS
     public LetRec visit(LetRec e){
         Exp exp = e.e.accept(this);
-        return new LetRec(e.fd,exp);
+        Exp efd = e.fd.e.accept(this);
+        FunDef fd = new FunDef(e.fd.id,e.fd.type,e.fd.args,efd);
+        return new LetRec(fd,exp);
     }
 
     public App visit(App e){
@@ -115,10 +116,10 @@ public class LetExpressionsVisitor implements ObjVisitor<Exp> {
         return e;
     }
 
-    //A REVOIR POUR SAVOIR SI ON VISITE E1 OU PAS
     public LetTuple visit(LetTuple e){
+        Exp e1 = e.e1.accept(this);
         Exp e2 = e.e2.accept(this);
-        return new LetTuple(e.ids,e.ts,e.e1,e2);
+        return new LetTuple(e.ids,e.ts,e1,e2);
     }
 
     public Array visit(Array e){
