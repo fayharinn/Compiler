@@ -3,9 +3,11 @@ import type.Type;
 import utils.*;
 import visitor.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class Main { 
+public class Main {
     static public void main(String argv[]) {
         try {
             Parser p = new Parser(new Lexer(new FileReader(argv[0])));
@@ -15,7 +17,7 @@ public class Main {
 
             System.out.println("------ AST ------");
             expression.accept(new PrintVisitor());
-            System.out.println();
+            System.out.println(); 
 
             
             System.out.println("------ utils.Height of the AST ----");
@@ -26,7 +28,23 @@ public class Main {
             height = expression.accept(v);
             System.out.println("using HeightVisitor: " + height);
             
+            
+            System.out.println("\n------ Type checking ----\n");
             TypeCheck.check(expression);
+            
+            System.out.println("\n------ ASML GENERATED ---- \n");
+            ASMLVisitor asmlv = new ASMLVisitor();
+            expression.accept(asmlv);
+            for(String x:asmlv.code) {
+            	System.out.print(x);
+            }
+            
+            
+            System.out.println("\n------ ARM GENERATED ---- \n");
+            ArmVisitor armv = new ArmVisitor();
+            expression.accept(armv);
+            System.out.println(); 
+            
 
         } catch (Exception e) {
             e.printStackTrace();
