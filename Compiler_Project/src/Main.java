@@ -5,7 +5,7 @@ import visitor.*;
 import java.io.*;
 import java.util.HashMap;
 
-public class Main {
+public class Main { 
     static public void main(String argv[]) {
         try {
             Parser p = new Parser(new Lexer(new FileReader(argv[0])));
