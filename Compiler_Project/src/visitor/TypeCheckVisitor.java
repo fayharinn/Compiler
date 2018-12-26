@@ -10,15 +10,18 @@ import java.util.*;
 public class TypeCheckVisitor implements TypeVisitor<Type> {
 	private Environement environement ;
 	private HashMap<Type,Type> equations;
-	private  HashMap<String,Environement> localsEnvironements;
-
 
     public TypeCheckVisitor() {
-		this.environement = new Environement();
-		this.equations =  new HashMap<>();
-		this.localsEnvironements = new HashMap<>();
+		try {
+			this.environement = new Environement();
+			ArrayList<Type> args = new ArrayList<Type>();
+			args.add(new TInt());
+			environement.ajouterVar("print_int",new TFun(args,new TUnit()));
+			this.equations =  new HashMap<>();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
 
     public Environement getEnvironement() {
         return environement;
@@ -240,7 +243,6 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 
 	public Type visit(LetRec e,Type expType){
-
     	return null;
 	}
 
