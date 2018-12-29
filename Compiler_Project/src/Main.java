@@ -1,10 +1,13 @@
 import ast.Exp;
+import ast.Int;
+import type.TFun;
 import type.TInt;
 import type.TUnit;
 import type.Type;
 import utils.*;
 import visitor.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -22,6 +25,11 @@ public class Main {
 
 
             TypeCheckVisitor typeChecker = new TypeCheckVisitor();
+            ArrayList<Type> argsType =  new ArrayList<Type>();
+            argsType.add(new TInt());
+            argsType.add(new TInt());
+            typeChecker.getEnvironement().ajouterVar("sum",new TFun(argsType,new TUnit()));
+            typeChecker.getEnvironement().ajouterVar("x",new TInt());
             expression.accept(typeChecker,new TUnit());
             typeChecker.printEnvironement();
 
@@ -32,8 +40,6 @@ public class Main {
             ObjVisitor<Integer> v = new HeightVisitor();
             height = expression.accept(v);
             System.out.println("using HeightVisitor: " + height);
-            
-            //TypeCheck.check(expression);
 
         } catch (Exception e) {
             e.printStackTrace();

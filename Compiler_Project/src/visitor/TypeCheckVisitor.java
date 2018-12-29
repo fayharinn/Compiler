@@ -14,7 +14,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     public TypeCheckVisitor() {
 		try {
 			this.environement = new Environement();
-			ArrayList<Type> args = new ArrayList<Type>();
+			ArrayList<Type> args = new ArrayList<>();
 			args.add(new TInt());
 			environement.ajouterVar("print_int",new TFun(args,new TUnit()));
 			this.equations =  new HashMap<>();
@@ -32,11 +32,19 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
    public void printEnvironement(){
-       for (String keys: environement.getGho().keySet()){
-           String id =keys;
-           String value = environement.getGho().get(id).toString();
-           System.out.println(id + " " + value);
-       }
+
+		   try {
+			   System.out.println("On dit que je ne suis pas calé dans le systéme");
+			   for (String keys: environement.getGho().keySet()){
+				   String id =keys;
+				   Type value = environement.getTypeofVar("id");
+				   System.out.println(id + " " + value.toString());
+			   }
+			   System.out.println("Je sais la morale n'as pas de pois que dalle");
+		   } catch (Exception e) {
+			   e.printStackTrace();
+		   }
+
    }
 
 	public Type visit(Unit e,Type expType) {
@@ -243,10 +251,21 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 
 	public Type visit(LetRec e,Type expType){
+    	//Type f = e.fd.accept(this, new TFun());
     	return null;
 	}
 
 	public Type visit(App e,Type expType){
+		try {
+			if (e.e.getClass()!= Var.class) throw new Exception(e.e.toString() +" is not a function cal");
+			Var calledFunction = (Var) e.e;
+			if (!environement.containsKey(calledFunction.id.id)) throw  new Exception(calledFunction.id.id +" is not defined");
+			// Type check of function paramétres
+			TFun argsType = (TFun) environement.getTypeofVar(calledFunction.id.id);
+			if (e.es.equals(argsType.getargsType())) throw new Exception("Not the same arguments Types");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		return null;
 	}
 

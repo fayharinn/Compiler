@@ -11,6 +11,9 @@ public class TFun extends Type {
         this.returnType = returnType;
     }
 
+    public void ajouterArgsType(Type t){
+        argsType.add(t);
+    }
     public ArrayList<Type> getargsType() {
         return argsType;
     }
@@ -21,7 +24,7 @@ public class TFun extends Type {
 
     @Override
     public String toString() {
-        return "(" + this.argsType +"->" + returnType+")" ;
+        return "(" + this.argsType.toString() +"->" + returnType.toString()+")" ;
     }
 }
 

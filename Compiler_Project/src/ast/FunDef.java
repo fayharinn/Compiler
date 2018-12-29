@@ -3,6 +3,10 @@ package ast;
 
 import type.Type;
 import utils.Id;
+import visitor.ObjVisitor;
+import visitor.TypeCheckVisitor;
+import visitor.Visitor;
+
 import java.util.List;
 
 public class FunDef {
