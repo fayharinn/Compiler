@@ -7,7 +7,7 @@ public class TFun extends Type {
     private Type returnType;
 
     public TFun (ArrayList<Type> argsType, Type returnType) {
-        argsType = argsType;
+        this.argsType = argsType;
         this.returnType = returnType;
     }
 

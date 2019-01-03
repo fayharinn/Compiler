@@ -34,13 +34,11 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
    public void printEnvironement(){
 
 		   try {
-			   System.out.println("On dit que je ne suis pas calé dans le systéme");
 			   for (String keys: environement.getGho().keySet()){
 				   String id =keys;
-				   Type value = environement.getTypeofVar("id");
+				   Type value = environement.getTypeofVar(id);
 				   System.out.println(id + " " + value.toString());
 			   }
-			   System.out.println("Je sais la morale n'as pas de pois que dalle");
 		   } catch (Exception e) {
 			   e.printStackTrace();
 		   }
