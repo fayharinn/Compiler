@@ -9,7 +9,7 @@ import visitor.Visitor;
 
 import java.util.List;
 
-public class FunDef {
+public class FunDef{
     public final Id id;
     final Type type;
     public final List<Id> args;

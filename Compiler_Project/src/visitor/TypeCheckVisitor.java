@@ -249,8 +249,24 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 
 	public Type visit(LetRec e,Type expType){
-    	//Type f = e.fd.accept(this, new TFun());
-    	return null;
+    	FunDef f = e.fd;
+    	Type FundefType = f.e.accept(this,expType);
+		ArrayList<Type> argsType = new ArrayList<Type>();
+
+		try {
+			for (Id vars : f.args){argsType.add(environement.getTypeofVar(vars.toString()));}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		Type functionType = new TFun(argsType,FundefType);
+		try {
+			this.environement.ajouterVar(f.id.id,functionType);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+    	e.e.accept(this,expType);
+    	return functionType;
 	}
 
 	public Type visit(App e,Type expType){
@@ -268,42 +284,25 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 	}
 
 	public Type visit(Tuple e,Type expType){
-		return null;
-	}
+        return null;
+    }
 
-	public Type visit(LetTuple e,Type expType){
-		return null;
-	}
+    public Type visit(LetTuple e,Type expType){
+        return null;
+    }
 
-	public Type visit(Array e,Type expType){
-		return null;
-	}
+    public Type visit(Array e,Type expType){
+        return null;
+    }
 
-	public Type visit(Get e,Type expType){
-		return null;
-	}
+    public Type visit(Get e,Type expType){
+        return null;
+    }
 
-	public Type visit(Put e,Type expType){
-		return null;
-	}
+    public Type visit(Put e,Type expType){
+        return null;
+    }
 
-	@Override
-	public Type visit(FunDef e, Type expType) {
-		Type t =  e.e.accept(this, new TUnit());
-		ArrayList<Type> argsType = new ArrayList<Type>();
-		try {
-			for (Id vars : e.args){argsType.add(environement.getTypeofVar(vars.toString()));}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		Type functionType = new TFun(argsType,t);
-		try {
-			this.environement.ajouterVar(e.id.id,functionType);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		return functionType;
-	}
 }
 
 

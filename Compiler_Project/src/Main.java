@@ -1,15 +1,8 @@
 import ast.Exp;
-import ast.Int;
-import type.TFun;
-import type.TInt;
 import type.TUnit;
-import type.Type;
 import utils.*;
 import visitor.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class Main {
     static public void main(String argv[]) {
@@ -25,11 +18,6 @@ public class Main {
 
 
             TypeCheckVisitor typeChecker = new TypeCheckVisitor();
-            ArrayList<Type> argsType =  new ArrayList<Type>();
-            argsType.add(new TInt());
-            argsType.add(new TInt());
-            typeChecker.getEnvironement().ajouterVar("sum",new TFun(argsType,new TUnit()));
-            typeChecker.getEnvironement().ajouterVar("x",new TInt());
             expression.accept(typeChecker,new TUnit());
             typeChecker.printEnvironement();
 
