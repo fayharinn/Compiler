@@ -39,9 +39,17 @@ public class ASMLVisitor implements Visitor {
 		h.put("y",new TInt());
 		h.put("z",new TFloat());
 		h.put("a",new TFloat());
+		h.put("b",new TFloat());
+		h.put("c",new TFloat());
 		code.add("\nlet _ = \n");
 		//System.out.println("let _ =");
 		//expression.accept(this);
+	}
+	
+	
+	
+	public void float_op(String operateur) {
+		
 	}
 	
 	
@@ -253,12 +261,58 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(FSub e) {
-    	code.add("fsub ");
+    	
         //System.out.print("fsub ");
+    	
+    	if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
+
+    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		code.add(code.get(code.size()-3));
+    		code.set(code.size()-4,"");
+    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+            e.e1.accept(this);
+            code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		
+    		code.add(code.get(code.size()-4));
+    		code.set(code.size()-5,"");
+    		System.out.println("TESTO "+code.get(code.size()-4));
+            float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+            code.add("fsub ");
+    		code.add(code.get(code.size()-5));
+    		code.set(code.size()-6,"");
+            code.add(" ");
+            //System.out.print(" ");
+            e.e2.accept(this);
+            code.add("\n");
+    		return;
+    	}
+    	else if(e.e2.getClass()==ast.Float.class) {
+
+    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		code.add(code.get(code.size()-3));
+    		code.set(code.size()-4,"");
+    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    	}
+    	
+    	else if(e.e1.getClass()==ast.Float.class) {
+
+    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		code.add(code.get(code.size()-3));
+    		code.set(code.size()-4,"");
+    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    	}
+    	
+
+    	code.add("fsub ");
         e.e1.accept(this);
         code.add(" ");
         //System.out.print(" ");
         e.e2.accept(this);
+        code.add("\n");
         //System.out.print("");
     }
 
