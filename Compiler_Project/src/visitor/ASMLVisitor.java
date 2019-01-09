@@ -214,7 +214,6 @@ public class ASMLVisitor implements Visitor {
     		
     		code.add(code.get(code.size()-4));
     		code.set(code.size()-5,"");
-    		System.out.println("TESTO "+code.get(code.size()-4));
             float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
             code.add("fadd ");
     		code.add(code.get(code.size()-5));
@@ -277,7 +276,6 @@ public class ASMLVisitor implements Visitor {
     		
     		code.add(code.get(code.size()-4));
     		code.set(code.size()-5,"");
-    		System.out.println("TESTO "+code.get(code.size()-4));
             float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
             code.add("fsub ");
     		code.add(code.get(code.size()-5));
@@ -339,7 +337,6 @@ public class ASMLVisitor implements Visitor {
     		
     		code.add(code.get(code.size()-4));
     		code.set(code.size()-5,"");
-    		System.out.println("TESTO "+code.get(code.size()-4));
             float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
             code.add("fmul ");
     		code.add(code.get(code.size()-5));
@@ -400,7 +397,6 @@ public class ASMLVisitor implements Visitor {
     		
     		code.add(code.get(code.size()-4));
     		code.set(code.size()-5,"");
-    		System.out.println("TESTO "+code.get(code.size()-4));
             float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
             code.add("fdiv ");
     		code.add(code.get(code.size()-5));

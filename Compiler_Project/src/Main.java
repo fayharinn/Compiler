@@ -31,19 +31,25 @@ public class Main {
             
             System.out.println("\n------ Type checking ----\n");
             TypeCheck.check(expression);
-            
+            PrintWriter out = new PrintWriter("../../test3.asml"); // l'output de l'asml
             System.out.println("\n------ ASML GENERATED ---- \n");
             ASMLVisitor asmlv = new ASMLVisitor();
             expression.accept(asmlv);
-            for(String x:asmlv.code) {
+            for(String x:asmlv.float_code) {
+            	out.print(x);
             	System.out.print(x);
             }
+            for(String x:asmlv.code) {
+            	out.print(x);
+            	System.out.print(x);
+            }
+            out.close();
             
-            
+            //System.out.println("\nTEST VARFLOAT "+asmlv.new_varfloat);
             System.out.println("\n------ ARM GENERATED ---- \n");
-            ArmVisitor armv = new ArmVisitor();
-            expression.accept(armv);
-            System.out.println(); 
+           // ArmVisitor armv = new ArmVisitor();
+            //expression.accept(armv);
+            //System.out.println(); 
             
 
         } catch (Exception e) {
