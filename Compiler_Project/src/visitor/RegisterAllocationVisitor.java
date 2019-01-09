@@ -110,20 +110,28 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         }else{
             int reg = getRegistre();
             Id idReg = new Id("r" + reg);
-            Exp temp = new Let(idReg, e.t, e.e1.accept(this), e.e2.accept(this));
-
-            if(indexRegistres.containsValue(reg) && indexStack.containsKey(e.id)){
-                temp = new Load(idReg, indexStack.get(e.id), temp);
-            }else if(indexRegistres.containsValue(reg)){
-                if(!indexStack.containsKey(e.id)){
-                    indexStack.put(e.id, stackOffset);
+            boolean load = false;
+            boolean save = false;
+            Id id = null;
+            if(indexRegistres.containsValue(reg)){
+                id = getIdFromReg(reg);
+                if(!indexStack.containsKey(id)){
+                    indexStack.put(id, stackOffset);
                     stackOffset -= 4;
                 }
-                Id id = getIdFromReg(reg);
-                temp = new Save(idReg, indexStack.get(id), temp);
                 indexRegistres.remove(id);
+                save = true;
+                if(indexStack.containsKey(e.id))
+                    load = true;
             }
             indexRegistres.put(e.id, reg);
+
+            Exp temp = new Let(idReg, e.t, e.e1.accept(this), e.e2.accept(this));
+            if(load){
+                temp = new Load(idReg, indexStack.get(e.id), temp);
+            }else if(save){
+                temp = new Save(idReg, indexStack.get(id), temp);
+            }
 
             return temp;
         }

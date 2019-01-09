@@ -38,8 +38,8 @@ public class Main {
             letexp.accept(new PrintVisitor());
             System.out.println();
 
+            System.out.println("------ AST Register Allocation ------");
             Exp reg = letexp.accept(new RegisterAllocationVisitor());
-            System.out.println();
             reg.accept(new PrintVisitor());
         } catch (Exception e) {
             e.printStackTrace();
