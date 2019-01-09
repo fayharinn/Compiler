@@ -265,7 +265,7 @@ public class ASMLVisitor implements Visitor {
         //System.out.print("fsub ");
     	
     	if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
-
+    		
     		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
     		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
     		code.add(code.get(code.size()-3));
@@ -405,7 +405,7 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Let e) {
-    	if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class) { // si c'est une déclaration de float directe
+    	if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class) { // si c'est une déclaration de float directe
     		varfloat.put(e.id.id,""+(varfloat.size()+1));
     		float_code.add("\nlet _x"+varfloat.size()+" = ");
     		e.e1.accept(this);
