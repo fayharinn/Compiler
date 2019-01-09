@@ -23,12 +23,22 @@ public class ASMLVisitor implements Visitor {
     *
      */
 
-	private HashMap<String,String> h;
+	private HashMap<String,Type> h;
+	private HashMap<String,String> varfloat;
+	public HashMap<String,String> new_varfloat;
 	public ArrayList<String> code;
 	public ArrayList<String> float_code;
 	
 	public ASMLVisitor() {
 		code = new ArrayList<String>();
+		float_code = new ArrayList<String>();
+		varfloat = new HashMap<String,String>();
+		new_varfloat = new HashMap<String,String>();
+		h = new HashMap<String,Type>();
+		h.put("x",new TFloat());
+		h.put("y",new TInt());
+		h.put("z",new TFloat());
+		h.put("a",new TFloat());
 		code.add("\nlet _ = \n");
 		//System.out.println("let _ =");
 		//expression.accept(this);
@@ -79,8 +89,21 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Float e) {
-        String s = String.format("%.2f", e.f);
-        //System.out.print(s);
+    	String s = String.format("%.2f", e.f);
+    	if(float_code.get(float_code.size()-1).contains("tmp")) {
+    		if(new_varfloat.containsKey(s)) {
+    			code.add("r"+new_varfloat.get(s));
+    		}
+    		else {
+    			code.add("rtmp"+new_varfloat.size());
+            	new_varfloat.put(s,"tmp"+new_varfloat.size());
+    		}
+        	
+
+    		
+    	}
+        s = s.replaceAll(",","."); 
+        float_code.add(s);
     }
 
     /**
@@ -167,12 +190,58 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(FAdd e) {
-    	code.add("fadd ");
+    	
         //System.out.print("fadd ");
+    	
+    	if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
+
+    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		code.add(code.get(code.size()-3));
+    		code.set(code.size()-4,"");
+    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+            e.e1.accept(this);
+            code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		
+    		code.add(code.get(code.size()-4));
+    		code.set(code.size()-5,"");
+    		System.out.println("TESTO "+code.get(code.size()-4));
+            float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+            code.add("fadd ");
+    		code.add(code.get(code.size()-5));
+    		code.set(code.size()-6,"");
+            code.add(" ");
+            //System.out.print(" ");
+            e.e2.accept(this);
+            code.add("\n");
+    		return;
+    	}
+    	else if(e.e2.getClass()==ast.Float.class) {
+
+    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		code.add(code.get(code.size()-3));
+    		code.set(code.size()-4,"");
+    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    	}
+    	
+    	else if(e.e1.getClass()==ast.Float.class) {
+
+    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    		code.add(code.get(code.size()-3));
+    		code.set(code.size()-4,"");
+    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    	}
+    	
+
+    	code.add("fadd ");
         e.e1.accept(this);
         code.add(" ");
         //System.out.print(" ");
         e.e2.accept(this);
+        code.add("\n");
         //System.out.print("");
     }
 
@@ -282,16 +351,28 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Let e) {
-    	code.add("let "+e.id+" = ");
-        //System.out.print("  let ");
-        //System.out.print(e.id);
-        //System.out.print(" = ");
-        e.e1.accept(this);
-        code.add(" in \n  ");
-        //System.out.print(" in ");
-        //System.out.println("");
-        e.e2.accept(this);
-        //System.out.print("");
+    	if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class) { // si c'est une déclaration de float directe
+    		varfloat.put(e.id.id,""+(varfloat.size()+1));
+    		float_code.add("\nlet _x"+varfloat.size()+" = ");
+    		e.e1.accept(this);
+    		code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
+    		code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    		
+    	}
+    	
+    	else { // si c'est une déclaration d'entiers ou de float avec une opération (ex : 1.2+2.5)
+    		code.add("let "+e.id+" = ");
+    		//System.out.print("  let ");
+    		//System.out.print(e.id);
+    		//System.out.print(" = ");
+    		e.e1.accept(this);
+    		code.add(" in \n  ");
+    		//System.out.print(" in ");
+    		//System.out.println("");
+    	}
+    	e.e2.accept(this);
+    	//System.out.print("");
+        
     }
 
     /**
@@ -331,6 +412,10 @@ public class ASMLVisitor implements Visitor {
     		break;
     	default:
     		//System.out.print(e.id);
+    		if(varfloat.containsKey(e.id.id)) {
+    			code.add("r"+varfloat.get(e.id.id));
+    		}
+    		else
     		code.add(String.valueOf(e.id));
     		break;
     	}
