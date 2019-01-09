@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import type.Type;
 import utils.Id;
+import visitor.ArmVisitor;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
@@ -15,5 +16,5 @@ public abstract class Exp {
 
 	public abstract Type accept(TypeCheckVisitor typeCheckVisitor,HashMap<String, Type> env,Type exptype,HashMap<Type,Type> genEqs);
     
-	
+	//public abstract void accept(ArmVisitor v);
 }

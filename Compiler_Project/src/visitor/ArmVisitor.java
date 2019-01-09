@@ -2,10 +2,11 @@ package visitor;
 
 import ast.*;
 import ast.Float;
+import utils.Id;
 
 import java.util.*;
 
-public class ArmVisitor implements Visitor {
+public class ArmVisitor implements Visitor { //passage de param en + donc implemente pas visitor
 	
 	HashMap<String,String> var; // ex : x : [fp-8]
 	private int next_fp;
@@ -47,11 +48,11 @@ public class ArmVisitor implements Visitor {
     }
 
     public void visit(Bool e) {
-        System.out.print(e.b);
+        System.out.print(" "+e.b);
     }
 
     public void visit(Int e) {
-        System.out.print(e.i);
+        System.out.print(" " +e.i);
     }
 
     public void visit(Float e) {
@@ -70,9 +71,29 @@ public class ArmVisitor implements Visitor {
 
     }
 
+    /**
+     *
+     * @param e noeud du add
+     * @param rd registre destination de l'add
+     */
+    public void visit(Add e, Let rd) { //avant un add est forcément un let donc il s'envoie lui même au add pour avoir le registre destination
+        System.out.print("add " + rd.id);
+        e.e1.accept( this);
+        e.e2.accept( this);
+        System.out.println("");
+    }
+
     public void visit(Sub e) {
 
     }
+
+    public void visit(Sub e, Let rd) {
+        System.out.print("sub " + rd.id);
+        e.e1.accept( this);
+        e.e2.accept( this);
+        System.out.println("");
+    }
+
 
     public void visit(FNeg e){
 
@@ -103,30 +124,35 @@ public class ArmVisitor implements Visitor {
     }
 
     public void visit(If e){
+        //if composé de e1 e2 e3
+        // si e1 alors e2 sinon e3
+        Id idb = Id.gen();//idbranch
+        Id idf = Id.gen();//idfin
+
+        e.e1.accept(this); // print le cmp + le bon branchement
+        System.out.println(" " + idb); //label branchement pour le else
+        e.e2.accept(this); // print le then
+        System.out.println("b idf");
+
+        System.out.println(idb + ":");
+        e.e3.accept(this); //else
+
+        System.out.println(idf+":"); //pour la suite du code
+        //
 
     }
 
     public void visit(Let e) {
-    	System.out.print("\n	@ ASML : Assign value to "+e.id.id);
-    	/*if(e.e1.getClass()==ast.Add.class) {
-    		
-    	}*/
-    	System.out.print("\n	LDR r4, =");
-    	e.e1.accept(this);
-    	System.out.print("\n	STR r4, [fp, #"+next_fp+"]");
-    	var.put(e.id.id,"[fp, #"+next_fp+"]");
-    	next_fp=next_fp-4;
-    	System.out.println();
-    	e.e2.accept(this);
+
         
     }
 
     public void visit(Var e){
-        System.out.print(e.id);
+        System.out.print(" "+e.id);
     }
 
 
-    // print sequence of identifiers 
+    // print sequence of identifiers
     static <E> void printInfix(List<E> l, String op) {
         if (l.isEmpty()) {
             return;
@@ -144,10 +170,10 @@ public class ArmVisitor implements Visitor {
             return;
         }
         Iterator<Exp> it = l.iterator();
-        it.next().accept(this);
+        it.next().accept( this);
         while (it.hasNext()) {
             System.out.print(op);
-            it.next().accept(this);
+            it.next().accept( this);
         }
     }
 

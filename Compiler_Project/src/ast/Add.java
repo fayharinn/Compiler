@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import type.Type;
 import utils.Id;
+import visitor.ArmVisitor;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
@@ -31,4 +32,6 @@ public class Add extends Exp {
 		// TODO Auto-generated method stub
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
+
+
 }
