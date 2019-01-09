@@ -5,12 +5,26 @@ import utils.Id;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 
 public class ClosureConversion implements ObjVisitor<Exp> {
 
-    private ArrayList<LetRec> declarationFun = new ArrayList<>();
-    private ArrayList<String> nameFun = new ArrayList<>();
+    private Stack<LetRec> declarationFun = new Stack<>();
+    private ArrayList<String> known = new ArrayList<>();
+    private ArrayList<String> closure = new ArrayList<>();
+    private HashMap<String,String> replacableVar = new HashMap<>();
+
+    public Exp moveToFront(Exp e) {
+        Exp res = e;
+
+        while (!declarationFun.empty()) {
+            LetRec fun = declarationFun.pop();
+            res = new LetRec(fun.fd,res);
+        }
+
+        return  res;
+    }
 
     public Unit visit(Unit e) {
         return e;
@@ -29,84 +43,106 @@ public class ClosureConversion implements ObjVisitor<Exp> {
     }
 
     public Not visit(Not e) {
-        return e;
+        return new Not (e.e.accept(this));
     }
 
     public Neg visit(Neg e) {
-        return e;
+        return new Neg (e.e.accept(this));
     }
 
     public Add visit(Add e) {
-        return e ;
+        return new Add(e.e1.accept(this),e.e2.accept(this)) ;
     }
 
     public Sub visit(Sub e) {
-        return e;
+        return new Sub(e.e1.accept(this),e.e2.accept(this));
     }
 
     public FNeg visit(FNeg e){
-        return e;
+        return new FNeg(e.e.accept(this));
     }
 
     public FAdd visit(FAdd e){
-        return e;
+        return new FAdd(e.e1.accept(this),e.e2.accept(this));
     }
 
     public FSub visit(FSub e){
-        return e;
+        return new FSub(e.e1.accept(this),e.e2.accept(this));
     }
 
     public FMul visit(FMul e) {
-        return e;
+        return new FMul(e.e1.accept(this),e.e2.accept(this));
     }
 
     public FDiv visit(FDiv e){
-        return e;
+        return new FDiv(e.e1.accept(this),e.e2.accept(this));
     }
 
     public Eq visit(Eq e){
-        return e;
+        return new Eq(e.e1.accept(this),e.e2.accept(this));
     }
 
     public LE visit(LE e){
-        return e;
+        return new LE(e.e1.accept(this),e.e2.accept(this));
     }
 
     public If visit(If e){
-        return e;
+        return new If(e.e1.accept(this),e.e2.accept(this),e.e3.accept(this));
     }
 
     public Let visit(Let e) {
         Exp e1 = e.e1.accept(this);
         Exp e2 = e.e2.accept(this);
-        return new Let(e.id,e.t,e1,e2);
+        return new Let(e.id, e.t, e1, e2);
     }
 
     public Var visit(Var e){
-        return e;
+        if (replacableVar.containsKey(e.id.toString())) {
+            return new Var(new Id(replacableVar.get(e.id.toString())));
+        } else {
+            return e;
+        }
     }
 
     public Exp visit(LetRec e){
-        //CAS SIMPLE
-        nameFun.add(e.fd.id.toString());
-        Exp e1 = e.fd.e.accept(this);
+        ArrayList<String> freeVar = e.fd.e.accept(new freeVarVisitor(e.fd.args));
+        Exp e1;
+        if (freeVar.isEmpty()) {
+            //CAS NON VARIABLE LIBRE
+            System.out.println("PAS DE VARIABLE LIBRE");
+            known.add(e.fd.id.toString());
+            e1 = e.fd.e.accept(this);
+        } else {
+            System.out.println("/! DES VARIABLE LIBRE");
+            for (int i = 0 ; i < freeVar.size(); i++) {
+                Id new_id = Id.gen();
+                e.fd.args.add(new_id);
+                replacableVar.put(freeVar.get(i),new_id.toString());
+                System.out.println(freeVar.get(i));
+            }
+            e1 = e.fd.e.accept(this);
+            for (int i = 0 ; i < freeVar.size(); i++) {
+                replacableVar.remove(freeVar.get(i));
+            }
+        }
         FunDef fd = new FunDef(e.fd.id,e.fd.type,e.fd.args,e1);
         LetRec new_e = new LetRec(fd,e.e);
-        declarationFun.add(new_e);
-        //CAS COMPLEXE
-
+        declarationFun.push(new_e);
         return e.e.accept(this);
     }
 
     public App visit(App e){
-        if ( nameFun.contains(((Var) e.e).id.toString()) ) {
-            Id app = new Id("apply_direct");
-            ArrayList<Exp> args = new ArrayList<>(e.es);
-            args.add(0, e.e);
-            return new App(new Var(app), args);
-        } else {
+        if (e.e instanceof Var) {
+            if (known.contains(((Var) e.e).id.toString())) {
+                Id app = new Id("apply_direct");
+                ArrayList<Exp> args = new ArrayList<>(e.es);
+                args.add(0, e.e);
+                return new App(new Var(app), args);
+            } else {
+                return e;
+            }
+        } else
             return e;
-        }
     }
 
     public Tuple visit(Tuple e){
@@ -116,7 +152,7 @@ public class ClosureConversion implements ObjVisitor<Exp> {
     public LetTuple visit(LetTuple e){
         Exp e1 = e.e1.accept(this);
         Exp e2 = e.e2.accept(this);
-        return new LetTuple(e.ids,e.ts,e.e1,e2);
+        return new LetTuple(e.ids,e.ts,e1,e2);
     }
 
     public Array visit(Array e){
