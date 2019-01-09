@@ -15,11 +15,10 @@ public class Main {
             Exp expression = (Exp) p.parse().value;
             assert (expression != null);
 
-            System.out.println("------ AST ------");
+            System.out.println("------ Avant KNormalisation ------");
             expression.accept(new PrintVisitor());
             System.out.println(); 
 
-            
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);
             System.out.println("using utils.Height.computeHeight: " + height);
@@ -45,6 +44,15 @@ public class Main {
             expression.accept(armv);
             System.out.println(); 
             
+
+
+
+            System.out.println("------ utils.Height of the AST ----");
+            height = Height.computeHeight(knorm);
+            System.out.println("using utils.Height.computeHeight: " + height);
+
+            height = knorm.accept(v);
+            System.out.println("using HeightVisitor: " + height);
 
         } catch (Exception e) {
             e.printStackTrace();
