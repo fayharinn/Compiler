@@ -177,4 +177,14 @@ public class AlphaConvVisitor implements ObjVisitor<Exp> {
        return new Put(e1,e2,e3);
     }
 
+    @Override
+    public Exp visit(Load load) {
+        return null;
+    }
+
+    @Override
+    public Exp visit(Save save) {
+        return null;
+    }
+
 }

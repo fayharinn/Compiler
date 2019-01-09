@@ -32,29 +32,15 @@ public class Main {
 
             //Let-expression/Linearisation du Let
 
-            Exp letexp= exp_alpha_conv.accept(new LetExpressionsVisitor());
+            Exp letexp = exp_alpha_conv.accept(new LetExpressionsVisitor());
 
             System.out.println("------ AST Let Expressions ------");
             letexp.accept(new PrintVisitor());
             System.out.println();
 
-            System.out.println("------ utils.Height of the AST ----");
-            int height = Height.computeHeight(expression);
-            System.out.println("using utils.Height.computeHeight: " + height);
-
-            ObjVisitor<Integer> v = new HeightVisitor();
-            height = expression.accept(v);
-            System.out.println("using HeightVisitor: " + height);
-
-
-
-            System.out.println("------ utils.Height of the AST ----");
-            height = Height.computeHeight(knorm);
-            System.out.println("using utils.Height.computeHeight: " + height);
-
-            height = knorm.accept(v);
-            System.out.println("using HeightVisitor: " + height);
-
+            Exp reg = letexp.accept(new RegisterAllocationVisitor());
+            System.out.println();
+            reg.accept(new PrintVisitor());
         } catch (Exception e) {
             e.printStackTrace();
         }

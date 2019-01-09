@@ -186,6 +186,16 @@ public class VarVisitor implements ObjVisitor<Set<String>> {
         fv1.addAll(fv3);
         return fv1;
     }
+
+    @Override
+    public Set<String> visit(Load load) {
+        return null;
+    }
+
+    @Override
+    public Set<String> visit(Save save) {
+        return null;
+    }
 }
 
 

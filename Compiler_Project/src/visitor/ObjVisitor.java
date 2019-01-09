@@ -29,6 +29,8 @@ public interface ObjVisitor<E> {
     E visit(Array e);
     E visit(Get e);
     E visit(Put e);
+    E visit(Load load);
+    E visit(Save save);
 }
 
 

@@ -213,6 +213,16 @@ public class PrintVisitor implements Visitor {
         e.e3.accept(this);
         System.out.print(")");
     }
+
+    public void visit(Save e) {
+        System.out.print("r" + e.id + " -> [fp, " + e.stackOffset + "]");
+        e.e.accept(this);
+    }
+
+    public void visit(Load e) {
+        System.out.print("[fp, " + e.stackOffset + "] -> r" + e.id);
+        e.e.accept(this);
+    }
 }
 
 

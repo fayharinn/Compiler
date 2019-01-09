@@ -134,4 +134,14 @@ public class LetExpressionsVisitor implements ObjVisitor<Exp> {
        return e;
     }
 
+    @Override
+    public Exp visit(Load load) {
+        return null;
+    }
+
+    @Override
+    public Exp visit(Save save) {
+        return null;
+    }
+
 }
