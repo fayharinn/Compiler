@@ -194,16 +194,38 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
     public Type visit(If e,Type expType){
     	Type t1 = e.e1.accept(this,new TBool());
+
+		if (t1.getClass() != TBool.class){
+			if (t1.getReturnType().getClass()!=TBool.class){
+				try {
+					throw new Exception("Error in If construction, in the condition");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	Type t2 = e.e2.accept(this,new TInt());
+		if (t2.getClass() != TInt.class){
+			if (t2.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in If construction, check th then");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+
     	Type t3 = e.e3.accept(this,new TInt());
+		if (t3.getClass() != TInt.class){
+			if (t3.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in If construction, check the else");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	equations.put(new TInt(), expType);
-        if( t3.getClass() != TBool.class ||t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
-            try {
-                throw new Exception("Error in If construction");
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
         return new TInt();
     }
 
@@ -249,38 +271,44 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 
 	public Type visit(LetRec e,Type expType){
-    	FunDef f = e.fd;
-    	Type FundefType = f.e.accept(this,expType);
+		FunDef f = e.fd;
+		// Il faudrait ajouter la fonction de facon provisoire dans l'environnement puis réctifier le return type aprés
 		ArrayList<Type> argsType = new ArrayList<Type>();
-
 		try {
-			for (Id vars : f.args){argsType.add(environement.getTypeofVar(vars.toString()));}
+			for (Id vars : f.args){
+				environement.ajouterVar(vars.id,new TInt());
+				argsType.add(new TInt());
+			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 
-		Type functionType = new TFun(argsType,FundefType);
+		TFun functionType = new TFun(argsType,new TInt());
 		try {
 			this.environement.ajouterVar(f.id.id,functionType);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-    	e.e.accept(this,expType);
-    	return functionType;
+		Type FundefType = f.e.accept(this,expType);
+		functionType.setReturnType(FundefType);
+
+		e.e.accept(this,expType);
+		return functionType;
 	}
 
 	public Type visit(App e,Type expType){
+		TFun functionType = null;
 		try {
-			if (e.e.getClass()!= Var.class) throw new Exception(e.e.toString() +" is not a function cal");
+			if (e.e.getClass()!= Var.class) throw new Exception(e.e.toString() +" is not a function call");
 			Var calledFunction = (Var) e.e;
 			if (!environement.containsKey(calledFunction.id.id)) throw  new Exception(calledFunction.id.id +" is not defined");
 			// Type check of function paramétres
-			TFun argsType = (TFun) environement.getTypeofVar(calledFunction.id.id);
-			if (e.es.equals(argsType.getargsType())) throw new Exception("Not the same arguments Types");
+			functionType = (TFun) environement.getTypeofVar(calledFunction.id.id);
+			if (e.es.equals(functionType.getargsType())) throw new Exception("Not the same arguments Types");
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		return null;
+		return functionType;
 	}
 
 	public Type visit(Tuple e,Type expType){
@@ -302,6 +330,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     public Type visit(Put e,Type expType){
         return null;
     }
+
 
 }
 

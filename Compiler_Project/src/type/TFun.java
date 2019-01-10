@@ -22,6 +22,17 @@ public class TFun extends Type {
         return returnType;
     }
 
+    public void setArgsType(ArrayList<Type> argsType) {
+        this.argsType = argsType;
+    }
+
+    public void setReturnType(Type returnType) {
+        this.returnType = returnType;
+    }
+
+    public Type typeConversion(){
+        return returnType;
+    }
     @Override
     public String toString() {
         return "(" + this.argsType.toString() +"->" + returnType.toString()+")" ;

@@ -1,4 +1,4 @@
-let rec make_adder x =
-  let rec adder y = x + y in
-  adder in
-print_int ((make_adder 3) 7)
+let rec sum acc x =
+  if x <= 0 then acc else
+  sum (acc + x) (x - 1) in
+print_int (sum 0 10000)

@@ -6,6 +6,9 @@ public abstract class Type {
         return new TVar("?" + x++);
     }
     public abstract String toString();
+    public Type getReturnType(){
+        return new TUnit();
+    }
 }
 
 
