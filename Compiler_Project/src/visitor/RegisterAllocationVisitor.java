@@ -2,7 +2,6 @@ package visitor;
 
 import ast.*;
 import ast.Float;
-import type.Type;
 import utils.Id;
 
 import java.util.ArrayList;
@@ -12,13 +11,13 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
 
     private static final int MIN_REG = 4;
     private static final int MAX_REG = 10;
-    private HashMap<Id, Integer> indexRegistres; // Liste des variables associées aux registres.
-    private HashMap<Id, Integer> indexStack; // Liste des variables associées à leur offset dans la pile.
+    private HashMap<String, Integer> indexRegistres; // Liste des variables associées aux registres.
+    private HashMap<String, Integer> indexStack; // Liste des variables associées à leur offset dans la pile.
     private int nextReg;
     private int stackOffset;
 
-    private Id getIdFromReg(int reg){
-        for (HashMap.Entry<Id, Integer> entry : indexRegistres.entrySet()) {
+    private String getIdFromReg(int reg){
+        for (HashMap.Entry<String, Integer> entry : indexRegistres.entrySet()) {
             if(entry.getValue() == reg){
                 return entry.getKey();
             }
@@ -26,7 +25,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         return null;
     }
 
-    private int getRegistre(){
+    private int getRegister(){
         nextReg++;
         if(nextReg > MAX_REG)
             nextReg = MIN_REG - 1;
@@ -34,8 +33,8 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
 
     public RegisterAllocationVisitor(){
-        indexRegistres = new HashMap<Id, Integer>();
-        indexStack = new HashMap<Id, Integer>();
+        indexRegistres = new HashMap<String, Integer>();
+        indexStack = new HashMap<String, Integer>();
         stackOffset = -4;
         nextReg = MIN_REG - 1;
     }
@@ -65,7 +64,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(Add e) {
-        return new Add(e.e1.accept(this), e.e1.accept(this));
+        return new Add(e.e1.accept(this), e.e2.accept(this));
     }
     
     public Exp visit(Sub e) {
@@ -105,32 +104,30 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(Let e) {
-        if(indexRegistres.containsKey(e.id)){
-            return new Let(new Id("r" + indexRegistres.get(e.id)), e.t, e.e1.accept(this), e.e2.accept(this));
+        if(indexRegistres.containsKey(e.id.toString())){
+            return new Let(new Id("r" + indexRegistres.get(e.id.toString())), e.t, e.e1.accept(this), e.e2.accept(this));
         }else{
-            int reg = getRegistre();
+            int reg = getRegister();
             Id idReg = new Id("r" + reg);
             boolean load = false;
-            boolean save = false;
-            Id id = null;
+            String idSave = null;
             if(indexRegistres.containsValue(reg)){
-                id = getIdFromReg(reg);
-                if(!indexStack.containsKey(id)){
-                    indexStack.put(id, stackOffset);
+                idSave = getIdFromReg(reg);
+                if(!indexStack.containsKey(idSave)){
+                    indexStack.put(idSave, stackOffset);
                     stackOffset -= 4;
                 }
-                indexRegistres.remove(id);
-                save = true;
-                if(indexStack.containsKey(e.id))
+                indexRegistres.remove(idSave);
+                if(indexStack.containsKey(e.id.toString()))
                     load = true;
             }
-            indexRegistres.put(e.id, reg);
+            indexRegistres.put(e.id.toString(), reg);
 
             Exp temp = new Let(idReg, e.t, e.e1.accept(this), e.e2.accept(this));
             if(load){
-                temp = new Load(idReg, indexStack.get(e.id), temp);
-            }else if(save){
-                temp = new Save(idReg, indexStack.get(id), temp);
+                temp = new Load(idReg, indexStack.get(e.id.toString()), temp);
+            }else if(idSave != null){
+                temp = new Save(idReg, indexStack.get(idSave), temp);
             }
 
             return temp;
@@ -138,35 +135,43 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(Var e) {
-        return new Var(new Id("r" + indexRegistres.get(e.id)));
+        return new Var(new Id("r" + indexRegistres.get(e.id.toString())));
     }
 
-    public Exp visit(LetRec e) {
-        return new LetRec(e.fd, e.e.accept(this));
+    public Exp visit(LetRec e) { //TODO replace args with regs
+        return new LetRec(new FunDef(e.fd.id, e.fd.type, e.fd.args, e.fd.e.accept(this)), e.e.accept(this));
     }
     
     public Exp visit(App e) {
-        return null;
+        ArrayList<Exp> es = new ArrayList<Exp>();
+        for(Exp ex: e.es){
+            es.add(ex.accept(this));
+        }
+        return new App(e.e.accept(this), es);
     }
     
     public Exp visit(Tuple e) {
-        return null;
+        ArrayList<Exp> es = new ArrayList<Exp>();
+        for(Exp ex: e.es){
+            es.add(ex.accept(this));
+        }
+        return new Tuple(es);
     }
     
-    public Exp visit(LetTuple e) {
-        return null;
+    public Exp visit(LetTuple e) { //TODO ids
+        return new LetTuple(e.ids, e.ts, e.e1.accept(this), e.e2.accept(this));
     }
     
     public Exp visit(Array e) {
-        return null;
+        return new Array(e.e1.accept(this), e.e2.accept(this));
     }
     
     public Exp visit(Get e) {
-        return null;
+        return new Get(e.e1.accept(this), e.e2.accept(this));
     }
     
     public Exp visit(Put e) {
-        return null;
+        return new Put(e.e1.accept(this), e.e2.accept(this), e.e3.accept(this));
     }
 
     public Exp visit(Load load) {
