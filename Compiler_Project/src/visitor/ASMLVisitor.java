@@ -455,7 +455,7 @@ public class ASMLVisitor implements Visitor {
     public void visit(LE e) {
         //System.out.print("(");
         e.e1.accept(this);
-        //System.out.print(" <= ");
+        code.add(" <= ");
         e.e2.accept(this);
         //System.out.print(")");
     }
@@ -468,15 +468,15 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(If e) {
-        //System.out.print("if ");
+        code.add("\nif ");
         e.e1.accept(this);
-        //System.out.print(" then (");
-        //System.out.println("");
+        code.add(" then (");
+        code.add("");
         e.e2.accept(this);
-        //System.out.print("\n) else (");
+        code.add("\n) else (");
         //System.out.println("");
         e.e3.accept(this);
-        //System.out.println("\n)");
+        code.add("\n)");
     }
 
     /**
