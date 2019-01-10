@@ -151,7 +151,6 @@ public class ClosureConversion implements ObjVisitor<Exp> {
             if (known.contains(((Var) e.e).id.toString())) {
                 return e;
             } if (apply_closure.contains(((Var) e.e).id.toString())) {
-
               // LetTuple tuple = new LetTuple() ;
                 return  e;
             } else {
