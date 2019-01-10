@@ -5,7 +5,6 @@ import utils.Id;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Stack;
 
 
@@ -13,7 +12,8 @@ public class ClosureConversion implements ObjVisitor<Exp> {
 
     private Stack<LetRec> declarationFun = new Stack<>();
     private ArrayList<String> known = new ArrayList<>();
-    private HashMap<String,ArrayList<String>> closure = new HashMap<>();
+    private HashMap<String,ArrayList<String>> make_closure = new HashMap<>();
+    private ArrayList<String> apply_closure = new ArrayList<>();
     private HashMap<String,String> replacableVar = new HashMap<>();
 
     public Exp moveToFront(Exp e) {
@@ -97,15 +97,16 @@ public class ClosureConversion implements ObjVisitor<Exp> {
         return new Let(e.id, e.t, e1, e2);
     }
 
-    public Exp visit(Var e){
+    public Exp visit(Var e) {
         if (replacableVar.containsKey(e.id.toString())) {
             return new Var(new Id(replacableVar.get(e.id.toString())));
-        } if (closure.containsKey(e.id.toString())) {
+        }
+        if (make_closure.containsKey(e.id.toString())) {
             ArrayList<Exp> lTuple = new ArrayList<>();
             lTuple.add(new Var(new Id(e.id.toString())));
-            for (String arg : closure.get(e.id.toString())) {
-               Var new_var = new Var(new Id(arg));
-               lTuple.add(new_var);
+            for (String arg : make_closure.get(e.id.toString())) {
+                Var new_var = new Var(new Id(arg));
+                lTuple.add(new_var);
             }
             return new Tuple(lTuple);
         } else {
@@ -120,7 +121,11 @@ public class ClosureConversion implements ObjVisitor<Exp> {
             //CAS NON VARIABLE LIBRE
             System.out.println("PAS DE VARIABLE LIBRE");
             known.add(e.fd.id.toString());
+            int size = make_closure.size();
             e1 = e.fd.e.accept(this);
+            if (make_closure.size() != size) {
+                apply_closure.add(e.fd.id.toString());
+            }
         } else {
             System.out.println("/! DES VARIABLE LIBRE");
             for (int i = 0 ; i < freeVar.size(); i++) {
@@ -132,7 +137,7 @@ public class ClosureConversion implements ObjVisitor<Exp> {
             e1 = e.fd.e.accept(this);
             for (int i = 0 ; i < freeVar.size(); i++) {
                 replacableVar.remove(freeVar.get(i));
-                closure.put(e.fd.id.toString(),freeVar);
+                make_closure.put(e.fd.id.toString(),freeVar);
             }
         }
         FunDef fd = new FunDef(e.fd.id,e.fd.type,e.fd.args,e1);
@@ -141,10 +146,14 @@ public class ClosureConversion implements ObjVisitor<Exp> {
         return e.e.accept(this);
     }
 
-    public App visit(App e){
+    public Exp visit(App e){
         if (e.e instanceof Var) {
             if (known.contains(((Var) e.e).id.toString())) {
                 return e;
+            } if (apply_closure.contains(((Var) e.e).id.toString())) {
+
+              // LetTuple tuple = new LetTuple() ;
+                return  e;
             } else {
                 return e;
             }
@@ -163,15 +172,15 @@ public class ClosureConversion implements ObjVisitor<Exp> {
     }
 
     public Array visit(Array e){
-        return e;
+        return new Array(e.e1.accept(this),e.e2.accept(this));
    }
 
     public Get visit(Get e){
-       return e;
+       return new Get(e.e1.accept(this),e.e2.accept(this));
     }
 
     public Put visit(Put e){
-       return e;
+       return new Put(e.e1.accept(this),e.e2.accept(this),e.e3.accept(this));
     }
 
 }
