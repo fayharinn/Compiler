@@ -60,7 +60,19 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(Not e) {
+        System.out.print("cmp");
+        e.e.accept(this);
+        System.out.println(" #0");
+        System.out.println("moveq");
+        e.e.accept(this);
+        System.out.println(" #0");
+        System.out.println("movne");
+        e.e.accept(this);
+        System.out.println(" #0");
 
+       /* cmp	r3, #0
+        moveq	r3, #1
+        movne	r3, #0*/
     }
 
     public void visit(Neg e) {
@@ -87,6 +99,11 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
 
     }
 
+    /**
+     *
+     * @param e noeud du sub
+     * @param rd registre destination du sub
+     */
     public void visit(Sub e, Let rd) {
         System.out.print("sub " + rd.id);
         e.e1.accept( this);
@@ -116,11 +133,19 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(Eq e){
-
+        System.out.print("cmp");
+        e.e1.accept(this);
+        e.e2.accept(this);
+        System.out.println("");
+        System.out.print("beq");
     }
 
     public void visit(LE e){
-
+        System.out.print("cmp");
+        e.e1.accept(this);
+        e.e2.accept(this);
+        System.out.println("");
+        System.out.print("ble");
     }
 
     public void visit(If e){
