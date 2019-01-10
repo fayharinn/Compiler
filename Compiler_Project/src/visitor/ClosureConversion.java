@@ -5,6 +5,7 @@ import utils.Id;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 
@@ -12,7 +13,7 @@ public class ClosureConversion implements ObjVisitor<Exp> {
 
     private Stack<LetRec> declarationFun = new Stack<>();
     private ArrayList<String> known = new ArrayList<>();
-    private ArrayList<String> closure = new ArrayList<>();
+    private HashMap<String,ArrayList<String>> closure = new HashMap<>();
     private HashMap<String,String> replacableVar = new HashMap<>();
 
     public Exp moveToFront(Exp e) {
@@ -96,9 +97,17 @@ public class ClosureConversion implements ObjVisitor<Exp> {
         return new Let(e.id, e.t, e1, e2);
     }
 
-    public Var visit(Var e){
+    public Exp visit(Var e){
         if (replacableVar.containsKey(e.id.toString())) {
             return new Var(new Id(replacableVar.get(e.id.toString())));
+        } if (closure.containsKey(e.id.toString())) {
+            ArrayList<Exp> lTuple = new ArrayList<>();
+            lTuple.add(new Var(new Id(e.id.toString())));
+            for (String arg : closure.get(e.id.toString())) {
+               Var new_var = new Var(new Id(arg));
+               lTuple.add(new_var);
+            }
+            return new Tuple(lTuple);
         } else {
             return e;
         }
@@ -116,13 +125,14 @@ public class ClosureConversion implements ObjVisitor<Exp> {
             System.out.println("/! DES VARIABLE LIBRE");
             for (int i = 0 ; i < freeVar.size(); i++) {
                 Id new_id = Id.gen();
-                e.fd.args.add(new_id);
+                e.fd.args.add(0,new_id);
                 replacableVar.put(freeVar.get(i),new_id.toString());
                 System.out.println(freeVar.get(i));
             }
             e1 = e.fd.e.accept(this);
             for (int i = 0 ; i < freeVar.size(); i++) {
                 replacableVar.remove(freeVar.get(i));
+                closure.put(e.fd.id.toString(),freeVar);
             }
         }
         FunDef fd = new FunDef(e.fd.id,e.fd.type,e.fd.args,e1);
@@ -134,10 +144,7 @@ public class ClosureConversion implements ObjVisitor<Exp> {
     public App visit(App e){
         if (e.e instanceof Var) {
             if (known.contains(((Var) e.e).id.toString())) {
-                Id app = new Id("apply_direct");
-                ArrayList<Exp> args = new ArrayList<>(e.es);
-                args.add(0, e.e);
-                return new App(new Var(app), args);
+                return e;
             } else {
                 return e;
             }
