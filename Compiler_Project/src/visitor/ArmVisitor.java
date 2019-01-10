@@ -75,8 +75,12 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
         movne	r3, #0*/
     }
 
-    public void visit(Neg e) {
-
+    public void visit(Neg e) { // pour le neg on soustrait a zero la valeur
+        System.out.print("sub");
+        e.e.accept(this);
+        System.out.print(" #0");
+        e.e.accept(this);
+        System.out.println("");
     }
 
     public void visit(Add e) {
