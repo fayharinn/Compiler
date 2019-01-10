@@ -7,6 +7,7 @@ import utils.Id;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 public class Put extends Exp {
     public final Exp e1;
@@ -33,4 +34,8 @@ public class Put extends Exp {
 		// TODO Auto-generated method stub
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
+
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
 }

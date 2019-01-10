@@ -8,15 +8,17 @@ import java.util.*;
 
 public class ArmVisitor implements Visitor { //passage de param en + donc implemente pas visitor
 	
-	HashMap<String,String> var; // ex : x : [fp-8]
-	private int next_fp;
-	ArrayList<String> code;
-	
+	//HashMap<String,String> var; // ex : x : [fp-8]
+	//private int next_fp;
+	//ArrayList<String> code;
+
+    private ArmVisitorArgs vArgs = new ArmVisitorArgs();
+
 	public ArmVisitor() {
-		code = new ArrayList<String>();
-		prologue();
-		next_fp=-8;
-		var = new HashMap<String,String>();
+		//code = new ArrayList<String>();
+		//prologue();
+		//next_fp=-8;
+		//var = new HashMap<String,String>();
 		
 		
 	}
@@ -84,36 +86,15 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(Add e) {
-
+    
     }
 
-    /**
-     *
-     * @param e noeud du add
-     * @param rd registre destination de l'add
-     */
-    public void visit(Add e, Let rd) { //avant un add est forcément un let donc il s'envoie lui même au add pour avoir le registre destination
-        System.out.print("add " + rd.id);
-        e.e1.accept( this);
-        e.e2.accept( this);
-        System.out.println("");
-    }
+
 
     public void visit(Sub e) {
 
     }
 
-    /**
-     *
-     * @param e noeud du sub
-     * @param rd registre destination du sub
-     */
-    public void visit(Sub e, Let rd) {
-        System.out.print("sub " + rd.id);
-        e.e1.accept( this);
-        e.e2.accept( this);
-        System.out.println("");
-    }
 
 
     public void visit(FNeg e){
@@ -172,39 +153,13 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(Let e) {
-
-        
+        e.e2.accept(vArgs, e.e1);
     }
 
     public void visit(Var e){
         System.out.print(" "+e.id);
     }
 
-
-    // print sequence of identifiers
-    static <E> void printInfix(List<E> l, String op) {
-        if (l.isEmpty()) {
-            return;
-        }
-        Iterator<E> it = l.iterator();
-        System.out.print(it.next());
-        while (it.hasNext()) {
-            System.out.print(op + it.next());
-        }
-    }
-
-    // print sequence of Exp
-    void printInfix2(List<Exp> l, String op) {
-        if (l.isEmpty()) {
-            return;
-        }
-        Iterator<Exp> it = l.iterator();
-        it.next().accept( this);
-        while (it.hasNext()) {
-            System.out.print(op);
-            it.next().accept( this);
-        }
-    }
 
     public void visit(LetRec e){
 

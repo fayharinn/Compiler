@@ -9,6 +9,7 @@ import java.util.List;
 
 import type.Type;
 import utils.Id;
+import visitor.VisitorArgs;
 
 public class App extends Exp {
     public final Exp e;
@@ -32,4 +33,8 @@ public class App extends Exp {
 		// TODO Auto-generated method stub
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
+
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
 }

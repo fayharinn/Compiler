@@ -9,6 +9,7 @@ import java.util.List;
 
 import type.Type;
 import utils.Id;
+import visitor.VisitorArgs;
 
 public class Tuple extends Exp {
     public final List<Exp> es;
@@ -31,4 +32,8 @@ public class Tuple extends Exp {
 		// TODO Auto-generated method stub
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
+
 }

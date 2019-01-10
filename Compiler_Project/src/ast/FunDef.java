@@ -3,6 +3,8 @@ package ast;
 
 import type.Type;
 import utils.Id;
+import visitor.VisitorArgs;
+
 import java.util.List;
 
 public class FunDef {
@@ -17,4 +19,5 @@ public class FunDef {
         this.args = args;
         this.e = e;
     }
+
 }

@@ -7,6 +7,7 @@ import utils.Id;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 public class Bool extends Exp {
     public final boolean b;
@@ -29,4 +30,7 @@ public class Bool extends Exp {
 		// TODO Auto-generated method stub
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
 }
