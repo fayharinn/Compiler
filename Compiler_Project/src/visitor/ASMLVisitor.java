@@ -23,24 +23,20 @@ public class ASMLVisitor implements Visitor {
     *
      */
 
-	private HashMap<String,Type> h;
-	private HashMap<String,String> varfloat;
-	public HashMap<String,String> new_varfloat;
-	public ArrayList<String> code;
-	public ArrayList<String> float_code;
+	private HashMap<String,Type> h; // les variables 
+	private HashMap<String,String> varfloat; // les variables flottantes
+	public HashMap<String,String> new_varfloat; // les flottants non déclarés
+	public ArrayList<String> code; // le code asml principal
+	public ArrayList<String> float_code; // le code asml contenant les déclarations de flottants en début de fichier
+	public ArrayList<String> fun_code; // le code asml pour les fonctions
 	
-	public ASMLVisitor() {
+	public ASMLVisitor(HashMap<String,Type> env) {
 		code = new ArrayList<String>();
 		float_code = new ArrayList<String>();
 		varfloat = new HashMap<String,String>();
 		new_varfloat = new HashMap<String,String>();
-		h = new HashMap<String,Type>();
-		h.put("x",new TFloat());
-		h.put("y",new TInt());
-		h.put("z",new TFloat());
-		h.put("a",new TFloat());
-		h.put("b",new TFloat());
-		h.put("c",new TFloat());
+		h = new HashMap<String,Type>(env);
+		fun_code = new ArrayList<String>();
 		code.add("\nlet _ = \n");
 		//System.out.println("let _ =");
 		//expression.accept(this);
@@ -648,5 +644,3 @@ public class ASMLVisitor implements Visitor {
         //System.out.print(")");
     }
 }
-
-
