@@ -130,7 +130,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
             String idSave = null;
             if(indexRegistres.containsValue(reg)){
                 idSave = getIdFromReg(reg);
-                if(!indexStack.containsKey(idSave)){
+                if(!indexStack.containsKey(idSave) && idSave.charAt(0) != '?'){
                     indexStack.put(idSave, stackOffset);
                     stackOffset -= 4;
                 }
@@ -143,7 +143,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
             Exp temp = new Let(idReg, e.t, e.e1.accept(this), e.e2.accept(this));
             if(load){
                 temp = new Load(idReg, indexStack.get(e.id.toString()), temp);
-            }else if(idSave != null){
+            }else if(idSave != null && idSave.charAt(0) != '?'){ //On save pas les variables temporaires de la knorm
                 temp = new Save(idReg, indexStack.get(idSave), temp);
             }
 
