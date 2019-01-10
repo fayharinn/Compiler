@@ -169,7 +169,7 @@ public class KNormVisitor implements ObjVisitor<Exp> {
     public Let visit(Let e) {
       Exp e1 = e.e1.accept(this);
       Exp e2 = e.e2.accept(this);
-      Id new_var1 = Id.gen();
+      Id new_var1 = e.id;
       Type new_type1 = Type.gen();
       Let res = new Let(new_var1, new_type1, e1, e2);
        return res;
@@ -183,7 +183,7 @@ public class KNormVisitor implements ObjVisitor<Exp> {
        //TO DO
        Exp e2 = e.e.accept(this);//suite du code
        Exp e1 = e.fd.e.accept(this);//code de la fct
-       Id idF = Id.gen();
+       Id idF = e.fd.id;
        Type typeF = Type.gen();
        LetRec res = new LetRec(new FunDef(idF,typeF,e.fd.args,e1),e2);
        return res;
