@@ -42,4 +42,8 @@ public class Environement {
         return gho.containsKey(id);
     }
 
+    public void copyEnv(Environement e){
+        this.gho = e.getGho();
+    }
+
 }

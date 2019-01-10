@@ -8,7 +8,7 @@ import java.util.*;
 
 
 public class TypeCheckVisitor implements TypeVisitor<Type> {
-	private Environement environement ;
+	private Environement environement;
 	private HashMap<Type,Type> equations;
 
     public TypeCheckVisitor() {
@@ -32,7 +32,6 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
    public void printEnvironement(){
-
 		   try {
 			   for (String keys: environement.getGho().keySet()){
 				   String id =keys;
