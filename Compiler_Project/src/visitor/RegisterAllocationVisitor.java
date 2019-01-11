@@ -20,8 +20,10 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     private static final int MAX_REG = 10;
     private HashMap<String, String> indexRegistres; // Liste des variables associées aux registres.
     private HashMap<String, Integer> indexStack; // Liste des variables associées à leur offset dans la pile.
+    private HashMap<String, Integer> intervals;
     private int nextReg;
     private int stackOffset;
+    private int nodeCounter;
 
     private String getIdFromReg(String reg){
         for (HashMap.Entry<String, String> entry : indexRegistres.entrySet()) {
@@ -43,15 +45,18 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     private void init(){
         indexStack = new HashMap<String, Integer>();
         stackOffset = -4;
+        nodeCounter = 0;
         nextReg = MIN_REG;
     }
 
-    public RegisterAllocationVisitor(){
+    public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
+        this.intervals = intervals;
         indexRegistres = new HashMap<String, String>();
         init();
     }
 
-    public RegisterAllocationVisitor(HashMap<String, String> regs){
+    public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs){
+        this.intervals = intervals;
         indexRegistres = regs;
         init();
     }
@@ -152,6 +157,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(Var e) {
+        nodeCounter++;
         if(!indexRegistres.containsKey(e.id.toString())){
             return e;
         }else {
@@ -170,7 +176,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
                 args.add(e.fd.args.get(i));
             }
         }
-        return new LetRec(new FunDef(e.fd.id, e.fd.type, args, e.fd.e.accept(new RegisterAllocationVisitor(regs))), e.e.accept(this));
+        return new LetRec(new FunDef(e.fd.id, e.fd.type, args, e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs))), e.e.accept(this));
     }
     
     public Exp visit(App e) {

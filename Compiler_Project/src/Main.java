@@ -2,6 +2,7 @@ import ast.Exp;
 import utils.*;
 import visitor.*;
 import java.io.*;
+import java.util.HashMap;
 
 public class Main {
     static public void main(String argv[]) {
@@ -39,7 +40,8 @@ public class Main {
             System.out.println();
 
             System.out.println("------ AST Register Allocation ------");
-            Exp reg = letexp.accept(new RegisterAllocationVisitor());
+            HashMap<String, Integer> intervals = letexp.accept(new VariableIntervalVisitor());
+            Exp reg = letexp.accept(new RegisterAllocationVisitor(intervals));
             reg.accept(new PrintVisitor());
         } catch (Exception e) {
             e.printStackTrace();
