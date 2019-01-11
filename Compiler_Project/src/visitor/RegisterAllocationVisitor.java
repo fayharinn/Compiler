@@ -36,6 +36,20 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         return null;
     }
 
+    private String checkoutReg(String reg){
+        if(indexRegisters.containsValue(reg)){
+            String idSave = getIdFromReg(reg);
+            if(!indexStack.containsKey(idSave) && intervals.get(idSave) >= nodeCounter){
+                stackOffset -= 4;
+                indexStack.put(idSave, stackOffset);
+            }
+            indexRegisters.remove(idSave);
+            return idSave;
+        }else{
+            return null;
+        }
+    }
+
     private String getRegister(){
         ArrayList<String> keys = new ArrayList<>(); //On ne peut pas remove directement dans le for (CurrentModificationException)
         for(HashMap.Entry<String, String> entry : indexRegisters.entrySet()){
@@ -75,7 +89,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         for(int i = MIN_REG; i <= MAX_REG; i++){
             availableRegisters.add("r" + i);
         }
-        stackOffset = -4;
+        stackOffset = 0;
         nodeCounter = 0;
         //nextReg = MIN_REG;
     }
@@ -162,36 +176,30 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         }else{
             String reg = getRegister();
             Id idReg = new Id(reg);
-            boolean save = false;
-            String idSave = null;
-            if(indexRegisters.containsValue(reg)){
-                idSave = getIdFromReg(reg);
-                if(!indexStack.containsKey(idSave) && intervals.get(idSave) >= nodeCounter){
-                    indexStack.put(idSave, stackOffset);
-                    stackOffset -= 4;
-                    save = true;
-                }
-                indexRegisters.remove(idSave);
-            }
+            String idSave = checkoutReg(reg);
             indexRegisters.put(e.id.toString(), reg);
-
             Exp temp = new Let(idReg, e.t, e.e1.accept(this), e.e2.accept(this));
-            if(save){
+            if(idSave != null){
                 temp = new Save(idReg, indexStack.get(idSave), temp);
             }
-
             return temp;
         }
     }
     
     public Exp visit(Var e) {
         nodeCounter++;
-        if(!indexRegisters.containsKey(e.id.toString())){
-            if(indexStack.containsKey(e.id.toString()))
-                System.out.println("PROBLEM");
-            return e;
-        }else {
+        if(indexRegisters.containsKey(e.id.toString())){
             return new Var(new Id(indexRegisters.get(e.id.toString())));
+        }else if(indexStack.containsKey(e.id.toString())) {
+            String reg = getRegister();
+            String idSave = checkoutReg(reg);
+            Exp temp = new Load(new Id(reg), indexStack.get(e.id.toString()), new Var(new Id(indexRegisters.get(e.id.toString()))));
+            if(idSave != null){
+                temp = new Save(new Id(reg), indexStack.get(idSave), temp);
+            }
+            return temp;
+        }else{
+            return e;
         }
     }
 
