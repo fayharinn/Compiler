@@ -29,6 +29,9 @@ public class ASMLVisitor implements Visitor {
 	public ArrayList<String> code; // le code asml principal
 	public ArrayList<String> float_code; // le code asml contenant les déclarations de flottants en début de fichier
 	public ArrayList<String> fun_code; // le code asml pour les fonctions
+	public HashMap<String,ArrayList<String>> ff; // nom_fonction : (liste des arguments)
+	private boolean isFun = false;
+	
 	
 	public ASMLVisitor(HashMap<String,Type> env) {
 		code = new ArrayList<String>();
@@ -37,7 +40,10 @@ public class ASMLVisitor implements Visitor {
 		new_varfloat = new HashMap<String,String>();
 		h = new HashMap<String,Type>(env);
 		fun_code = new ArrayList<String>();
+		ff = new HashMap<String,ArrayList<String>>();
+		
 		code.add("\nlet _ = \n");
+		
 		//System.out.println("let _ =");
 		//expression.accept(this);
 	}
@@ -51,7 +57,9 @@ public class ASMLVisitor implements Visitor {
 	
     @Override
     public void visit(Unit e) {
-    	
+    	if(isFun) {
+    		return;
+    	}
         //System.out.print("()");
     }
 
@@ -63,14 +71,25 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Bool e) {
+    	if(!isFun) {
+
+
+    		if(e.b) {
+    			code.add("true");
+    		}
+    		else {
+    			code.add("false");
+    		}
+    		return;
+    	}
     	if(e.b) {
-    		code.add("true");
-    	}
-    	else {
-    		code.add("false");
-    	}
+			float_code.add("true");
+		}
+		else {
+			float_code.add("false");
+		}
     	
-        //System.out.print(e.b);
+    	//System.out.print(e.b);
     }
 
     /**
@@ -81,8 +100,12 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Int e) {
-    	code.add(String.valueOf(e.i));
-        //System.out.print(e.i);
+    	if(!isFun) {
+	    	code.add(String.valueOf(e.i));
+	        //System.out.print(e.i);
+    	}
+    	else
+    		fun_code.add(String.valueOf(e.i));
     }
 
     /**
@@ -93,22 +116,30 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Float e) {
-    	String s = String.format("%.2f", e.f);
-    	if(float_code.get(float_code.size()-1).contains("tmp")) {
-    		if(new_varfloat.containsKey(s)) {
-    			code.add("r"+new_varfloat.get(s));
-    		}
-    		else {
-    			code.add("rtmp"+new_varfloat.size());
-            	new_varfloat.put(s,"tmp"+new_varfloat.size());
-    		}
-        	
+    	if(!isFun) {
 
-    		
+
+    		String s = String.format("%.2f", e.f);
+    		if(float_code.get(float_code.size()-1).contains("tmp")) {
+    			if(new_varfloat.containsKey(s)) {
+    				code.add("r"+new_varfloat.get(s));
+    			}
+    			else {
+    				code.add("rtmp"+new_varfloat.size());
+    				new_varfloat.put(s,"tmp"+new_varfloat.size());
+    			}
+
+
+
+    		}
+    		s = s.replaceAll(",","."); 
+    		float_code.add(s);
+    		return;
     	}
-        s = s.replaceAll(",","."); 
-        float_code.add(s);
+    	
+    	
     }
+    
 
     /**
      * Visitor qui affiche le code ASML généré
@@ -118,10 +149,16 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Not e) {
-    	code.add("not ");
-        //System.out.print("not ");
-        e.e.accept(this);
-        //System.out.print("");
+    	if(!isFun) {
+    		code.add("not ");
+    		//System.out.print("not ");
+    		e.e.accept(this);
+    		//System.out.print("");
+    	}
+    	else{
+    		fun_code.add("not ");
+    		e.e.accept(this);
+    	}
     }
 
     /**
@@ -132,10 +169,16 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Neg e) {
-    	code.add("neg ");
-        //System.out.print("neg ");
-        e.e.accept(this);
-        //System.out.print("");
+    	if(!isFun) {
+	    	code.add("neg ");
+	        //System.out.print("neg ");
+	        e.e.accept(this);
+	        //System.out.print("");
+    	}
+    	else {
+    		fun_code.add("neg ");
+    		e.e.accept(this);
+    	}
     }
 
     /**
@@ -146,11 +189,23 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Add e) {
-    	code.add("add ");
+    	if(!isFun) {
+
+	    	code.add("add ");
+	    	//System.out.print("  ");
+	        //System.out.print("add ");
+	        e.e1.accept(this);
+	        code.add(" ");
+	        //System.out.print(" ");
+	        e.e2.accept(this);
+	        return;
+    	}
+
+    	fun_code.add("add ");
     	//System.out.print("  ");
         //System.out.print("add ");
         e.e1.accept(this);
-        code.add(" ");
+        fun_code.add(" ");
         //System.out.print(" ");
         e.e2.accept(this);
     }
@@ -163,13 +218,24 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Sub e) {
-    	code.add("sub ");
-        //System.out.print("sub ");
-        e.e1.accept(this);
-        code.add(" ");
-        //System.out.print(" ");
-        e.e2.accept(this);
-        //System.out.print("");
+    	if(!isFun) {
+    		code.add("sub ");
+    		//System.out.print("sub ");
+    		e.e1.accept(this);
+    		code.add(" ");
+    		//System.out.print(" ");
+    		e.e2.accept(this);
+    		//System.out.print("");
+    	}
+    	else {
+    		fun_code.add("sub ");
+    		//System.out.print("sub ");
+    		e.e1.accept(this);
+    		fun_code.add(" ");
+    		//System.out.print(" ");
+    		e.e2.accept(this);
+    		//System.out.print("");
+    	}
     }
 
     /**
@@ -180,10 +246,12 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(FNeg e) {
-    	code.add("fneg ");
-        //System.out.print("fneg ");
-        e.e.accept(this);
-        //System.out.print("");
+    	if(!isFun) {
+    		code.add("fneg ");
+    		//System.out.print("fneg ");
+    		e.e.accept(this);
+    		//System.out.print("");
+    	}
     }
 
     /**
@@ -194,58 +262,62 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(FAdd e) {
-    	
-        //System.out.print("fadd ");
-    	
-    	if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
+    	if(!isFun) {
 
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            e.e1.accept(this);
-            code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		
-    		code.add(code.get(code.size()-4));
-    		code.set(code.size()-5,"");
-            float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            code.add("fadd ");
-    		code.add(code.get(code.size()-5));
-    		code.set(code.size()-6,"");
-            code.add(" ");
-            //System.out.print(" ");
-            e.e2.accept(this);
-            code.add("\n");
-    		return;
+
+
+    		//System.out.print("fadd ");
+
+    		if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			e.e1.accept(this);
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+
+    			code.add(code.get(code.size()-4));
+    			code.set(code.size()-5,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			code.add("fadd ");
+    			code.add(code.get(code.size()-5));
+    			code.set(code.size()-6,"");
+    			code.add(" ");
+    			//System.out.print(" ");
+    			e.e2.accept(this);
+    			code.add("\n");
+    			return;
+    		}
+    		else if(e.e2.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+    		else if(e.e1.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+
+    		code.add("fadd ");
+    		e.e1.accept(this);
+    		code.add(" ");
+    		//System.out.print(" ");
+    		e.e2.accept(this);
+    		code.add("\n");
+    		//System.out.print("");
     	}
-    	else if(e.e2.getClass()==ast.Float.class) {
-
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
-    	else if(e.e1.getClass()==ast.Float.class) {
-
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
-
-    	code.add("fadd ");
-        e.e1.accept(this);
-        code.add(" ");
-        //System.out.print(" ");
-        e.e2.accept(this);
-        code.add("\n");
-        //System.out.print("");
     }
 
     /**
@@ -256,58 +328,61 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(FSub e) {
-    	
-        //System.out.print("fsub ");
-    	
-    	if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
-    		
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            e.e1.accept(this);
-            code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		
-    		code.add(code.get(code.size()-4));
-    		code.set(code.size()-5,"");
-            float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            code.add("fsub ");
-    		code.add(code.get(code.size()-5));
-    		code.set(code.size()-6,"");
-            code.add(" ");
-            //System.out.print(" ");
-            e.e2.accept(this);
-            code.add("\n");
-    		return;
-    	}
-    	else if(e.e2.getClass()==ast.Float.class) {
+    	if(!isFun) {
 
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
-    	else if(e.e1.getClass()==ast.Float.class) {
+    		//System.out.print("fsub ");
 
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
+    		if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
 
-    	code.add("fsub ");
-        e.e1.accept(this);
-        code.add(" ");
-        //System.out.print(" ");
-        e.e2.accept(this);
-        code.add("\n");
-        //System.out.print("");
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			e.e1.accept(this);
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+
+    			code.add(code.get(code.size()-4));
+    			code.set(code.size()-5,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			code.add("fsub ");
+    			code.add(code.get(code.size()-5));
+    			code.set(code.size()-6,"");
+    			code.add(" ");
+    			//System.out.print(" ");
+    			e.e2.accept(this);
+    			code.add("\n");
+    			return;
+    		}
+    		else if(e.e2.getClass()==ast.Float.class) {
+
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+    		else if(e.e1.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+
+    		code.add("fsub ");
+    		e.e1.accept(this);
+    		code.add(" ");
+    		//System.out.print(" ");
+    		e.e2.accept(this);
+    		code.add("\n");
+    		//System.out.print("");
+    	}
     }
 
     /**
@@ -318,57 +393,60 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(FMul e) {
-//System.out.print("fmul ");
-    	
-    	if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
-    		
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            e.e1.accept(this);
-            code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		
-    		code.add(code.get(code.size()-4));
-    		code.set(code.size()-5,"");
-            float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            code.add("fmul ");
-    		code.add(code.get(code.size()-5));
-    		code.set(code.size()-6,"");
-            code.add(" ");
-            //System.out.print(" ");
-            e.e2.accept(this);
-            code.add("\n");
-    		return;
-    	}
-    	else if(e.e2.getClass()==ast.Float.class) {
+    	//System.out.print("fmul ");
+    	if(!isFun) {
 
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
-    	else if(e.e1.getClass()==ast.Float.class) {
 
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
+    		if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
 
-    	code.add("fmul ");
-        e.e1.accept(this);
-        code.add(" ");
-        //System.out.print(" ");
-        e.e2.accept(this);
-        code.add("\n");
-        //System.out.print("")
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			e.e1.accept(this);
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+
+    			code.add(code.get(code.size()-4));
+    			code.set(code.size()-5,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			code.add("fmul ");
+    			code.add(code.get(code.size()-5));
+    			code.set(code.size()-6,"");
+    			code.add(" ");
+    			//System.out.print(" ");
+    			e.e2.accept(this);
+    			code.add("\n");
+    			return;
+    		}
+    		else if(e.e2.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+    		else if(e.e1.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+
+    		code.add("fmul ");
+    		e.e1.accept(this);
+    		code.add(" ");
+    		//System.out.print(" ");
+    		e.e2.accept(this);
+    		code.add("\n");
+    		//System.out.print("")
+    	}
     }
 
     /**
@@ -379,56 +457,59 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(FDiv e) {
+    	if(!isFun) {
 
-    	if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
-    		
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            e.e1.accept(this);
-            code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		
-    		code.add(code.get(code.size()-4));
-    		code.set(code.size()-5,"");
-            float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-            code.add("fdiv ");
-    		code.add(code.get(code.size()-5));
-    		code.set(code.size()-6,"");
-            code.add(" ");
-            //System.out.print(" ");
-            e.e2.accept(this);
-            code.add("\n");
-    		return;
+
+    		if(e.e1.getClass()==ast.Float.class && e.e2.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			e.e1.accept(this);
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+
+    			code.add(code.get(code.size()-4));
+    			code.set(code.size()-5,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    			code.add("fdiv ");
+    			code.add(code.get(code.size()-5));
+    			code.set(code.size()-6,"");
+    			code.add(" ");
+    			//System.out.print(" ");
+    			e.e2.accept(this);
+    			code.add("\n");
+    			return;
+    		}
+    		else if(e.e2.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+    		else if(e.e1.getClass()==ast.Float.class) {
+
+    			code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
+    			code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
+    			code.add(code.get(code.size()-3));
+    			code.set(code.size()-4,"");
+    			float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
+    		}
+
+
+    		code.add("fdiv ");
+    		e.e1.accept(this);
+    		code.add(" ");
+    		//System.out.print(" ");
+    		e.e2.accept(this);
+    		code.add("\n");
+    		//System.out.print("")
     	}
-    	else if(e.e2.getClass()==ast.Float.class) {
-
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
-    	else if(e.e1.getClass()==ast.Float.class) {
-
-    		code.add("let addrtmp"+new_varfloat.size()+" = _tmp"+new_varfloat.size()+" in \n");
-    		code.add("let rtmp"+new_varfloat.size()+" = mem(addrtmp"+new_varfloat.size()+" + 0) in \n");
-    		code.add(code.get(code.size()-3));
-    		code.set(code.size()-4,"");
-    		float_code.add("\nlet _tmp"+new_varfloat.size()+" = ");
-    	}
-    	
-
-    	code.add("fdiv ");
-        e.e1.accept(this);
-        code.add(" ");
-        //System.out.print(" ");
-        e.e2.accept(this);
-        code.add("\n");
-        //System.out.print("")
     }
 
     /**
@@ -439,10 +520,12 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Eq e) {
-        e.e1.accept(this);
-        code.add(" = ");
-        //System.out.print(" = ");
-        e.e2.accept(this);
+    	if(!isFun) {
+    		
+	        e.e1.accept(this);
+	        code.add(" = ");
+	        e.e2.accept(this);
+    	}
     }
 
     /**
@@ -453,11 +536,15 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(LE e) {
-        //System.out.print("(");
-        e.e1.accept(this);
-        code.add(" <= ");
-        e.e2.accept(this);
-        //System.out.print(")");
+    	if(!isFun) {
+
+
+    		//System.out.print("(");
+    		e.e1.accept(this);
+    		code.add(" <= ");
+    		e.e2.accept(this);
+    		//System.out.print(")");
+    	}
     }
 
     /**
@@ -468,15 +555,18 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(If e) {
-        code.add("\nif ");
-        e.e1.accept(this);
-        code.add(" then (");
-        code.add("");
-        e.e2.accept(this);
-        code.add("\n) else (");
-        //System.out.println("");
-        e.e3.accept(this);
-        code.add("\n)");
+    	if(!isFun) {
+
+    		code.add("\nif ");
+    		e.e1.accept(this);
+    		code.add(" then (");
+    		code.add("");
+    		e.e2.accept(this);
+    		code.add("\n) else (");
+    		//System.out.println("");
+    		e.e3.accept(this);
+    		code.add("\n)");
+    	}
     }
 
     /**
@@ -487,27 +577,35 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Let e) {
-    	if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une déclaration de float directe
-    		varfloat.put(e.id.id,""+(varfloat.size()+1));
-    		float_code.add("\nlet _x"+varfloat.size()+" = ");
-    		e.e1.accept(this);
-    		code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
-    		code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    	if(!isFun) {
+    		if(!h.containsKey(e.id.id)) { // si c'est un appel de fonction
+    			code.add("let "+e.id+" = ");
+    			e.e1.accept(this);
+    			code.add(" in \n  ");
+    		}
     		
+    		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une déclaration de float directe
+    			varfloat.put(e.id.id,""+(varfloat.size()+1));
+    			float_code.add("\nlet _x"+varfloat.size()+" = ");
+    			e.e1.accept(this);
+    			code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
+    			code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    		}
+
+
+    		else { // si c'est une déclaration d'entiers ou de float avec une opération (ex : 1.2+2.5)
+    			code.add("let "+e.id+" = ");
+    			//System.out.print("  let ");
+    			//System.out.print(e.id);
+    			//System.out.print(" = ");
+    			e.e1.accept(this);
+    			code.add(" in \n  ");
+    			//System.out.print(" in ");
+    			//System.out.println("");
+    		}
+    		e.e2.accept(this);
+    		//System.out.print("");
     	}
-    	
-    	else { // si c'est une déclaration d'entiers ou de float avec une opération (ex : 1.2+2.5)
-    		code.add("let "+e.id+" = ");
-    		//System.out.print("  let ");
-    		//System.out.print(e.id);
-    		//System.out.print(" = ");
-    		e.e1.accept(this);
-    		code.add(" in \n  ");
-    		//System.out.print(" in ");
-    		//System.out.println("");
-    	}
-    	e.e2.accept(this);
-    	//System.out.print("");
         
     }
 
@@ -519,41 +617,85 @@ public class ASMLVisitor implements Visitor {
      */
     @Override
     public void visit(Var e) {
-    	String f = e.id.id;
-    	switch(f) {
-    	case "print_int":
-    		//System.out.print("_min_caml_print_int");
-    		code.add("_min_caml_print_int");
-    		break;
-    		
-    	case "print_newline":
-    		//System.out.print("_min_caml_print_newline");
-    		code.add("_min_caml_print_newline");
-    		break;
-    		
-    	case "cos":
-    		//System.out.print("_min_caml_cos");
-    		code.add("_min_caml_cos");
-    		
-    		break;
-    	
-    	case "sin":
-    		//System.out.print("_min_caml_sin");
-    		code.add("_min_caml_sin");
-    		break;
-    	
-    	case "sqrt":
-    		//System.out.print("_min_caml_sqrt");
-    		code.add("_min_caml_sqrt");
-    		break;
-    	default:
-    		//System.out.print(e.id);
-    		if(varfloat.containsKey(e.id.id)) {
-    			code.add("r"+varfloat.get(e.id.id));
+    	if(!isFun) {
+
+
+    		String f = e.id.id;
+    		switch(f) {
+    		case "print_int":
+    			//System.out.print("_min_caml_print_int");
+    			code.add("min_caml_print_int");
+    			break;
+
+    		case "print_newline":
+    			//System.out.print("_min_caml_print_newline");
+    			code.add("min_caml_print_newline");
+    			break;
+
+    		case "cos":
+    			//System.out.print("_min_caml_cos");
+    			code.add("min_caml_cos");
+
+    			break;
+
+    		case "sin":
+    			//System.out.print("_min_caml_sin");
+    			code.add("min_caml_sin");
+    			break;
+
+    		case "sqrt":
+    			//System.out.print("_min_caml_sqrt");
+    			code.add("min_caml_sqrt");
+    			break;
+    		default:
+    			//System.out.print(e.id);
+    			if(varfloat.containsKey(e.id.id)) {
+    				code.add("r"+varfloat.get(e.id.id));
+    			}
+    			else
+    				code.add(String.valueOf(e.id));
+    			break;
     		}
-    		else
-    		code.add(String.valueOf(e.id));
-    		break;
+    	}
+    	else{
+
+
+    		String f = e.id.id;
+    		switch(f) {
+    		case "print_int":
+    			//System.out.print("_min_caml_print_int");
+    			fun_code.add("min_caml_print_int");
+    			break;
+
+    		case "print_newline":
+    			//System.out.print("_min_caml_print_newline");
+    			fun_code.add("min_caml_print_newline");
+    			break;
+
+    		case "cos":
+    			//System.out.print("_min_caml_cos");
+    			fun_code.add("min_caml_cos");
+
+    			break;
+
+    		case "sin":
+    			//System.out.print("_min_caml_sin");
+    			fun_code.add("min_caml_sin");
+    			break;
+
+    		case "sqrt":
+    			//System.out.print("_min_caml_sqrt");
+    			fun_code.add("min_caml_sqrt");
+    			break;
+    		default:
+    			//System.out.print(e.id);
+    			if(varfloat.containsKey(e.id.id)) {
+    				fun_code.add("r"+varfloat.get(e.id.id));
+    			}
+    			else
+    				fun_code.add(String.valueOf(e.id));
+    			break;
+    		}
     	}
     }
 
@@ -580,27 +722,46 @@ public class ASMLVisitor implements Visitor {
         it.next().accept(this);
         while (it.hasNext()) {
             //System.out.print(op);
+        	code.add(" ");
             it.next().accept(this);
+            
         }
     }
 
     public void visit(LetRec e){
-        //System.out.print("(let rec " + e.fd.id + " ");
-        printInfix(e.fd.args, " ");
+    	isFun = true;
+        System.out.print(e.fd.id);
+        ArrayList<String> tmp_arraylist = new ArrayList<String>();
+        for(Id id:e.fd.args) {
+        	tmp_arraylist.add(id.id);
+        }
+        fun_code.add("");
+        ff.put("_"+e.fd.id.id,tmp_arraylist);
+        fun_code.add("let _"+e.fd.id.id+" ");
+        for(String s:tmp_arraylist) {
+        	fun_code.add(s+ " ");
+        }
+        fun_code.add("=\n");
+        System.out.println(ff);
         //System.out.print(" = ");
         e.fd.e.accept(this);
         //System.out.print(" in ");
+        isFun = false;
         e.e.accept(this);
-        //System.out.print(")");
+        //System.out.print(")");     
     }
 
     public void visit(App e){
-    	code.add("call ");
-    	//System.out.print("  call ");
-        e.e.accept(this);
-        code.add(" ");
-        //System.out.print(" ");
-        printInfix2(e.es, " ");
+    	if(!isFun) {
+
+
+    		code.add("call _");
+    		//System.out.print("  call ");
+    		e.e.accept(this);
+    		code.add(" ");
+    		//System.out.print(" ");
+    		printInfix2(e.es, " ");
+    	}
     }
 
     public void visit(Tuple e){

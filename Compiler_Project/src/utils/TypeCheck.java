@@ -11,7 +11,7 @@ import type.*;
 public class TypeCheck {
 
 	
-	public static void check(Exp expression) {
+	public static HashMap<String,Type> check(Exp expression) {
 		
 		// check 1
 		TypeCheckVisitor tcv = new TypeCheckVisitor();
@@ -28,9 +28,11 @@ public class TypeCheck {
             	System.out.println(pair.getKey() + " = " + pair.getValue().getClass());	
             }
             it.remove(); // avoids a ConcurrentModificationException
+            
         }
         
         //check 2
+        return tcv.env;
         
 	}
 }

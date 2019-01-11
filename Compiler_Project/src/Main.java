@@ -30,20 +30,26 @@ public class Main {
             
             
             System.out.println("\n------ Type checking ----\n");
-            TypeCheck.check(expression);
+            HashMap<String,Type> env = TypeCheck.check(expression);
             PrintWriter out = new PrintWriter("../../test3.asml"); // l'output de l'asml
             System.out.println("\n------ ASML GENERATED ---- \n");
-            ASMLVisitor asmlv = new ASMLVisitor();
+            ASMLVisitor asmlv = new ASMLVisitor(env);
             expression.accept(asmlv);
             for(String x:asmlv.float_code) {
             	out.print(x);
             	System.out.print(x);
             }
+            for(String x:asmlv.fun_code) {
+            	out.print(x);
+            	System.out.print(x);
+            }
+            out.close();
             for(String x:asmlv.code) {
             	out.print(x);
             	System.out.print(x);
             }
             out.close();
+            
             
             //System.out.println("\nTEST VARFLOAT "+asmlv.new_varfloat);
             System.out.println("\n------ ARM GENERATED ---- \n");

@@ -9,7 +9,7 @@ import java.util.*;
 
 
 public class TypeCheckVisitor implements TypeVisitor<Type> {
-	public HashMap<String, Type> env ;
+	public HashMap<String, Type>env ;
 	public HashMap<Type,Type> equations;
 	public ArrayList<HashMap<String,Type>> allEnv;
     public TypeCheckVisitor() {
@@ -18,35 +18,35 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		this.allEnv = new ArrayList<>();
 	}
 
-	public Type visit(Unit e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+	public Type visit(Unit e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
         return new TUnit();
     }
 
-    public Type visit(Bool e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Bool e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
         return new TBool();
     }
 
-    public Type visit(Int e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Int e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
         return new TInt();
     }
 
-    public Type visit(Float e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Float e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
         return new TFloat();
     }
 
-    public Type visit(Not e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Not e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
     	e.e.accept(this,env,new TBool(), this.equations);
-    	genEqs.put(new TBool(), exptype);
+    	equations.put(new TBool(), exptype);
     	return new TBool();
     }
 
-    public Type visit(Neg e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Neg e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
     	e.e.accept(this,env,new TInt(), this.equations);
-    	genEqs.put(new TInt(), exptype);
+    	equations.put(new TInt(), exptype);
     	return new TInt();
     }
 
-    public Type visit(Add e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Add e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
     	Type t1= e.e1.accept(this,env,new TInt(), this.equations);
     	Type t2= e.e2.accept(this,env,new TInt(), this.equations);
     	if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
@@ -60,10 +60,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TInt();
     }
 
-    public Type visit(Sub e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Sub e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
     	Type t1 = e.e1.accept(this,env,new TInt(), this.equations);
     	Type t2 = e.e2.accept(this,env,new TInt(), this.equations);
-    	genEqs.put(new TInt(), exptype);
+    	equations.put(new TInt(), exptype);
     	if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
     		try {
 				throw new Exception("Error in sub between "+t1.getClass()+" and "+t2.getClass() +" : Int expected");
@@ -75,15 +75,15 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TInt();
     }
 
-    public Type visit(FNeg e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(FNeg e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
         e.e.accept(this,env,new TFloat(),genEqs);
         return new TFloat();
     }
 
-    public Type visit(FAdd e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(FAdd e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	Type t1 = e.e1.accept(this,env,new TFloat(), this.equations);
     	Type t2 = e.e2.accept(this,env,new TFloat(), this.equations);
-    	genEqs.put(new TFloat(), exptype);
+    	equations.put(new TFloat(), exptype);
     	if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
     		try {
 				throw new Exception("Error in addition between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
@@ -95,10 +95,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TFloat();
     }
 
-    public Type visit(FSub e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(FSub e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	Type t1 = e.e1.accept(this,env,new TFloat(), this.equations);
     	Type t2 = e.e2.accept(this,env,new TFloat(), this.equations);
-    	genEqs.put(new TFloat(), exptype);
+    	equations.put(new TFloat(), exptype);
     	if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
     		try {
 				throw new Exception("Error in sub between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
@@ -110,43 +110,43 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TFloat();
     }
 
-    public Type visit(FMul e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(FMul e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
     	e.e1.accept(this,env,new TFloat(), this.equations);
     	e.e2.accept(this,env,new TFloat(), this.equations);
-    	genEqs.put(new TFloat(), exptype);
+    	equations.put(new TFloat(), exptype);
     	return new TFloat();
     }
 
-    public Type visit(FDiv e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(FDiv e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	e.e1.accept(this,env,new TFloat(), this.equations);
     	e.e2.accept(this,env,new TFloat(), this.equations);
-    	genEqs.put(new TFloat(), exptype);
+    	equations.put(new TFloat(), exptype);
     	return new TFloat();
     }
 
-    public Type visit(Eq e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(Eq e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	Type t1 = e.e1.accept(this,env,new TInt(), this.equations);
     	Type t2 = e.e2.accept(this,env,new TInt(), this.equations);
-    	genEqs.put(new TBool(), exptype);
+    	equations.put(new TBool(), exptype);
     	return new TBool();
     }
 
-    public Type visit(LE e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(LE e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	e.e1.accept(this,env,new TInt(), this.equations);
     	e.e2.accept(this,env,new TInt(), this.equations);
-    	genEqs.put(new TBool(), exptype);
+    	equations.put(new TBool(), exptype);
     	return new TBool();
     }
 
-    public Type visit(If e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(If e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	e.e1.accept(this,env,new TBool(), this.equations);
     	e.e2.accept(this,env,new TInt(), this.equations);
     	e.e3.accept(this,env,new TInt(), this.equations);
-    	genEqs.put(new TInt(), exptype);
+    	equations.put(new TInt(), exptype);
         return new TInt();
     }
 
-    public Type visit(Let e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Let e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
     	Type t1 = e.e1.accept(this,env,e.t, this.equations);
     	if(env.containsKey(e.id.id)) {
     		try {
@@ -159,17 +159,16 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	env.put(e.id.id, t1);
     	HashMap<String,Type> shallowcopy = new HashMap<>(env);
     	allEnv.add(shallowcopy);
-    	genEqs.put(t1, exptype);// remove?
     	Type t2 = e.e2.accept(this,env,exptype, this.equations);
     	return t2;
     }
     
 
 
-    public Type visit(Var e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs) {
+    public Type visit(Var e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs) {
     	if(env.containsKey(e.id.id)){
-    		Type t = new TInt();
-			genEqs.put(t, exptype);
+    		Type t =envo.get(e.id.id);
+			this.equations.put(t, exptype);
 			return t;
     	} else
 			try {
@@ -182,31 +181,31 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     		
     }
 
-    public Type visit(LetRec e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(LetRec e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
         return null;
     }
 
-    public Type visit(App e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(App e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	return null;
     }
 
-    public Type visit(Tuple e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(Tuple e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	return null;
     }
 
-    public Type visit(LetTuple e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(LetTuple e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	return null;
     }
 
-    public Type visit(Array e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(Array e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	return null;
     }
 
-    public Type visit(Get e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(Get e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
     	return null;
     }
 
-    public Type visit(Put e,HashMap<String,Type> env,Type exptype,HashMap<Type,Type> genEqs){
+    public Type visit(Put e,HashMap<String,Type>envo,Type exptype,HashMap<Type,Type> genEqs){
         return null;
     }
 
