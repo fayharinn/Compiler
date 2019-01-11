@@ -108,7 +108,7 @@ public class VariableIntervalVisitor implements ObjVisitor<HashMap<String, Integ
         e.e1.accept(this);
         e.e2.accept(this);
         e.e3.accept(this);
-        return null;
+        return intervals;
     }
 
     public HashMap<String, Integer> visit(Let e) {
@@ -125,7 +125,8 @@ public class VariableIntervalVisitor implements ObjVisitor<HashMap<String, Integ
 
     public HashMap<String, Integer> visit(LetRec e) {
         HashMap<String, Integer> retInterval = e.fd.e.accept(new VariableIntervalVisitor());
-        intervals.putAll(retInterval);
+        if(retInterval != null)
+            intervals.putAll(retInterval);
         e.e.accept(this);
         return intervals;
     }
@@ -139,7 +140,6 @@ public class VariableIntervalVisitor implements ObjVisitor<HashMap<String, Integ
     }
 
     public HashMap<String, Integer> visit(Tuple e) {
-
         for(Exp ex: e.es) {
             ex.accept(this);
         }

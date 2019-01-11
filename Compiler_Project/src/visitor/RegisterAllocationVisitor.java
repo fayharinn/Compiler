@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /*TODO:
+    -Load
     -Valeur de retour
     -Sauvegarde registres
     -Contexte (intervals...)
@@ -18,15 +19,16 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
 
     private static final int MIN_REG = 4;
     private static final int MAX_REG = 10;
-    private HashMap<String, String> indexRegistres; // Liste des variables associées aux registres.
+    private HashMap<String, String> indexRegisters; // Liste des variables associées aux registres.
     private HashMap<String, Integer> indexStack; // Liste des variables associées à leur offset dans la pile.
     private HashMap<String, Integer> intervals;
-    private int nextReg;
+    private ArrayList<String> availableRegisters;
     private int stackOffset;
     private int nodeCounter;
+//    private int nextReg;
 
     private String getIdFromReg(String reg){
-        for (HashMap.Entry<String, String> entry : indexRegistres.entrySet()) {
+        for (HashMap.Entry<String, String> entry : indexRegisters.entrySet()) {
             if(entry.getValue().equals(reg)){
                 return entry.getKey();
             }
@@ -35,29 +37,58 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
 
     private String getRegister(){
-        String reg = "r" + nextReg;
-        nextReg++;
-        if(nextReg > MAX_REG)
-            nextReg = MIN_REG;
+        ArrayList<String> keys = new ArrayList<>(); //On ne peut pas remove directement dans le for (CurrentModificationException)
+        for(HashMap.Entry<String, String> entry : indexRegisters.entrySet()){
+            if(Integer.parseInt(entry.getValue().substring(1)) >= MIN_REG && intervals.get(entry.getKey()) < nodeCounter){ //Variable plus utilisée
+                availableRegisters.add(entry.getValue());
+                keys.add(entry.getKey());
+            }
+        }
+        for(String s: keys){
+            indexRegisters.remove(s);
+        }
+        String reg = null;
+        if(availableRegisters.isEmpty()){ //Si aucun registre est disponible, on spill la variable utilisée en dernier (/!\ pas forcement la variable utilisée la plus tardivement)
+            int max = 0;
+            for(HashMap.Entry<String, String> entry : indexRegisters.entrySet()){
+                if(intervals.get(entry.getKey()) > max) {
+                    reg = entry.getValue();
+                    max = intervals.get(entry.getKey());
+                }
+            }
+        }else{
+            reg = availableRegisters.get(0);
+            availableRegisters.remove(0);
+        }
+
+
+//        String reg = "r" + nextReg;
+//        nextReg++;
+//        if(nextReg > MAX_REG)
+//            nextReg = MIN_REG;
         return reg;
     }
 
     private void init(){
         indexStack = new HashMap<String, Integer>();
+        availableRegisters = new ArrayList<String>();
+        for(int i = MIN_REG; i <= MAX_REG; i++){
+            availableRegisters.add("r" + i);
+        }
         stackOffset = -4;
         nodeCounter = 0;
-        nextReg = MIN_REG;
+        //nextReg = MIN_REG;
     }
 
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
         this.intervals = intervals;
-        indexRegistres = new HashMap<String, String>();
+        indexRegisters = new HashMap<String, String>();
         init();
     }
 
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs){
         this.intervals = intervals;
-        indexRegistres = regs;
+        indexRegisters = regs;
         init();
     }
 
@@ -126,29 +157,26 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(Let e) {
-        if(indexRegistres.containsKey(e.id.toString())){
-            return new Let(new Id(indexRegistres.get(e.id.toString())), e.t, e.e1.accept(this), e.e2.accept(this));
+        if(indexRegisters.containsKey(e.id.toString())){
+            return new Let(new Id(indexRegisters.get(e.id.toString())), e.t, e.e1.accept(this), e.e2.accept(this));
         }else{
             String reg = getRegister();
             Id idReg = new Id(reg);
-            boolean load = false;
+            boolean save = false;
             String idSave = null;
-            if(indexRegistres.containsValue(reg)){
+            if(indexRegisters.containsValue(reg)){
                 idSave = getIdFromReg(reg);
-                if(!indexStack.containsKey(idSave) && idSave.charAt(0) != '?'){
+                if(!indexStack.containsKey(idSave) && intervals.get(idSave) >= nodeCounter){
                     indexStack.put(idSave, stackOffset);
                     stackOffset -= 4;
+                    save = true;
                 }
-                indexRegistres.remove(idSave);
-                if(indexStack.containsKey(e.id.toString()))
-                    load = true;
+                indexRegisters.remove(idSave);
             }
-            indexRegistres.put(e.id.toString(), reg);
+            indexRegisters.put(e.id.toString(), reg);
 
             Exp temp = new Let(idReg, e.t, e.e1.accept(this), e.e2.accept(this));
-            if(load){
-                temp = new Load(idReg, indexStack.get(e.id.toString()), temp);
-            }else if(idSave != null && idSave.charAt(0) != '?'){ //On save pas les variables temporaires de la knorm
+            if(save){
                 temp = new Save(idReg, indexStack.get(idSave), temp);
             }
 
@@ -158,10 +186,12 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     
     public Exp visit(Var e) {
         nodeCounter++;
-        if(!indexRegistres.containsKey(e.id.toString())){
+        if(!indexRegisters.containsKey(e.id.toString())){
+            if(indexStack.containsKey(e.id.toString()))
+                System.out.println("PROBLEM");
             return e;
         }else {
-            return new Var(new Id(indexRegistres.get(e.id.toString())));
+            return new Var(new Id(indexRegisters.get(e.id.toString())));
         }
     }
 
