@@ -27,6 +27,29 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     private int nodeCounter;
 //    private int nextReg;
 
+    private void init(){
+        indexStack = new HashMap<String, Integer>();
+        availableRegisters = new ArrayList<String>();
+        for(int i = MIN_REG; i <= MAX_REG; i++){
+            availableRegisters.add("r" + i);
+        }
+        stackOffset = 0;
+        nodeCounter = 0;
+        //nextReg = MIN_REG;
+    }
+
+    public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
+        this.intervals = intervals;
+        indexRegisters = new HashMap<String, String>();
+        init();
+    }
+
+    public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs){
+        this.intervals = intervals;
+        indexRegisters = regs;
+        init();
+    }
+
     private String getIdFromReg(String reg){
         for (HashMap.Entry<String, String> entry : indexRegisters.entrySet()) {
             if(entry.getValue().equals(reg)){
@@ -81,29 +104,6 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
 //        if(nextReg > MAX_REG)
 //            nextReg = MIN_REG;
         return reg;
-    }
-
-    private void init(){
-        indexStack = new HashMap<String, Integer>();
-        availableRegisters = new ArrayList<String>();
-        for(int i = MIN_REG; i <= MAX_REG; i++){
-            availableRegisters.add("r" + i);
-        }
-        stackOffset = 0;
-        nodeCounter = 0;
-        //nextReg = MIN_REG;
-    }
-
-    public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
-        this.intervals = intervals;
-        indexRegisters = new HashMap<String, String>();
-        init();
-    }
-
-    public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs){
-        this.intervals = intervals;
-        indexRegisters = regs;
-        init();
     }
 
     public Exp visit(Unit e) {
@@ -188,17 +188,18 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     
     public Exp visit(Var e) {
         nodeCounter++;
-        if(indexRegisters.containsKey(e.id.toString())){
+        if(indexRegisters.containsKey(e.id.toString())){ //Variable a deja un registre
             return new Var(new Id(indexRegisters.get(e.id.toString())));
-        }else if(indexStack.containsKey(e.id.toString())) {
+        }else if(indexStack.containsKey(e.id.toString())) { //La variable est sur la pile, on la load
             String reg = getRegister();
             String idSave = checkoutReg(reg);
-            Exp temp = new Load(new Id(reg), indexStack.get(e.id.toString()), new Var(new Id(indexRegisters.get(e.id.toString()))));
+            indexRegisters.put(e.id.toString(), reg);
+            Exp temp = new Load(new Id(reg), indexStack.get(e.id.toString()), new Var(new Id(reg)));
             if(idSave != null){
                 temp = new Save(new Id(reg), indexStack.get(idSave), temp);
             }
             return temp;
-        }else{
+        }else{ //Nom de fonction...
             return e;
         }
     }

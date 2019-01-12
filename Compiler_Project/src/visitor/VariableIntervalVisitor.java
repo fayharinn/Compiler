@@ -2,7 +2,6 @@ package visitor;
 
 import ast.*;
 import ast.Float;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -126,6 +126,8 @@ public class PrintVisitor implements Visitor {
     }
 
     public void visit(Var e){
+        if(e == null)
+            System.out.println("PROBLEM");
         System.out.print(e.id);
     }
 
@@ -215,12 +217,12 @@ public class PrintVisitor implements Visitor {
     }
 
     public void visit(Save e) {
-        System.out.print(e.id + " -> [fp, #" + e.stackOffset + "]");
+        System.out.print(e.id + " -> [fp, #" + e.stackOffset + "] ");
         e.e.accept(this);
     }
 
     public void visit(Load e) {
-        System.out.print("[fp, #" + e.stackOffset + "] -> " + e.id);
+        System.out.print("[fp, #" + e.stackOffset + "] -> " + e.id + " ");
         e.e.accept(this);
     }
 }
