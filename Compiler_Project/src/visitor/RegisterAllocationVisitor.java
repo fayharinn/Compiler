@@ -10,8 +10,9 @@ import java.util.HashMap;
 /*TODO:
     -Load DONE
     -Valeur de retour
-    -Sauvegarde registres
+    -Sauvegarde registres DONE?
     -Contexte (intervals...) DONE
+    -Gestion FP/SP
     -Heap
  */
 
@@ -218,15 +219,22 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
                 args.add(e.fd.args.get(i));
             }
         }
-        Exp temp = e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs, -4 * (callerSave.length)));
-        int stack = -4;
+        int stack = -4 * calleeSave.length;
+        Exp temp = e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs, stack - 4));
         for(String reg : calleeSave) {
             //if(!availableRegisters.contains(reg)){ //TODO Sauvegarder seulement les registres utilisés puis gerer load dans les bons registres
             temp = new Save(new Id(reg), stack, temp);
-            stack -= 4;
+            stack += 4;
             //}
         }
-        return new LetRec(new FunDef(e.fd.id, e.fd.type, args, temp), e.e.accept(this));
+        FunDef fd = new FunDef(e.fd.id, e.fd.type, args, temp);
+        temp = e.e.accept(this);
+        stack = -4 * calleeSave.length;
+        for(String reg : calleeSave) {
+            temp = new Load(new Id(reg), stack, temp);
+            stack += 4;
+        }
+        return new LetRec(fd, temp);
     }
     
     public Exp visit(App e) {
@@ -244,7 +252,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         stack = stackOffset - (callerSave.length * 4);
         for(String reg : callerSave){
             temp = new Save(new Id(reg), stack, temp);
-            stack -= 4;
+            stack += 4;
         }
         return temp;
     }
