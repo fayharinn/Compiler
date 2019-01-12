@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /*TODO:
-    -Load
+    -Load DONE
     -Valeur de retour
     -Sauvegarde registres
-    -Contexte (intervals...)
+    -Contexte (intervals...) DONE
     -Heap
  */
 
@@ -19,6 +19,8 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
 
     private static final int MIN_REG = 4;
     private static final int MAX_REG = 10;
+    private static final String[] calleeSave = {"r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r13"};
+    private static final String[] callerSave = {"r0", "r1", "r2", "r3", "r12", "r14", "r15" };
     private HashMap<String, String> indexRegisters; // Liste des variables associées aux registres.
     private HashMap<String, Integer> indexStack; // Liste des variables associées à leur offset dans la pile.
     private HashMap<String, Integer> intervals;
@@ -30,10 +32,9 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     private void init(){
         indexStack = new HashMap<String, Integer>();
         availableRegisters = new ArrayList<String>();
-        for(int i = MIN_REG; i <= MAX_REG; i++){
+        for(int i = MIN_REG; i <= MAX_REG; i++) {
             availableRegisters.add("r" + i);
         }
-        stackOffset = 0;
         nodeCounter = 0;
         //nextReg = MIN_REG;
     }
@@ -41,12 +42,14 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
         this.intervals = intervals;
         indexRegisters = new HashMap<String, String>();
+        stackOffset = -4;
         init();
     }
 
-    public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs){
+    public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs, int stackOffset){
         this.intervals = intervals;
         indexRegisters = regs;
+        stackOffset = stackOffset;
         init();
     }
 
@@ -63,8 +66,8 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         if(indexRegisters.containsValue(reg)){
             String idSave = getIdFromReg(reg);
             if(!indexStack.containsKey(idSave) && intervals.get(idSave) >= nodeCounter){
-                stackOffset -= 4;
                 indexStack.put(idSave, stackOffset);
+                stackOffset -= 4;
             }
             indexRegisters.remove(idSave);
             return idSave;
@@ -215,7 +218,15 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
                 args.add(e.fd.args.get(i));
             }
         }
-        return new LetRec(new FunDef(e.fd.id, e.fd.type, args, e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs))), e.e.accept(this));
+        Exp temp = e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs, -4 * (callerSave.length)));
+        int stack = -4;
+        for(String reg : calleeSave) {
+            //if(!availableRegisters.contains(reg)){ //TODO Sauvegarder seulement les registres utilisés puis gerer load dans les bons registres
+            temp = new Save(new Id(reg), stack, temp);
+            stack -= 4;
+            //}
+        }
+        return new LetRec(new FunDef(e.fd.id, e.fd.type, args, temp), e.e.accept(this));
     }
     
     public Exp visit(App e) {
@@ -223,7 +234,19 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         for(Exp ex: e.es){
             es.add(ex.accept(this));
         }
-        return new App(e.e.accept(this), es);
+        Exp temp = e.e.accept(this);
+        int stack = stackOffset - (callerSave.length * 4);
+        for(String reg : callerSave){
+            temp = new Load(new Id(reg), stack, temp);
+            stack += 4;
+        }
+        temp = new App(temp, es);
+        stack = stackOffset - (callerSave.length * 4);
+        for(String reg : callerSave){
+            temp = new Save(new Id(reg), stack, temp);
+            stack -= 4;
+        }
+        return temp;
     }
     
     public Exp visit(Tuple e) {
