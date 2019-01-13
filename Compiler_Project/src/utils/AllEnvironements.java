@@ -13,6 +13,7 @@ public class AllEnvironements {
 
     public AllEnvironements() {
         LesEnvironements = new ArrayList<Environement>();
+        LesEnvironements.add(new Environement());
     }
 
     public ArrayList<Environement> getLesEnvironements() {
@@ -21,7 +22,7 @@ public class AllEnvironements {
     }
 
     public Environement getCurentEnvironement(){
-        return LesEnvironements.get(LesEnvironements.size());
+        return LesEnvironements.get(LesEnvironements.size()-1);
     }
 
     public void setLesEnvironements(ArrayList<Environement> lesEnvironements) {
@@ -31,7 +32,7 @@ public class AllEnvironements {
 
     public void créerEnvironementLocale(){
         Environement newEnvLocale = new Environement();
-        newEnvLocale.copyEnv(LesEnvironements.get(EnvironementTableSize()));
+        newEnvLocale.copyEnv(LesEnvironements.get(EnvironementTableSize()-1));
         LesEnvironements.add(newEnvLocale);
     }
 
