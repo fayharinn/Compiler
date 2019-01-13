@@ -10,32 +10,45 @@ import java.util.*;
 public class TypeCheckVisitor implements TypeVisitor<Type> {
 	private Environement environement;
 	private HashMap<Type,Type> equations;
+	private AllEnvironements gho;
 
     public TypeCheckVisitor() {
 		try {
+			// il faudrait supprimer l'attribut environement et ses affectations
+			//-----------------------------------------------------------------
 			this.environement = new Environement();
 			ArrayList<Type> args = new ArrayList<>();
 			args.add(new TInt());
 			environement.ajouterVar("print_int",new TFun(args,new TUnit()));
+			//------------------------------------------------------------------
+			gho = new AllEnvironements();
+			gho.ajouterVar("print_int",new TFun(args,new TUnit()));
 			this.equations =  new HashMap<>();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-    public Environement getEnvironement() {
-        return environement;
+    public AllEnvironements getEnvironement() {
+        return gho;
     }
 
     public HashMap<Type,Type> getEq(){
         return equations;
     }
 
-   public void printEnvironement(){
+
+	public void printAllEnvironements(){
+    	for (Environement t : gho.getLesEnvironements()){
+    		printEnvironement(t);
+		}
+	}
+
+   public void printEnvironement(Environement p){
 		   try {
-			   for (String keys: environement.getGho().keySet()){
+			   for (String keys: p.getGho().keySet()){
 				   String id =keys;
-				   Type value = environement.getTypeofVar(id);
+				   Type value = p.getTypeofVar(id);
 				   System.out.println(id + " " + value.toString());
 			   }
 		   } catch (Exception e) {
@@ -230,7 +243,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
     public Type visit(Let e,Type expType) {
     	Type t1 = e.e1.accept(this,e.t);
-    	if(environement.containsKey(e.id.id)) {
+    	if(gho.containsKey(e.id.id)) {
     		try {
 				throw new Exception("Error in Let declaration : "+e.id.id+" already defined");
 			} catch (Exception e1) {
@@ -238,7 +251,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			}
     	}
 		try {
-			environement.ajouterVar(e.id.id, t1);
+			gho.ajouterVar(e.id.id, t1);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -249,10 +262,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     
 
     public Type visit(Var e,Type expType) {
-		if(environement.containsKey(e.id.id)){
+		if(gho.containsKey(e.id.id)){
 			Type t = null;
 			try {
-				t = environement.getTypeofVar(e.id.id);
+				t = gho.getTypeOfVar(e.id.id);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -270,12 +283,12 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 
 	public Type visit(LetRec e,Type expType){
+		gho.créerEnvironementLocale();
 		FunDef f = e.fd;
-		// Il faudrait ajouter la fonction de facon provisoire dans l'environnement puis réctifier le return type aprés
 		ArrayList<Type> argsType = new ArrayList<Type>();
 		try {
 			for (Id vars : f.args){
-				environement.ajouterVar(vars.id,new TInt());
+				gho.ajouterVar(vars.id,new TInt());
 				argsType.add(new TInt());
 			}
 		} catch (Exception e1) {
@@ -284,7 +297,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
 		TFun functionType = new TFun(argsType,new TInt());
 		try {
-			this.environement.ajouterVar(f.id.id,functionType);
+			this.gho.ajouterVar(f.id.id,functionType);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -292,6 +305,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		functionType.setReturnType(FundefType);
 
 		e.e.accept(this,expType);
+		gho.supprimerEnvironementLocale();
 		return functionType;
 	}
 
@@ -300,9 +314,9 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		try {
 			if (e.e.getClass()!= Var.class) throw new Exception(e.e.toString() +" is not a function call");
 			Var calledFunction = (Var) e.e;
-			if (!environement.containsKey(calledFunction.id.id)) throw  new Exception(calledFunction.id.id +" is not defined");
+			if (!gho.containsKey(calledFunction.id.id)) throw  new Exception(calledFunction.id.id +" is not defined");
 			// Type check of function paramétres
-			functionType = (TFun) environement.getTypeofVar(calledFunction.id.id);
+			functionType = (TFun) gho.getTypeOfVar(calledFunction.id.id);
 			if (e.es.equals(functionType.getargsType())) throw new Exception("Not the same arguments Types");
 		} catch (Exception e1) {
 			e1.printStackTrace();

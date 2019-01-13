@@ -20,22 +20,10 @@ public class Main {
             System.out.println();
 
 
-            AllEnvironements gho = new AllEnvironements();
-            gho.ajouterVar("x", new TInt());
-            gho.ajouterVar("y", new TInt());
-            gho.ajouterVar("z", new TFloat());
-
-            gho.créerEnvironementLocale();
-            gho.ajouterVar("mouataz",new TFloat());
-            gho.ajouterVar("Yves",new TFloat());
-            gho.ajouterVar("Axel",new TFloat());
-            gho.ajouterVar("Roger",new TFloat());
-
-
-            /*TypeCheckVisitor typeChecker = new TypeCheckVisitor();
+            TypeCheckVisitor typeChecker = new TypeCheckVisitor();
             expression.accept(typeChecker,new TUnit());
-            typeChecker.printEnvironement();
-            */
+            typeChecker.printAllEnvironements();
+
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);
             System.out.println("using utils.Height.computeHeight: " + height);

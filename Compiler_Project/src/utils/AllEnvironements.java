@@ -36,6 +36,9 @@ public class AllEnvironements {
         LesEnvironements.add(newEnvLocale);
     }
 
+    public void supprimerEnvironementLocale(){
+        LesEnvironements.remove(EnvironementTableSize()-1);
+    }
     public Integer EnvironementTableSize(){
         return LesEnvironements.size();
     }
