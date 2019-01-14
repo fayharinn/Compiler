@@ -73,22 +73,24 @@ public class ASMLVisitor implements Visitor {
     public void visit(Bool e) {
     	if(!isFun) {
 
-
     		if(e.b) {
-    			code.add("true");
+    			code.add("1");
     		}
     		else {
-    			code.add("false");
+    			code.add("0");
     		}
-    		return;
     	}
-    	if(e.b) {
-			float_code.add("true");
-		}
-		else {
-			float_code.add("false");
-		}
+    	else {
+    		
     	
+    	if(e.b) {
+    		fun_code.add("1");
+    	}
+    	else {
+    		fun_code.add("0");
+    		}
+    	}
+
     	//System.out.print(e.b);
     }
 
@@ -150,14 +152,24 @@ public class ASMLVisitor implements Visitor {
     @Override
     public void visit(Not e) {
     	if(!isFun) {
-    		code.add("not ");
     		//System.out.print("not ");
     		e.e.accept(this);
+    		if(code.get(code.size()-1).equals("1")) {
+    			code.set(code.size()-1, "0");
+    		}
+    		else {
+    			fun_code.set(fun_code.size()-1, "1");
+    		}
     		//System.out.print("");
     	}
     	else{
-    		fun_code.add("not ");
     		e.e.accept(this);
+    		if(fun_code.get(fun_code.size()-1).equals("1")) {
+    			fun_code.set(fun_code.size()-1, "0");
+    		}
+    		else {
+    			fun_code.set(fun_code.size()-1, "1");
+    		}
     	}
     }
 
