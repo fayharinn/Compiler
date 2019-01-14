@@ -2,6 +2,7 @@ package visitor;
 
 import ast.*;
 import ast.Float;
+import type.Type;
 import utils.Id;
 
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     private ArrayList<String> availableRegisters;
     private int stackOffset;
     private int nodeCounter;
-//    private int nextReg;
 
     private void init(){
         indexStack = new HashMap<String, Integer>();
@@ -37,7 +37,6 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
             availableRegisters.add("r" + i);
         }
         nodeCounter = 0;
-        //nextReg = MIN_REG;
     }
 
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
@@ -101,12 +100,6 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
             reg = availableRegisters.get(0);
             availableRegisters.remove(0);
         }
-
-
-//        String reg = "r" + nextReg;
-//        nextReg++;
-//        if(nextReg > MAX_REG)
-//            nextReg = MIN_REG;
         return reg;
     }
 
@@ -171,7 +164,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(If e) {
-        return new If(e.e1.accept(this), e.e2.accept(this), e.e3.accept(this));
+        return new If(e.e1.accept(this), new Let(new Id("r0"), Type.gen(), e.e2.accept(this), new Var(new Id("r0"))), new Let(new Id("r0"), Type.gen(), e.e3.accept(this), new Var(new Id("r0"))));
     }
     
     public Exp visit(Let e) {
