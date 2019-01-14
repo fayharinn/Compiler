@@ -28,7 +28,7 @@ public class Load extends Exp {
     }
 
     public void accept(Visitor v) {v.visit(this);}
-    public void accept(ArmVisitorArgs v, Exp e1) {
+    public void accept(VisitorArgs v, Exp e1) {
         v.visit(this, e);
     }
 }

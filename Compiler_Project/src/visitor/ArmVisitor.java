@@ -12,11 +12,12 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
 	//private int next_fp;
 	//ArrayList<String> code;
 
-    private ArmVisitorArgs vArgs = new ArmVisitorArgs();
+    private static ArmVisitorArgs vArgs;
 
 	public ArmVisitor() {
 		//code = new ArrayList<String>();
-		//prologue();
+		prologue();
+		vArgs = new ArmVisitorArgs(this);
 		//next_fp=-8;
 		//var = new HashMap<String,String>();
 		
@@ -65,10 +66,10 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
         System.out.print("cmp");
         e.e.accept(this);
         System.out.println(" #0");
-        System.out.println("moveq");
+        System.out.print("moveq");
         e.e.accept(this);
-        System.out.println(" #0");
-        System.out.println("movne");
+        System.out.println(" #1");
+        System.out.print("movne");
         e.e.accept(this);
         System.out.println(" #0");
 
@@ -82,11 +83,11 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
         e.e.accept(this);
         System.out.print(" #0");
         e.e.accept(this);
-        System.out.println("");
+        System.out.println(" ");
     }
 
     public void visit(Add e) {
-    
+
     }
 
 
@@ -98,23 +99,26 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
 
 
     public void visit(FNeg e){
-
+        System.out.print("vneg ");
+        e.e.accept(this);
+        e.e.accept(this);
+        System.out.println("");
     }
 
     public void visit(FAdd e){
-
+        //jamais appelé
     }
 
     public void visit(FSub e){
-
+        //jamais appelé
     }
 
     public void visit(FMul e) {
-
+        //jamais appelé
     }
 
     public void visit(FDiv e){
-
+        //jamais appelé
     }
 
     public void visit(Eq e){
@@ -140,9 +144,9 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
         Id idf = Id.gen();//idfin
 
         e.e1.accept(this); // print le cmp + le bon branchement
-        System.out.println(" " + idb); //label branchement pour le else
+        System.out.println(" " + idb.toString()); //label branchement pour le else
         e.e2.accept(this); // print le then
-        System.out.println("b idf");
+        System.out.println("b " + idf.toString());
 
         System.out.println(idb + ":");
         e.e3.accept(this); //else
@@ -153,7 +157,11 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(Let e) {
-        e.e2.accept(vArgs, e.e1);
+        System.out.print("mov "+ e.id);
+        e.e1.accept(this);
+
+        System.out.println(" ");
+        e.e2.accept(vArgs, e.e1); //au cas ou la suite est un noeud qui a besoin de visitarggs
     }
 
     public void visit(Var e){
@@ -163,10 +171,27 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
 
     public void visit(LetRec e){
 
+        System.out.println(e.fd.id + ":"); //label
+        this.prologue();
+        e.fd.e.accept(this);
+        this.epilogue();
+        e.e.accept(this);
     }
 
     public void visit(App e){
 
+        //mettre les arguments dans les registres
+        int i = 0;
+        for( Exp arg : e.es){
+            System.out.print("add r" + i);
+            arg.accept(this); //registre dans lequel est l'info
+            System.out.println(" #0"); // on ajoute zero a cette valeur donc valeur inchangée
+            i++;
+        }
+        //brancher vers corps fonction
+        System.out.print("b");
+        e.e.accept(this);
+        System.out.println(" ");
     }
 
     public void visit(Tuple e){
@@ -191,11 +216,14 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
 
     public void visit(Save e) {
         System.out.print("str " + e.id + " [fp, #");
-        System.out.print(e.stackOffset +"]");
+        System.out.println(e.stackOffset +"]");
+        e.e.accept(this);
     }
 
-    public void visit(Load load) {
-
+    public void visit(Load e) {
+        System.out.print("ldr " + e.id + " [fp, #");
+        System.out.println(e.stackOffset +"]");
+        e.e.accept(this);
     }
 }
 

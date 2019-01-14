@@ -29,10 +29,7 @@ public class Sub extends Exp {
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
 
-    @Override
-    public void accept(ArmVisitorArgs armVisitorArgs, Exp e1) {
 
-    }
 
     public void accept(VisitorArgs v, Exp e){
         v.visit(this, e);

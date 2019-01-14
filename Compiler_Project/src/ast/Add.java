@@ -30,10 +30,6 @@ public class Add extends Exp {
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
 
-    @Override
-    public void accept(ArmVisitorArgs v, Exp e1) {
-        v.visit(this, e1);
-    }
 
 
     public void accept(VisitorArgs v, Exp e){

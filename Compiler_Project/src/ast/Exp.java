@@ -13,7 +13,7 @@ public abstract class Exp {
 
 	public abstract Type accept(TypeCheckVisitor typeCheckVisitor,HashMap<String, Type> env,Type exptype,HashMap<Type,Type> genEqs);
 
-    public abstract void accept(ArmVisitorArgs v, Exp e1);
+    public abstract void accept(VisitorArgs v, Exp e1);
 
 
     //public abstract void accept(ArmVisitor v);

@@ -12,12 +12,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Visiteur non terminé pour générer du ASML
+ * Visiteur non terminï¿½ pour gï¿½nï¿½rer du ASML
  *
  */
 public class ASMLVisitor implements Visitor {
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Exp Expression
     *
@@ -42,7 +42,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Bool expression
     *
@@ -60,7 +60,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Int expression
     *
@@ -72,7 +72,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Float expression
     *
@@ -84,7 +84,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Not expression
     *
@@ -98,7 +98,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Neg expression
     *
@@ -112,7 +112,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Add expression
     *
@@ -129,7 +129,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Sub expression
     *
@@ -146,7 +146,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input FNeg expression
     *
@@ -160,7 +160,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input FAdd expression
     *
@@ -177,7 +177,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input FSub expression
     *
@@ -194,7 +194,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input FMul expression
     *
@@ -210,7 +210,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input FDiv expression
     *
@@ -227,7 +227,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Eq expression
     *
@@ -241,7 +241,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input LE expression
     *
@@ -256,7 +256,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input If expression
     *
@@ -275,7 +275,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Let expression
     *
@@ -295,7 +295,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML gï¿½nï¿½rï¿½
      *
      * @param e input Var expression
     *
@@ -421,6 +421,16 @@ public class ASMLVisitor implements Visitor {
         //System.out.print(") <- ");
         e.e3.accept(this);
         //System.out.print(")");
+    }
+
+    @Override
+    public void visit(Save save) {
+
+    }
+
+    @Override
+    public void visit(Load load) {
+
     }
 }
 

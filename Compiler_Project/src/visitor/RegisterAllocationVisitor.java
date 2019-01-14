@@ -173,9 +173,15 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         }else{
             String reg = getRegister();
             Id idReg = new Id(reg);
+            int size = indexStack.size();
             String idSave = checkoutReg(reg);
+            boolean moveStackPointer = size < indexStack.size();
             indexRegisters.put(e.id.toString(), reg);
             Exp temp = new Let(idReg, e.t, e.e1.accept(this), e.e2.accept(this));
+            if(moveStackPointer) {
+                Id sp = new Id("sp");
+                temp = new Let(sp, Type.gen(), new Sub(new Var(sp), new Int(4)), temp);
+            }
             if(idSave != null){
                 temp = new Save(idReg, indexStack.get(idSave), temp);
             }
@@ -189,9 +195,15 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
             return new Var(new Id(indexRegisters.get(e.id.toString())));
         }else if(indexStack.containsKey(e.id.toString())) { //La variable est sur la pile, on la load
             String reg = getRegister();
+            int size = indexStack.size();
             String idSave = checkoutReg(reg);
+            boolean moveStackPointer = size < indexStack.size();
             indexRegisters.put(e.id.toString(), reg);
             Exp temp = new Load(new Id(reg), indexStack.get(e.id.toString()), new Var(new Id(reg)));
+            if(moveStackPointer) {
+                Id sp = new Id("sp");
+                temp = new Let(sp, Type.gen(), new Sub(new Var(sp), new Int(4)), temp);
+            }
             if(idSave != null){
                 temp = new Save(new Id(reg), indexStack.get(idSave), temp);
             }

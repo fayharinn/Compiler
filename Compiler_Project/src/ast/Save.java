@@ -2,10 +2,7 @@ package ast;
 
 import type.Type;
 import utils.Id;
-import visitor.ArmVisitorArgs;
-import visitor.ObjVisitor;
-import visitor.TypeCheckVisitor;
-import visitor.Visitor;
+import visitor.*;
 
 import java.util.HashMap;
 
@@ -31,9 +28,10 @@ public class Save extends Exp {
     }
 
     @Override
-    public void accept(ArmVisitorArgs v, Exp e1) {
-            v.visit(this, e);
+    public void accept(VisitorArgs v, Exp e1) {
+        v.visit(this,e1);
     }
+
 
     public void accept(Visitor v) {v.visit(this);}
 }

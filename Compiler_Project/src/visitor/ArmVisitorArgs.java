@@ -2,13 +2,18 @@ package visitor;
 
 import ast.*;
 import ast.Float;
+import utils.Id;
 
 /**
  * Created by jacquial on 10/01/19.
  */
 public class ArmVisitorArgs implements VisitorArgs{
 
-    private ArmVisitor v = new ArmVisitor();
+    private static ArmVisitor v;
+
+    public ArmVisitorArgs(ArmVisitor v){
+        this.v = v;
+    }
 
     @Override
     public void visit(Add e, Exp e1) {
@@ -30,7 +35,7 @@ public class ArmVisitorArgs implements VisitorArgs{
 
     @Override
     public void visit(Unit e, Exp e1) {
-        e.accept(v);
+        e.accept(new ArmVisitor());
     }
 
     @Override
@@ -65,22 +70,39 @@ public class ArmVisitorArgs implements VisitorArgs{
 
     @Override
     public void visit(FAdd e, Exp e1) {
+        System.out.print("vadd " );
+        e1.accept(v);
+        e.e1.accept( v);
+        e.e2.accept( v);
+        System.out.println("");
 
     }
 
     @Override
     public void visit(FSub e, Exp e1) {
-
+        System.out.print("vsub " );
+        e1.accept(v);
+        e.e1.accept( v);
+        e.e2.accept( v);
+        System.out.println("");
     }
 
     @Override
     public void visit(FMul e, Exp e1) {
-
+        System.out.print("nvmul " );
+        e1.accept(v);
+        e.e1.accept( v);
+        e.e2.accept( v);
+        System.out.println("");
     }
 
     @Override
     public void visit(FDiv e, Exp e1) {
-
+        System.out.print("vdiv " );
+        e1.accept(v);
+        e.e1.accept( v);
+        e.e2.accept( v);
+        System.out.println("");
     }
 
     @Override
@@ -100,7 +122,7 @@ public class ArmVisitorArgs implements VisitorArgs{
 
     @Override
     public void visit(Let e, Exp e1) {
-        //??????????????????????????????????????????
+        e.accept(v);
     }
 
     @Override
@@ -115,7 +137,7 @@ public class ArmVisitorArgs implements VisitorArgs{
 
     @Override
     public void visit(App e, Exp e1) {
-
+        e.accept(v);
     }
 
     @Override
@@ -145,11 +167,11 @@ public class ArmVisitorArgs implements VisitorArgs{
 
     @Override
     public void visit(Save e, Exp e1) {
-
+        e.accept(v);
     }
 
     @Override
     public void visit(Load e, Exp e1) {
-
+        e.accept(v);
     }
 }
