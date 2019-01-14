@@ -142,4 +142,14 @@ public class ArmVisitorArgs implements VisitorArgs{
     public void visit(Put e, Exp e1) {
 
     }
+
+    @Override
+    public void visit(Save e, Exp e1) {
+
+    }
+
+    @Override
+    public void visit(Load e, Exp e1) {
+
+    }
 }

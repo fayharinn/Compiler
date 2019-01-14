@@ -1,8 +1,10 @@
 package ast;
 
+import type.Type;
 import utils.Id;
-import visitor.ObjVisitor;
-import visitor.Visitor;
+import visitor.*;
+
+import java.util.HashMap;
 
 public class Load extends Exp {
 
@@ -19,5 +21,14 @@ public class Load extends Exp {
     public <E> E accept(ObjVisitor<E> v) {
         return v.visit(this);
     }
+
+    @Override
+    public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<String, Type> env, Type exptype, HashMap<Type, Type> genEqs) {
+        return null;
+    }
+
     public void accept(Visitor v) {v.visit(this);}
+    public void accept(ArmVisitorArgs v, Exp e1) {
+        v.visit(this, e);
+    }
 }

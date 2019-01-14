@@ -188,6 +188,15 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     public void visit(Put e){
 
     }
+
+    public void visit(Save e) {
+        System.out.print("str " + e.id + " [fp, #");
+        System.out.print(e.stackOffset +"]");
+    }
+
+    public void visit(Load load) {
+
+    }
 }
 
 

@@ -32,5 +32,9 @@ public interface VisitorArgs {
     void visit(Array e, Exp e1);
     void visit(Get e, Exp e1);
     void visit(Put e, Exp e1);
+    void visit(Save e, Exp e1);
+    void visit(Load e, Exp e1);
+
+
 
 }

@@ -1,14 +1,19 @@
 package ast;
 
+import type.Type;
 import utils.Id;
+import visitor.ArmVisitorArgs;
 import visitor.ObjVisitor;
+import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+
+import java.util.HashMap;
 
 public class Save extends Exp {
 
-    public final Id id;
-    public final int stackOffset;
-    public final Exp e;
+    public final Id id; // registre qu'on veut sauvegarder
+    public final int stackOffset; //[fp, #stackoffset]
+    public final Exp e;//suite
 
     public Save(Id id, int stackOffset, Exp e) {
         this.id = id;
@@ -19,5 +24,16 @@ public class Save extends Exp {
     public <E> E accept(ObjVisitor<E> v) {
         return v.visit(this);
     }
+
+    @Override
+    public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<String, Type> env, Type exptype, HashMap<Type, Type> genEqs) {
+        return null;
+    }
+
+    @Override
+    public void accept(ArmVisitorArgs v, Exp e1) {
+            v.visit(this, e);
+    }
+
     public void accept(Visitor v) {v.visit(this);}
 }

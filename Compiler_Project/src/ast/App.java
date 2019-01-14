@@ -1,15 +1,12 @@
 package ast;
 
-import visitor.ObjVisitor;
-import visitor.TypeCheckVisitor;
-import visitor.Visitor;
+import visitor.*;
 
 import java.util.HashMap;
 import java.util.List;
 
 import type.Type;
 import utils.Id;
-import visitor.VisitorArgs;
 
 public class App extends Exp {
     public final Exp e;
@@ -33,6 +30,11 @@ public class App extends Exp {
 		// TODO Auto-generated method stub
 		return typeCheckVisitor.visit(this, env, exptype, genEqs);
 	}
+
+    @Override
+    public void accept(ArmVisitorArgs v, Exp e1) {
+        v.visit(this, e);
+    }
 
     public void accept(VisitorArgs v, Exp e){
         v.visit(this, e);
