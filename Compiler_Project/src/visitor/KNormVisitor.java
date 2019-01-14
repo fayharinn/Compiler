@@ -170,7 +170,7 @@ public class KNormVisitor implements ObjVisitor<Exp> {
       Exp e1 = e.e1.accept(this);
       Exp e2 = e.e2.accept(this);
       Id new_var1 = e.id;
-      Type new_type1 = Type.gen();
+      Type new_type1 = e.t;
       Let res = new Let(new_var1, new_type1, e1, e2);
        return res;
     }
