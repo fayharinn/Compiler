@@ -93,7 +93,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		if (t1.getClass() != TInt.class){
 			if (t1.getReturnType().getClass()!=TInt.class){
 				try {
-					throw new Exception("Error in addition between "+t1.getClass()+": Int expected");
+					throw new Exception("Error in addition with "+t1.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -102,7 +102,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		else if (t2.getClass() != TInt.class){
 			if (t2.getReturnType().getClass()!=TInt.class){
 				try {
-					throw new Exception("Error in addition between "+t2.getClass()+": Int expected");
+					throw new Exception("Error in addition with "+t2.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -116,13 +116,24 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	Type t1 = e.e1.accept(this,new TInt());
     	Type t2 = e.e2.accept(this,new TInt());
     	equations.put(new TInt(), expType);
-    	if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
-    		try {
-				throw new Exception("Error in sub between "+t1.getClass()+" and "+t2.getClass() +" : Int expected");
-			} catch (Exception e1) {
-				e1.printStackTrace();
+		if (t1.getClass() != TInt.class){
+			if (t1.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in Substraction with "+t1.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
-    	}
+		}
+		else if (t2.getClass() != TInt.class){
+			if (t2.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in Substraction with "+t2.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	return new TInt();
     }
 
@@ -135,15 +146,26 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	Type t1 = e.e1.accept(this,new TFloat());
     	Type t2 = e.e2.accept(this,new TFloat());
     	equations.put(new TFloat(), expType);
-    	System.out.println(t1);
-        System.out.println(t2);
-    	if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
-    		try {
-				throw new Exception("Error in addition between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
-			} catch (Exception e1) {
-				e1.printStackTrace();
+
+		if (t1.getClass() != TFloat.class){
+			if (t1.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in addition with "+t1.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
-    	}
+		}
+		else if (t2.getClass() != TFloat.class){
+			if (t2.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in addition with "+t2.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+
     	return new TFloat();
     }
 
@@ -151,13 +173,24 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	Type t1 = e.e1.accept(this,new TFloat());
     	Type t2 = e.e2.accept(this,new TFloat());
     	equations.put(new TFloat(), expType);
-    	if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
-    		try {
-				throw new Exception("Error in sub between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
-			} catch (Exception e1) {
-				e1.printStackTrace();
+		if (t1.getClass() != TFloat.class){
+			if (t1.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in Substraction with "+t1.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
-    	}
+		}
+		else if (t2.getClass() != TFloat.class){
+			if (t2.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in Substraction with "+t2.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	return new TFloat();
     }
 
@@ -165,13 +198,24 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
         Type t1 = e.e1.accept(this,new TFloat());
         Type t2 = e.e2.accept(this,new TFloat());
     	equations.put(new TFloat(), expType);
-        if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
-            try {
-                throw new Exception("Error in mul between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
+		if (t1.getClass() != TFloat.class){
+			if (t1.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in Multiplication with "+t1.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		else if (t2.getClass() != TFloat.class){
+			if (t2.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in Multiplication with "+t2.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	return new TFloat();
     }
 
@@ -179,13 +223,24 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
         Type t1 = e.e1.accept(this,new TFloat());
         Type t2 = e.e2.accept(this,new TFloat());
     	equations.put(new TFloat(), expType);
-        if(t1.getClass()!=TFloat.class || t2.getClass()!=TFloat.class) {
-            try {
-                throw new Exception("Error in div between "+t1.getClass()+" and "+t2.getClass() +" : Float expected");
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
+		if (t1.getClass() != TFloat.class){
+			if (t1.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in Division with "+t1.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		else if (t2.getClass() != TFloat.class){
+			if (t2.getReturnType().getClass()!=TFloat.class){
+				try {
+					throw new Exception("Error in Division with "+t2.getClass()+": Float expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	return new TFloat();
     }
 
@@ -193,13 +248,24 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	Type t1 = e.e1.accept(this,new TInt());
     	Type t2 = e.e2.accept(this,new TInt());
     	equations.put(new TBool(), expType);
-        if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
-            try {
-                throw new Exception("Error want to equal between "+t1.getClass()+" and "+t2.getClass() +" : Int expected");
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
+		if (t1.getClass() != TInt.class){
+			if (t1.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in the condition with "+t1.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		else if (t2.getClass() != TInt.class){
+			if (t2.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in condition with "+t2.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	return new TBool();
     }
 
@@ -207,13 +273,25 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	Type t1 = e.e1.accept(this,new TInt());
     	Type t2 = e.e2.accept(this,new TInt());
     	equations.put(new TBool(), expType);
-        if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
-            try {
-                throw new Exception("Error in Less Or Equal between "+t1.getClass()+" and "+t2.getClass() +" : Int expected");
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        }
+
+		if (t1.getClass() != TInt.class){
+			if (t1.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in the condition of LESS OR EQUAL with "+t1.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		else if (t2.getClass() != TInt.class){
+			if (t2.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in condition of LESS OR EQUAL with "+t2.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
     	return new TBool();
     }
 
