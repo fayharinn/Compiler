@@ -526,6 +526,11 @@ public class ASMLVisitor implements Visitor {
 	        code.add(" = ");
 	        e.e2.accept(this);
     	}
+    	else {
+	        e.e1.accept(this);
+	        fun_code.add(" = ");
+	        e.e2.accept(this);
+    	}
     }
 
     /**
@@ -544,6 +549,11 @@ public class ASMLVisitor implements Visitor {
     		code.add(" <= ");
     		e.e2.accept(this);
     		//System.out.print(")");
+    	}
+    	else {
+    		e.e1.accept(this);
+    		fun_code.add(" <= ");
+    		e.e2.accept(this);
     	}
     }
 
@@ -566,6 +576,17 @@ public class ASMLVisitor implements Visitor {
     		//System.out.println("");
     		e.e3.accept(this);
     		code.add("\n)");
+    	}
+    	else {
+    		fun_code.add("\nif ");
+    		e.e1.accept(this);
+    		fun_code.add(" then (");
+    		fun_code.add("");
+    		e.e2.accept(this);
+    		fun_code.add("\n) else (");
+    		//System.out.println("");
+    		e.e3.accept(this);
+    		fun_code.add("\n)");
     	}
     }
 
@@ -600,6 +621,35 @@ public class ASMLVisitor implements Visitor {
     			//System.out.print(" = ");
     			e.e1.accept(this);
     			code.add(" in \n  ");
+    			//System.out.print(" in ");
+    			//System.out.println("");
+    		}
+    		e.e2.accept(this);
+    		//System.out.print("");
+    	}
+    	else {
+    		if(!h.containsKey(e.id.id)) { // si c'est un appel de fonction
+    			fun_code.add("let "+e.id+" = ");
+    			e.e1.accept(this);
+    			fun_code.add(" in \n  ");
+    		}
+    		
+    		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une déclaration de float directe
+    			varfloat.put(e.id.id,""+(varfloat.size()+1));
+    			float_code.add("\nlet _x"+varfloat.size()+" = ");
+    			e.e1.accept(this);
+    			fun_code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
+    			fun_code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    		}
+
+
+    		else { // si c'est une déclaration d'entiers ou de float avec une opération (ex : 1.2+2.5)
+    			fun_code.add("let "+e.id+" = ");
+    			//System.out.print("  let ");
+    			//System.out.print(e.id);
+    			//System.out.print(" = ");
+    			e.e1.accept(this);
+    			fun_code.add(" in \n  ");
     			//System.out.print(" in ");
     			//System.out.println("");
     		}
@@ -759,6 +809,14 @@ public class ASMLVisitor implements Visitor {
     		//System.out.print("  call ");
     		e.e.accept(this);
     		code.add(" ");
+    		//System.out.print(" ");
+    		printInfix2(e.es, " ");
+    	}
+    	else {
+    		fun_code.add("call _");
+    		//System.out.print("  call ");
+    		e.e.accept(this);
+    		fun_code.add(" ");
     		//System.out.print(" ");
     		printInfix2(e.es, " ");
     	}
