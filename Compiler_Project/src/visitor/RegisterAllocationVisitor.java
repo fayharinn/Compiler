@@ -21,8 +21,6 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
 
     private static final int MIN_REG = 4;
     private static final int MAX_REG = 10;
-    private static final String[] calleeSave = {"r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r13"};
-    private static final String[] callerSave = {"r0", "r1", "r2", "r3", "r12", "r14", "r15" };
     private HashMap<String, String> indexRegisters; // Liste des variables associées aux registres.
     private HashMap<String, Integer> indexStack; // Liste des variables associées à leur offset dans la pile.
     private HashMap<String, Integer> intervals;
@@ -40,17 +38,17 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
 
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
+        init();
         this.intervals = intervals;
         indexRegisters = new HashMap<String, String>();
         stackOffset = -4;
-        init();
     }
 
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs, int stackOffset){
+        init();
         this.intervals = intervals;
         indexRegisters = regs;
         stackOffset = stackOffset;
-        init();
     }
 
     private String getIdFromReg(String reg){
@@ -217,6 +215,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     public Exp visit(LetRec e) {
         ArrayList<Id> args = new ArrayList<>();
         HashMap<String, String> regs = new HashMap<String, String>();
+        //Allocation des arguments
         for(int i = 0; i < e.fd.args.size(); i++){
             if(i < 4){
                 args.add(new Id("r" + i));
@@ -225,21 +224,8 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
                 args.add(e.fd.args.get(i));
             }
         }
-        int stack = -4 * calleeSave.length;
-        Exp temp = e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs, stack - 4));
-        for(String reg : calleeSave) {
-            //if(!availableRegisters.contains(reg)){ //TODO Sauvegarder seulement les registres utilisés puis gerer load dans les bons registres
-            temp = new Save(new Id(reg), stack, temp);
-            stack += 4;
-            //}
-        }
+        Exp temp = e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs, -9 * 4)); //Les registres sont sauvegardés donc on deplace le haut de la pile
         FunDef fd = new FunDef(e.fd.id, e.fd.type, args, temp);
-        temp = e.e.accept(this);
-        stack = -4 * calleeSave.length;
-        for(String reg : calleeSave) {
-            temp = new Load(new Id(reg), stack, temp);
-            stack += 4;
-        }
         return new LetRec(fd, temp);
     }
     
@@ -248,19 +234,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         for(Exp ex: e.es){
             es.add(ex.accept(this));
         }
-        Exp temp = e.e.accept(this);
-        int stack = stackOffset - (callerSave.length * 4);
-        for(String reg : callerSave){
-            temp = new Load(new Id(reg), stack, temp);
-            stack += 4;
-        }
-        temp = new App(temp, es);
-        stack = stackOffset - (callerSave.length * 4);
-        for(String reg : callerSave){
-            temp = new Save(new Id(reg), stack, temp);
-            stack += 4;
-        }
-        return temp;
+        return new App(e.e.accept(this), es);
     }
     
     public Exp visit(Tuple e) {
