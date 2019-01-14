@@ -39,9 +39,18 @@ public class Main {
             letexp.accept(new PrintVisitor());
             System.out.println();
 
+            ClosureConversion visitorClosure = new ClosureConversion();
+            //Closure Conversion
+            Exp closConv = letexp.accept(visitorClosure);
+            closConv = visitorClosure.moveToFront(closConv);
+
+            System.out.println("------ AST Closure Conversion------");
+            closConv.accept(new PrintVisitor());
+            System.out.println();
+            
             System.out.println("------ AST Register Allocation ------");
-            HashMap<String, Integer> intervals = letexp.accept(new VariableIntervalVisitor());
-            Exp reg = letexp.accept(new RegisterAllocationVisitor(intervals));
+            HashMap<String, Integer> intervals = closConv.accept(new VariableIntervalVisitor());
+            Exp reg = closConv.accept(new RegisterAllocationVisitor(intervals));
             reg.accept(new PrintVisitor());
             
             System.out.println("------ AST Conv ARM ------");
