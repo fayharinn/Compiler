@@ -111,6 +111,8 @@ public class VariableIntervalVisitor implements ObjVisitor<HashMap<String, Integ
     }
 
     public HashMap<String, Integer> visit(Let e) {
+        update(e.id.toString());
+        nodeCounter++;
         e.e1.accept(this);
         e.e2.accept(this);
         return intervals;

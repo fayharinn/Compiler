@@ -168,6 +168,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(Let e) {
+        nodeCounter++;
         if(indexRegisters.containsKey(e.id.toString())){
             return new Let(new Id(indexRegisters.get(e.id.toString())), e.t, e.e1.accept(this), e.e2.accept(this));
         }else{
