@@ -2,6 +2,7 @@ import ast.Exp;
 import utils.*;
 import visitor.*;
 import java.io.*;
+import java.util.HashMap;
 
 public class Main {
     static public void main(String argv[]) {
@@ -24,7 +25,7 @@ public class Main {
 
             //Alpha Conversion
 
-            Exp exp_alpha_conv = expression.accept(new AlphaConvVisitor());
+            Exp exp_alpha_conv = knorm.accept(new AlphaConvVisitor());
 
             System.out.println("------ AST AlphaConverted ------");
             exp_alpha_conv.accept(new PrintVisitor());
@@ -32,38 +33,20 @@ public class Main {
 
             //Let-expression/Linearisation du Let
 
-            Exp letexp= expression.accept(new LetExpressionsVisitor());
+            Exp letexp = exp_alpha_conv.accept(new LetExpressionsVisitor());
 
             System.out.println("------ AST Let Expressions ------");
             letexp.accept(new PrintVisitor());
             System.out.println();
 
-            //ARM visitor
-
+            System.out.println("------ AST Register Allocation ------");
+            HashMap<String, Integer> intervals = letexp.accept(new VariableIntervalVisitor());
+            Exp reg = letexp.accept(new RegisterAllocationVisitor(intervals));
+            reg.accept(new PrintVisitor());
+            
             System.out.println("------ AST Conv ARM ------");
-            letexp.accept(new ArmVisitor());
+            reg.accept(new ArmVisitor());
             System.out.println();
-
-
-
-
-            System.out.println("------ utils.Height of the AST ----");
-            int height = Height.computeHeight(expression);
-            System.out.println("using utils.Height.computeHeight: " + height);
-
-            ObjVisitor<Integer> v = new HeightVisitor();
-            height = expression.accept(v);
-            System.out.println("using HeightVisitor: " + height);
-
-
-
-            System.out.println("------ utils.Height of the AST ----");
-            height = Height.computeHeight(knorm);
-            System.out.println("using utils.Height.computeHeight: " + height);
-
-            height = knorm.accept(v);
-            System.out.println("using HeightVisitor: " + height);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -219,6 +219,16 @@ public class HeightVisitorSimple implements Visitor {
         int res3 = res;
         res = Math.max(res1, Math.max(res2, res3)) + 1 ;
     }
+
+    @Override
+    public void visit(Save save) {
+
+    }
+
+    @Override
+    public void visit(Load load) {
+
+    }
 }
 
 
