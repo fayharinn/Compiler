@@ -9,8 +9,10 @@ public class SyntaxTest {
             Parser p = new Parser(new Lexer(new FileReader(argv[0])));
 
             Exp expression = null;
+
             try {
                 expression = (Exp) p.parse().value;
+                assert (expression != null);
             } catch (Exception e) {
                 // Erreur de syntax, on retourne 1
                 System.exit(1);
