@@ -1,8 +1,4 @@
 import ast.Exp;
-import type.TFloat;
-import type.TFun;
-import type.TInt;
-import type.TUnit;
 import utils.*;
 import visitor.*;
 import java.io.*;
@@ -21,8 +17,7 @@ public class Main {
 
 
             TypeCheckVisitor typeChecker = new TypeCheckVisitor();
-            expression.accept(typeChecker,new TUnit());
-            typeChecker.printAllEnvironements();
+            expression.accept(typeChecker);
 
             System.out.println("------ utils.Height of the AST ----");
             int height = Height.computeHeight(expression);

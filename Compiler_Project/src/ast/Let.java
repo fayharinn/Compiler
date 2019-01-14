@@ -1,7 +1,5 @@
 package ast;
 
-import java.util.HashMap;
-
 import type.Type;
 import utils.Id;
 import visitor.ObjVisitor;
@@ -29,8 +27,8 @@ public class Let extends Exp {
     }
     
 	@Override
-    public Type accept(TypeCheckVisitor typeCheckVisitor, Type expType) {
+    public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
-        return typeCheckVisitor.visit(this, expType);
+        return typeCheckVisitor.visit(this);
     }
 }

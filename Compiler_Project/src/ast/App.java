@@ -25,8 +25,8 @@ public class App extends Exp {
     }
     
 	@Override
-	public Type accept(TypeCheckVisitor typeCheckVisitor, Type expType) {
+	public Type accept(TypeCheckVisitor typeCheckVisitor) {
 		// TODO Auto-generated method stub
-		return typeCheckVisitor.visit(this, expType);
+		return typeCheckVisitor.visit(this);
 	}
 }

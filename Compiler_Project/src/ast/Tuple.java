@@ -4,11 +4,9 @@ import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
 
-import java.util.HashMap;
 import java.util.List;
 
 import type.Type;
-import utils.Id;
 
 public class Tuple extends Exp {
     public final List<Exp> es;
@@ -26,8 +24,8 @@ public class Tuple extends Exp {
     }
     
 	@Override
-    public Type accept(TypeCheckVisitor typeCheckVisitor, Type expType) {
+    public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
-        return typeCheckVisitor.visit(this, expType);
+        return typeCheckVisitor.visit(this);
     }
 }
