@@ -89,13 +89,26 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	Type t1= e.e1.accept(this,new TInt());
     	Type t2= e.e2.accept(this,new TInt());
         equations.put(new TInt(), expType);
-    	if(t1.getClass()!=TInt.class || t2.getClass()!=TInt.class) {
-    		try {
-				throw new Exception("Error in addition between "+t1.getClass()+" and "+t2.getClass() +" : Int expected");
-			} catch (Exception e1) {
-				e1.printStackTrace();
+
+		if (t1.getClass() != TInt.class){
+			if (t1.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in addition between "+t1.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
-    	}
+		}
+		else if (t2.getClass() != TInt.class){
+			if (t2.getReturnType().getClass()!=TInt.class){
+				try {
+					throw new Exception("Error in addition between "+t2.getClass()+": Int expected");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+
     	return new TInt();
     }
 
@@ -220,7 +233,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		if (t2.getClass() != TInt.class){
 			if (t2.getReturnType().getClass()!=TInt.class){
 				try {
-					throw new Exception("Error in If construction, check th then");
+					throw new Exception("Error in If construction, check the then");
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
