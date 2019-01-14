@@ -1,6 +1,8 @@
 package ast;
 
+import type.Type;
 import visitor.ObjVisitor;
+import visitor.TypeCheckVisitor;
 import visitor.Visitor;
 
 public class Add extends Exp {
@@ -10,6 +12,7 @@ public class Add extends Exp {
     public Add(Exp e1, Exp e2) {
         this.e1 = e1;
         this.e2 = e2;
+
     }
 
     public <E> E accept(ObjVisitor<E> v) {
@@ -18,4 +21,10 @@ public class Add extends Exp {
     public void accept(Visitor v) {
         v.visit(this);
     }
+
+	@Override
+	public Type accept(TypeCheckVisitor typeCheckVisitor) {
+		// TODO Auto-generated method stub
+		return typeCheckVisitor.visit(this);
+	}
 }

@@ -3,7 +3,9 @@ package ast;
 import type.Type;
 import utils.Id;
 import visitor.ObjVisitor;
+import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+
 import java.util.List;
 
 public class LetTuple extends Exp {
@@ -24,5 +26,11 @@ public class LetTuple extends Exp {
     }
     public void accept(Visitor v) {
         v.visit(this);
+    }
+    
+	@Override
+    public Type accept(TypeCheckVisitor typeCheckVisitor) {
+        // TODO Auto-generated method stub
+        return typeCheckVisitor.visit(this);
     }
 }
