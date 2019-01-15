@@ -1,6 +1,9 @@
 package utils;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
@@ -56,7 +59,7 @@ public class AsmlTools {
             }
             System.out.print(x2);
         }
-
+        
 	}
 
 
@@ -65,9 +68,10 @@ public class AsmlTools {
      *
      * @param expression l'expression du haut de l'arbre.
      * @param output le nom du fichier de sortie.
+     * @throws IOException 
     *
      */
-	public static void save(Exp expression,String output) throws FileNotFoundException {
+	public static void save(Exp expression,String output) throws IOException {
         TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
         expression.accept(typeCheckVisitor);
         HashMap<String,Type> env = typeCheckVisitor.getEnvironement().getCurentEnvironement().getGho();
@@ -102,8 +106,30 @@ public class AsmlTools {
             out.print(x2);
         }
         out.close();
-
+        correct_indentation(output);
         System.out.println(output+" Successfuly written");
+	}
+	
+	
+	public static void correct_indentation(String file) throws FileNotFoundException, IOException {
+		boolean isMain = false;
+		PrintWriter out = new PrintWriter("indented_"+file); // l'output de l'asml
+		try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+		    for(String line; (line = br.readLine()) != null; ) {
+		    	if(isMain) {
+		        	out.print("  "+line+"\n");
+		        }
+		        else {
+		        	out.print(line+"\n");
+		        }
+		        if(line.contains("let _ =")) {
+		        	isMain=true;
+		        }
+		        
+		    }
+		    
+		}
+		out.close();
 	}
 
 
