@@ -344,7 +344,6 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 				e1.printStackTrace();
 			}
 		return null;
-
 	}
 
 
@@ -387,11 +386,13 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 				String argsTab = functionType.getargsType().get(i).toString();
 				String ourArgs = e.es.get(i).toString();
 				if (!argsTab.equals(ourArgs)){
-					throw new Exception("Not the same arguments Types");
+					String calledfunctionType = functionType.getReturnType().toString();
+					String argsFunction = this.gho.getTypeOfVar(((Var) e.e).id.id).getReturnType().toString();
+					if (calledFunction.equals(argsFunction)){
+						throw new Exception("Not the same arguments Types");
+					}
 				}
 			}
-
-
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			System.exit(1);

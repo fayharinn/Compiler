@@ -15,6 +15,7 @@ public class Main {
             expression.accept(new PrintVisitor());
             System.out.println();
 
+            expression.accept(new TypeCheckVisitor());
             //Knormalisation
 
             Exp knorm = expression.accept(new KNormVisitor());
