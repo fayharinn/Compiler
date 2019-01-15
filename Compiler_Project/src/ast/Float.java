@@ -18,7 +18,11 @@ public class Float extends Exp {
     public void accept(Visitor v) {
         v.visit(this);
     }
-    
+
+    public String toString(){
+        return "TFloat";
+    }
+
 	@Override
 	public Type accept(TypeCheckVisitor typeCheckVisitor) {
 		// TODO Auto-generated method stub
