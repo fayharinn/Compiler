@@ -1,5 +1,6 @@
 import ast.Exp;
 import utils.*;
+import visitor.PrintVisitor;
 
 import java.io.FileReader;
 
@@ -13,6 +14,7 @@ public class SyntaxTest {
             try {
                 expression = (Exp) p.parse().value;
                 assert (expression != null);
+                expression.accept(new PrintVisitor());
             } catch (Exception e) {
                 // Erreur de syntax, on retourne 1
                 System.exit(1);

@@ -81,6 +81,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in addition with "+t1.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -90,6 +91,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in addition with "+t2.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -106,6 +108,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Substraction with "+t1.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -115,6 +118,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Substraction with "+t2.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -136,6 +140,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in addition with "+t1.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -145,6 +150,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in addition with "+t2.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -161,6 +167,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Substraction with "+t1.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -170,6 +177,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Substraction with "+t2.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -185,6 +193,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Multiplication with "+t1.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -194,6 +203,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Multiplication with "+t2.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -209,6 +219,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Division with "+t1.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -218,6 +229,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in Division with "+t2.getClass()+": Float expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -233,6 +245,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in the condition with "+t1.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -242,6 +255,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in condition with "+t2.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -258,6 +272,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in the condition of LESS OR EQUAL with "+t1.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -267,6 +282,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in condition of LESS OR EQUAL with "+t2.getClass()+": Int expected");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -282,6 +298,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in If construction, in the condition");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -292,6 +309,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in If construction, check the then");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -303,6 +321,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 					throw new Exception("Error in If construction, check the else");
 				} catch (Exception e1) {
 					e1.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -316,12 +335,14 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 				throw new Exception("Error in Let declaration : "+e.id.id+" already defined");
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				System.exit(1);
 			}
     	}
 		try {
 			gho.ajouterVar(e.id.id, t1);
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			System.exit(1);
 		}
     	Type t2 = e.e2.accept(this);
     	return t2;
@@ -335,6 +356,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 				t = gho.getTypeOfVar(e.id.id);
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				System.exit(1);
 			}
 			return t;
 		} else
@@ -342,6 +364,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 				throw new Exception("Undefined Variable "+e.id.id);
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				System.exit(1);
 			}
 		return null;
 
@@ -359,6 +382,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			System.exit(1);
 		}
 
 		TFun functionType = new TFun(argsType,new TInt());
@@ -366,6 +390,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			this.gho.ajouterVar(f.id.id,functionType);
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			System.exit(1);
 		}
 		Type FundefType = f.e.accept(this);
 		functionType.setReturnType(FundefType);
@@ -386,6 +411,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			if (e.es.equals(functionType.getargsType())) throw new Exception("Not the same arguments Types");
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			System.exit(1);
 		}
 		return functionType;
 	}

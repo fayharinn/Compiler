@@ -17,7 +17,11 @@ public class TypeCheckTest {
 
             try {
                 // On check le type
-                expression.accept(new TypeCheckVisitor());
+
+
+                TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+                expression.accept(typeCheckVisitor);
+                typeCheckVisitor.printAllEnvironements();
 
             } catch (Exception e) {
                 // Erreur de durant le check du type, on retourne 1
