@@ -28,7 +28,7 @@ public class AllEnvironements {
         LesEnvironements = lesEnvironements;
     }
 
-    public void créerEnvironementLocale(){
+    public void creerEnvironementLocale(){
         Environement newEnvLocale = new Environement();
         newEnvLocale.copyEnv(LesEnvironements.get(EnvironementTableSize()-1));
         LesEnvironements.add(newEnvLocale);
