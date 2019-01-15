@@ -1,7 +1,7 @@
 package utils;
 
 public class Id {
-    String id;
+    public String id;
     public Id(String id) {
         this.id = id;
     }
@@ -14,5 +14,10 @@ public class Id {
         x++;
         return new Id("?v" + x);
     }
+    
+    
+    public boolean equals(Id obj) {
+    	  return (this.id == obj.id);
+    	}
 
 }

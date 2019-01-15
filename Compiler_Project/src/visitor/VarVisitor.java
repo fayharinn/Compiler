@@ -8,6 +8,7 @@ import java.util.*;
 
 
 public class VarVisitor implements ObjVisitor<Set<String>> {
+	HashMap<String, String> hash = new HashMap<>();
 
     public Set<String> visit(Unit e) {
         return new HashSet<String>();
@@ -18,6 +19,7 @@ public class VarVisitor implements ObjVisitor<Set<String>> {
     }
 
     public Set<String> visit(Int e) {
+    	
         return new HashSet<String>();
     }
 
@@ -36,8 +38,12 @@ public class VarVisitor implements ObjVisitor<Set<String>> {
     }
 
     public Set<String> visit(Add e) {
+    	// si des variables -> on verifie dans la table -> retourne erreur si variable de type diff
+    	//System.out.println(e.e1.getClass());
         Set<String> fv1 = e.e1.accept(this);
         Set<String> fv2 = e.e2.accept(this);
+    	System.out.println(fv1);
+    	System.out.println(fv2);
         fv1.addAll(fv2);
         return fv1;
     }
@@ -109,6 +115,9 @@ public class VarVisitor implements ObjVisitor<Set<String>> {
         Set<String> res = new HashSet<String>();
         Set<String> fv1 = e.e1.accept(this);
         Set<String> fv2 = e.e2.accept(this);
+        System.out.println(e.e1.getClass());
+        //System.out.println(fv2);
+        
         fv2.remove(e.id.toString());
         res.addAll(fv1);
         res.addAll(fv2);

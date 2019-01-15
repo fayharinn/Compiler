@@ -24,7 +24,7 @@ public class Main {
 
             //Alpha Conversion
 
-            Exp exp_alpha_conv = expression.accept(new AlphaConvVisitor());
+            Exp exp_alpha_conv = knorm.accept(new AlphaConvVisitor());
 
             System.out.println("------ AST AlphaConverted ------");
             exp_alpha_conv.accept(new PrintVisitor());
@@ -32,10 +32,20 @@ public class Main {
 
             //Let-expression/Linearisation du Let
 
-            Exp letexp= expression.accept(new LetExpressionsVisitor());
+            Exp letexp= exp_alpha_conv.accept(new LetExpressionsVisitor());
 
             System.out.println("------ AST Let Expressions ------");
             letexp.accept(new PrintVisitor());
+            System.out.println();
+
+            //Closure Conversion
+            ClosureConversion visitorClosure = new ClosureConversion();
+            Exp closConv = letexp.accept(visitorClosure);
+            closConv = visitorClosure.moveToFront(closConv);
+
+            System.out.println("------ AST Closure Conversion------");
+            closConv.accept(new PrintVisitor());
+            System.out.println();
             System.out.println();
 
             System.out.println("------ utils.Height of the AST ----");

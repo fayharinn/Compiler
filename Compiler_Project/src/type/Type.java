@@ -5,6 +5,10 @@ public abstract class Type {
     public static Type gen() {
         return new TVar("?" + x++);
     }
+    public abstract String toString();
+    public Type getReturnType(){
+        return new TUnit();
+    }
 }
 
 
