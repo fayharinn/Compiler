@@ -18,6 +18,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			gho.ajouterVar("print_int",new TFun(args,new TUnit()));
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -41,6 +42,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			   }
 		   } catch (Exception e) {
 			   e.printStackTrace();
+			   System.exit(1);
 		   }
 
    }
@@ -411,9 +413,9 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			for (int i=0; i<functionType.getargsType().size(); i++){
 				String argsTab = functionType.getargsType().get(i).toString();
 				String ourArgs = e.es.get(i).toString();
-				if (!argsTab.equals(ourArgs)){
+				/*if (!argsTab.equals(ourArgs)){
 					throw new Exception("Not the same arguments Types");
-				}
+				}*/
 			}
 
 

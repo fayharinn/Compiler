@@ -19,7 +19,7 @@ public class AsmlTools {
     /**
      * Affiche le code ASML d'un AST.
      *
-     * @param Exp l'expression du haut de l'arbre.
+     * @param expression l'expression du haut de l'arbre.
     *
      */
 	public static void print(Exp expression)  {
@@ -29,24 +29,42 @@ public class AsmlTools {
         HashMap<String,Type> env = typeCheckVisitor.getEnvironement().getCurentEnvironement().getGho();
         ASMLVisitor asmlv = new ASMLVisitor(env);
         expression.accept(asmlv);
+        String x2 = "";
         for(String x:asmlv.float_code) {
-        	System.out.print(x);
+            if(x.contains("?")) {
+                x2 = x.replace("?","new_varid_");
+            } else {
+                x2 = x;
+            }
+            System.out.print(x2);
         }
         for(String x:asmlv.fun_code) {
-        	System.out.print(x);
+            if(x.contains("?")) {
+                x2 = x.replace("?","new_varid_");
+            } else {
+                x2 = x;
+            }
+            System.out.print(x2);
+
         }
 
         for(String x:asmlv.code) {
-        	System.out.print(x);
+            if(x.contains("?")) {
+                x2 = x.replace("?","new_varid_");
+            } else {
+                x2 = x;
+            }
+            System.out.print(x2);
         }
+
 	}
 
 
     /**
      * Enregistre le code ASML d'un AST
      *
-     * @param Exp l'expression du haut de l'arbre.
-     * @param  String le nom du fichier de sortie.
+     * @param expression l'expression du haut de l'arbre.
+     * @param output le nom du fichier de sortie.
     *
      */
 	public static void save(Exp expression,String output) throws FileNotFoundException {
@@ -56,15 +74,32 @@ public class AsmlTools {
         PrintWriter out = new PrintWriter(output); // l'output de l'asml
         ASMLVisitor asmlv = new ASMLVisitor(env);
         expression.accept(asmlv);
+        String x2 = "";
         for(String x:asmlv.float_code) {
-        	out.print(x);
+            if(x.contains("?")) {
+                x2 = x.replace("?","new_varid_");
+            } else {
+                x2 = x;
+            }
+            out.print(x2);
         }
         for(String x:asmlv.fun_code) {
-        	out.print(x);
+            if(x.contains("?")) {
+                x2 = x.replace("?","new_varid_");
+            } else {
+                x2 = x;
+            }
+            out.print(x2);
+
         }
 
         for(String x:asmlv.code) {
-        	out.print(x);
+            if(x.contains("?")) {
+                x2 = x.replace("?","new_varid_");
+            } else {
+                x2 = x;
+            }
+            out.print(x2);
         }
         out.close();
 

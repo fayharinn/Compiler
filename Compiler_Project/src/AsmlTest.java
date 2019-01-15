@@ -2,7 +2,7 @@ import ast.Exp;
 import utils.AsmlTools;
 import utils.Lexer;
 import utils.Parser;
-import visitor.TypeCheckVisitor;
+import visitor.*;
 
 import java.io.FileReader;
 
@@ -16,11 +16,18 @@ public class AsmlTest {
             assert (expression != null);
 
             try {
-                // On check le type
-                AsmlTools.save(expression, "lol.asml");
+                expression = expression.accept(new KNormVisitor());
+                expression = expression.accept(new AlphaConvVisitor());
+                expression = expression.accept(new LetExpressionsVisitor());
+                expression = expression.accept(new ClosureConversion());
+
+                // On écrit l'asml dans un fichier
+                //AsmlTools.save(expression, "test.asml");
+
+                AsmlTools.print(expression);
 
             } catch (Exception e) {
-                // Erreur de durant le check du type, on retourne 1
+                // Erreur, on retourne 1
                 System.exit(1);
             }
             // Type correct, on retourne 0

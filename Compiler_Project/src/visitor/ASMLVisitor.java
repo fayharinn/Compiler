@@ -43,9 +43,7 @@ public class ASMLVisitor implements Visitor {
 		ff = new HashMap<String,ArrayList<String>>();
 		
 		code.add("\nlet _ = \n");
-		
-		//System.out.println("let _ =");
-		//expression.accept(this);
+
 	}
 	
 
@@ -54,7 +52,6 @@ public class ASMLVisitor implements Visitor {
     	if(isFun) {
     		return;
     	}
-        //System.out.print("()");
     }
 
     /**
@@ -786,7 +783,7 @@ public class ASMLVisitor implements Visitor {
 
     public void visit(LetRec e){
     	isFun = true;
-        System.out.print(e.fd.id);
+        //System.out.print(e.fd.id);
         ArrayList<String> tmp_arraylist = new ArrayList<String>();
         for(Id id:e.fd.args) {
         	tmp_arraylist.add(id.id);
@@ -798,7 +795,7 @@ public class ASMLVisitor implements Visitor {
         	fun_code.add(s+ " ");
         }
         fun_code.add("=\n");
-        System.out.println(ff);
+        //System.out.println(ff);
         //System.out.print(" = ");
         e.fd.e.accept(this);
         //System.out.print(" in ");
