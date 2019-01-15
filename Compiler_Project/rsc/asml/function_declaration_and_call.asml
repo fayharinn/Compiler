@@ -1,0 +1,7 @@
+let _f x y =
+add y x
+let _ = 
+let x = 1 in 
+  let y = 2 in 
+  let z = call _f x y in 
+  call _min_caml_print_int z

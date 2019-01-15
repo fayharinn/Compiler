@@ -1,6 +1,4 @@
 #!/bin/sh
-CPARG="-cp ../../java-cup-11b-runtime.jar:../../java-cup-11b.jar:../../out/production/Compiler_Project"
-
 HELP=0
 VERSION=0
 SYNTAXTEST=0
