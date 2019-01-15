@@ -25,4 +25,8 @@ public class FNeg extends Exp {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
     }
+
+    public String typeToString(){
+        return "TFloat";
+    }
 }

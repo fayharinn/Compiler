@@ -24,4 +24,8 @@ public class Not extends Exp {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
     }
+
+    public String typeToString(){
+        return "TBool";
+    }
 }

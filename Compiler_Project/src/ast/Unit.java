@@ -19,4 +19,8 @@ public class Unit extends Exp {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
     }
+
+    public String typeToString(){
+        return "Null";
+    }
 }

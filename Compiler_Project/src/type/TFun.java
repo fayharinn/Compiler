@@ -37,5 +37,9 @@ public class TFun extends Type {
     public String toString() {
         return "(" + this.argsType.toString() +"->" + returnType.toString()+")" ;
     }
+
+    public  String TypeToString(){
+        return "TFun";
+    }
 }
 

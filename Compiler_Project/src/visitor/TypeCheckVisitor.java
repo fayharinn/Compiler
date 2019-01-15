@@ -411,13 +411,31 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			functionType = (TFun) gho.getTypeOfVar(calledFunction.id.id);
 			for (int i=0; i<functionType.getargsType().size(); i++){
 				String argsTab = functionType.getargsType().get(i).toString();
-				String ourArgs = e.es.get(i).toString();
+				String ourArgs = e.es.get(i).typeToString();
 				if (!argsTab.equals(ourArgs)){
-					String calledfunctionType = functionType.getReturnType().toString();
-					String argsFunction = this.gho.getTypeOfVar(((Var) e.e).id.id).getReturnType().toString();
-					if (!calledfunctionType.equals(argsFunction)){
-						throw new Exception("Not the same arguments Types");
+					switch (e.es.get(i).typeToString()){
+						case "App" :
+										String calledfunctionType = functionType.getReturnType().toString();
+										String argsFunction = this.gho.getTypeOfVar(((Var) e.e).id.id).getReturnType().toString();
+										if (!calledfunctionType.equals(argsFunction)){
+											throw new Exception("Not the same arguments Types");
+										}
+										break;
+						case "TInt" :
+										if (!argsTab.equals("Int")){
+											throw new Exception("Not the same arguments Types");
+										}
+										break;
+						case "TFloat" :
+										if (!argsTab.equals("Float")){
+											throw new Exception("Not the same arguments Types");
+										}
+										break;
+
+						default: break;
+
 					}
+
 				}
 			}
 		} catch (Exception e1) {

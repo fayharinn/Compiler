@@ -5,5 +5,8 @@ public class TBool extends Type {
     public String toString() {
         return "TBool";
     }
+    public  String TypeToString(){
+        return "TBool";
+    }
 }
 

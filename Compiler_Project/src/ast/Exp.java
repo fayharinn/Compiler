@@ -12,4 +12,8 @@ public abstract class Exp {
 
 	public abstract Type accept(TypeCheckVisitor typeCheckVisitor);
 
+    public String typeToString(){
+        return "Exp";
+    }
+
 }
