@@ -17,7 +17,6 @@ public class AllEnvironements {
     }
 
     public ArrayList<Environement> getLesEnvironements() {
-
         return LesEnvironements;
     }
 
@@ -26,7 +25,6 @@ public class AllEnvironements {
     }
 
     public void setLesEnvironements(ArrayList<Environement> lesEnvironements) {
-
         LesEnvironements = lesEnvironements;
     }
 

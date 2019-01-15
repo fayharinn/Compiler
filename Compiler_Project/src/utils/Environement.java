@@ -43,7 +43,7 @@ public class Environement {
     }
 
     public void copyEnv(Environement e){
-        this.gho = e.getGho();
+        this.gho = new HashMap<>(e.getGho());
     }
 
 }
