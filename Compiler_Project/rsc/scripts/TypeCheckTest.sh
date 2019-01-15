@@ -1,6 +1,8 @@
 #!/bin/sh
 CPARG="-cp ../../java-cup-11b-runtime.jar:../../java-cup-11b.jar:../../out/production/Compiler_Project"
 
+echo ""
+echo ""
 echo "================> TypeCheck Tests"
 echo "=====> Valid"
 for test_case in ../tests/typecheck/valid/*.ml
