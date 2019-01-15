@@ -17,20 +17,27 @@ public class ArmVisitorArgs implements VisitorArgs{
 
     @Override
     public void visit(Add e, Exp e1) {
-        System.out.print("add " );
-        e1.accept(v);
-        e.e1.accept( v);
-        e.e2.accept( v);
-        System.out.println("");
+        if(e1 instanceof Let){
+            System.out.print("add "  + ((Let)e1).id);
+            e.e1.accept( v);
+            e.e2.accept( v);
+            System.out.println("");
+        } else {
+            System.out.println("Ya une pouille dans le cotage add");
+        }
+
     }
 
     @Override
     public void visit(Sub e, Exp e1) {
-        System.out.print("sub " );
-        e1.accept(v);
-        e.e1.accept( v);
-        e.e2.accept( v);
-        System.out.println("");
+        if(e1 instanceof Let){
+            System.out.print("sub "  + ((Let)e1).id);
+            e.e1.accept( v);
+            e.e2.accept( v);
+            System.out.println("");
+        } else {
+            System.out.println("Ya une pouille dans le cotage sub");
+        }
     }
 
     @Override
@@ -70,39 +77,50 @@ public class ArmVisitorArgs implements VisitorArgs{
 
     @Override
     public void visit(FAdd e, Exp e1) {
-        System.out.print("vadd " );
-        e1.accept(v);
-        e.e1.accept( v);
-        e.e2.accept( v);
-        System.out.println("");
+        if(e1 instanceof Let){
+            System.out.print("vadd "  + ((Let)e1).id);
+            e.e1.accept( v);
+            e.e2.accept( v);
+            System.out.println("");
+        } else {
+            System.out.println("Ya une pouille dans le cotage vadd");
+        }
 
     }
 
     @Override
     public void visit(FSub e, Exp e1) {
-        System.out.print("vsub " );
-        e1.accept(v);
-        e.e1.accept( v);
-        e.e2.accept( v);
-        System.out.println("");
+        if(e1 instanceof Let){
+            System.out.print("vsub "  + ((Let)e1).id);
+            e.e1.accept( v);
+            e.e2.accept( v);
+            System.out.println("");
+        } else {
+            System.out.println("Ya une pouille dans le cotage vsub");
+        }
     }
 
     @Override
     public void visit(FMul e, Exp e1) {
-        System.out.print("nvmul " );
-        e1.accept(v);
-        e.e1.accept( v);
-        e.e2.accept( v);
-        System.out.println("");
+        if (e1 instanceof Let) {
+            System.out.print("nvmul " + ((Let) e1).id);
+            e.e1.accept(v);
+            e.e2.accept(v);
+            System.out.println("");
+        } else {
+            System.out.println("Ya une pouille dans le cotage nvmul");
+        }
     }
-
     @Override
     public void visit(FDiv e, Exp e1) {
-        System.out.print("vdiv " );
-        e1.accept(v);
-        e.e1.accept( v);
-        e.e2.accept( v);
-        System.out.println("");
+            if(e1 instanceof Let){
+                System.out.print("vdiv "  + ((Let)e1).id);
+                e.e1.accept( v);
+                e.e2.accept( v);
+                System.out.println("");
+            } else {
+                System.out.println("Ya une pouille dans le cotage vdiv");
+            }
     }
 
     @Override

@@ -48,7 +48,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         init();
         this.intervals = intervals;
         indexRegisters = regs;
-        stackOffset = stackOffset;
+        this.stackOffset = stackOffset;
     }
 
     private String getIdFromReg(String reg){
@@ -162,7 +162,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     }
     
     public Exp visit(If e) {
-        return new If(e.e1.accept(this), new Let(new Id("r0"), Type.gen(), e.e2.accept(this), new Var(new Id("r0"))), new Let(new Id("r0"), Type.gen(), e.e3.accept(this), new Var(new Id("r0"))));
+        return new If(e.e1.accept(this), new Let(new Id("r0"), Type.gen(), e.e2.accept(this), new Unit()), new Let(new Id("r0"), Type.gen(), e.e3.accept(this), new Unit()));
     }
     
     public Exp visit(Let e) {
@@ -198,7 +198,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
             String idSave = checkoutReg(reg);
             boolean moveStackPointer = size < indexStack.size();
             indexRegisters.put(e.id.toString(), reg);
-            Exp temp = new Load(new Id(reg), indexStack.get(e.id.toString()), new Var(new Id(reg)));
+            Exp temp = new Load(new Id(reg), indexStack.get(e.id.toString()), new Unit());
             if(moveStackPointer) {
                 Id sp = new Id("sp");
                 temp = new Let(sp, Type.gen(), new Sub(new Var(sp), new Int(4)), temp);

@@ -12,6 +12,7 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
 	//private int next_fp;
 	//ArrayList<String> code;
 
+    private static ArrayList<String> fonctions = new ArrayList<>();
     private static ArmVisitorArgs vArgs;
 
 	public ArmVisitor() {
@@ -47,15 +48,15 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
 	
 	
     public void visit(Unit e) {
-        System.out.print("()");
+        //System.out.print("()");
     }
 
     public void visit(Bool e) {
-        System.out.print(" "+e.b);
+        System.out.print(" "+ (e.b? "#1" : "#0"));
     }
 
     public void visit(Int e) {
-        System.out.print(" " +e.i);
+        System.out.print(" #" +e.i);
     }
 
     public void visit(Float e) {
@@ -63,6 +64,7 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(Not e) {
+        System.out.println("");
         System.out.print("cmp");
         e.e.accept(this);
         System.out.println(" #0");
@@ -157,20 +159,29 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(Let e) {
-        System.out.print("mov "+ e.id);
-        e.e1.accept(this);
 
-        System.out.println(" ");
-        e.e2.accept(vArgs, e.e1); //au cas ou la suite est un noeud qui a besoin de visitarggs
+        if(e.e1 instanceof Var || e.e1 instanceof Int || e.e1 instanceof Bool || e.e1 instanceof Unit) {
+            System.out.print("mov " + e.id);
+            e.e1.accept(this);
+            System.out.println(" ");
+        } else {
+            e.e1.accept(vArgs, e);
+        }
+
+        e.e2.accept(vArgs, e); //au cas ou la suite est un noeud qui a besoin de visitarggs
     }
 
     public void visit(Var e){
-        System.out.print(" "+e.id);
+        if((e.id.toString().charAt(0) != 'r' && !e.id.toString().equals("sp")) && !fonctions.contains(e.id.toString())) { //Si ce n'est pas un registre et que la fonction n'est pas connue
+            System.out.print(" _min_caml_" + e.id);
+        } else {
+            System.out.print(" " + e.id);
+        }
     }
 
 
     public void visit(LetRec e){
-
+        fonctions.add(e.fd.id.toString());
         System.out.println(e.fd.id + ":"); //label
         this.prologue();
         e.fd.e.accept(this);
@@ -179,7 +190,6 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
     }
 
     public void visit(App e){
-
         //mettre les arguments dans les registres
         int i = 0;
         for( Exp arg : e.es){
@@ -189,7 +199,7 @@ public class ArmVisitor implements Visitor { //passage de param en + donc implem
             i++;
         }
         //brancher vers corps fonction
-        System.out.print("b");
+        System.out.print("bl");
         e.e.accept(this);
         System.out.println(" ");
     }

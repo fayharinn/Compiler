@@ -182,5 +182,15 @@ public class ClosureConversion implements ObjVisitor<Exp> {
        return new Put(e.e1.accept(this),e.e2.accept(this),e.e3.accept(this));
     }
 
+    @Override
+    public Exp visit(Load load) {
+        return null;
+    }
+
+    @Override
+    public Exp visit(Save save) {
+        return null;
+    }
+
 }
 

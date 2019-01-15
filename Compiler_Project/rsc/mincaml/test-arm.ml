@@ -4,5 +4,4 @@ let c=a+b in
 let d=a-b in
 let e=true in
 let f = not e in
-print_int c
-print_int d
+print_int c d

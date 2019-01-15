@@ -52,9 +52,13 @@ public class Main {
             HashMap<String, Integer> intervals = closConv.accept(new VariableIntervalVisitor());
             Exp reg = closConv.accept(new RegisterAllocationVisitor(intervals));
             reg.accept(new PrintVisitor());
-            
+
+            System.out.println();
             System.out.println("------ AST Conv ARM ------");
-            reg.accept(new ArmVisitor());
+            ArmVisitor v = new ArmVisitor();
+            reg.accept(v);
+            v.epilogue();
+
             System.out.println();
         } catch (Exception e) {
             e.printStackTrace();
