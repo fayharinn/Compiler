@@ -18,6 +18,10 @@ public class Int extends Exp {
     public void accept(Visitor v) {
         v.visit(this);
     }
+
+    public String toString(){
+        return "TInt";
+    }
     
 	@Override
     public Type accept(TypeCheckVisitor typeCheckVisitor) {

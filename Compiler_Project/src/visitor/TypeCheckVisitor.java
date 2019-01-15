@@ -408,7 +408,15 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 			if (!gho.containsKey(calledFunction.id.id)) throw  new Exception(calledFunction.id.id +" is not defined");
 			// Type check of function paramétres
 			functionType = (TFun) gho.getTypeOfVar(calledFunction.id.id);
-			if (e.es.equals(functionType.getargsType())) throw new Exception("Not the same arguments Types");
+			for (int i=0; i<functionType.getargsType().size(); i++){
+				String argsTab = functionType.getargsType().get(i).toString();
+				String ourArgs = e.es.get(i).toString();
+				if (!argsTab.equals(ourArgs)){
+					throw new Exception("Not the same arguments Types");
+				}
+			}
+
+
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			System.exit(1);
