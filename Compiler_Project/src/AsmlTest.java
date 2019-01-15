@@ -19,7 +19,7 @@ public class AsmlTest {
             expression = expression.accept(new ClosureConversion());
 
             // On écrit l'asml dans un fichier
-            AsmlTools.save(expression, "tmp.asml");
+            AsmlTools.save(expression, argv[1]);
         } catch (Exception e) {
             e.printStackTrace();
         }

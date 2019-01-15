@@ -2,9 +2,7 @@ import ast.Exp;
 import utils.AsmlTools;
 import utils.Lexer;
 import utils.Parser;
-import visitor.KNormVisitor;
-import visitor.LetExpressionsVisitor;
-import visitor.PrintVisitor;
+import visitor.*;
 
 import java.io.FileReader;
 
@@ -18,16 +16,16 @@ public class _RandomTest {
             assert (expression != null);
 
             try {
-                expression.accept(new PrintVisitor());
+                //expression.accept(new PrintVisitor());
                 expression = expression.accept(new KNormVisitor());
-                System.out.println("=================");
-                expression.accept(new PrintVisitor());
+                //System.out.println("=================");
+                //expression.accept(new PrintVisitor());
 
-                //expression = expression.accept(new AlphaConvVisitor());
+                expression = expression.accept(new AlphaConvVisitor());
                 expression = expression.accept(new LetExpressionsVisitor());
-                System.out.println("=================");
-                expression.accept(new PrintVisitor());
-                //expression = expression.accept(new ClosureConversion());
+                //System.out.println("=================");
+                //expression.accept(new PrintVisitor());
+                expression = expression.accept(new ClosureConversion());
 
                 // On écrit l'asml dans un fichier
                 //AsmlTools.save(expression, "test.asml");
