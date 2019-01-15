@@ -9,6 +9,10 @@ public abstract class Type {
     public Type getReturnType(){
         return new TUnit();
     }
+
+    public  String TypeToString(){
+        return "Type";
+    }
 }
 
 

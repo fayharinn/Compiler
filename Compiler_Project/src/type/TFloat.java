@@ -5,4 +5,7 @@ public class TFloat extends Type {
     public String toString() {
         return "TFloat";
     }
+    public  String TypeToString(){
+        return "TFloat";
+    }
 }
