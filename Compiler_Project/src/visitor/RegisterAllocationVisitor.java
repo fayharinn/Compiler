@@ -28,6 +28,9 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
     private int stackOffset;
     private int nodeCounter;
 
+    /***
+     * Initialisation commune aux deux constructeurs
+     */
     private void init(){
         indexStack = new HashMap<String, Integer>();
         availableRegisters = new ArrayList<String>();
@@ -37,6 +40,10 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         nodeCounter = 0;
     }
 
+    /***
+     * Constructeur appelé au tout début d'allocation
+     * @param intervals
+     */
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals){
         init();
         this.intervals = intervals;
@@ -44,6 +51,12 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         stackOffset = -4;
     }
 
+    /***
+     * Constructeur appelé lorsqu'on rentre dans un nouveau contexte
+     * @param intervals
+     * @param regs
+     * @param stackOffset
+     */
     public RegisterAllocationVisitor(HashMap<String, Integer> intervals, HashMap<String, String> regs, int stackOffset){
         init();
         this.intervals = intervals;
@@ -51,6 +64,11 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         this.stackOffset = stackOffset;
     }
 
+    /***
+     * Permet d'obtenir l'idée d'un registre donné, car HashMap n'offre pas de méthode adequate
+     * @param reg
+     * @return l'Id du registre donné, ou null si il ne le trouve pas
+     */
     private String getIdFromReg(String reg){
         for (HashMap.Entry<String, String> entry : indexRegisters.entrySet()) {
             if(entry.getValue().equals(reg)){
@@ -60,6 +78,11 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         return null;
     }
 
+    /***
+     * Regarde si il faut spill une variable, il enrichie indexStack si il le faut
+     * @param reg
+     * @return l'id de la variable si il faut spill, null sinon
+     */
     private String checkoutReg(String reg){
         if(indexRegisters.containsValue(reg)){
             String idSave = getIdFromReg(reg);
@@ -74,6 +97,10 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         }
     }
 
+    /***
+     * Renvoie le nom de registre à utiliser, le spill n'est pas géré ici
+     * @return le registre à utililiser
+     */
     private String getRegister(){
         ArrayList<String> keys = new ArrayList<>(); //On ne peut pas remove directement dans le for (CurrentModificationException)
         for(HashMap.Entry<String, String> entry : indexRegisters.entrySet()){
@@ -94,7 +121,7 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
                     max = intervals.get(entry.getKey());
                 }
             }
-        }else{
+        }else{ //sinon on prend le registre qui a été libéré en premier
             reg = availableRegisters.get(0);
             availableRegisters.remove(0);
         }
