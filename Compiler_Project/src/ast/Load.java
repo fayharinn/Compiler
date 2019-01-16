@@ -22,13 +22,14 @@ public class Load extends Exp {
         return v.visit(this);
     }
 
-    @Override
-    public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<String, Type> env, Type exptype, HashMap<Type, Type> genEqs) {
-        return null;
-    }
 
     public void accept(Visitor v) {v.visit(this);}
     public void accept(VisitorArgs v, Exp e1) {
         v.visit(this, e);
+    }
+
+    @Override
+    public Type accept(TypeCheckVisitor typeCheckVisitor) {
+        return null;
     }
 }

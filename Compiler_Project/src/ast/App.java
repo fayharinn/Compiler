@@ -2,11 +2,9 @@ package ast;
 
 import visitor.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 import type.Type;
-import utils.Id;
 
 public class App extends Exp {
     public final Exp e;
@@ -25,15 +23,20 @@ public class App extends Exp {
     }
     
 	@Override
-	public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<String, Type> env, Type exptype,
-			HashMap<Type, Type> genEqs) {
+	public Type accept(TypeCheckVisitor typeCheckVisitor) {
 		// TODO Auto-generated method stub
-		return typeCheckVisitor.visit(this, env, exptype, genEqs);
+		return typeCheckVisitor.visit(this);
 	}
 
 
 
-    public void accept(VisitorArgs v, Exp e){
+
+    public void accept(VisitorArgs v, Exp e) {
         v.visit(this, e);
+    }
+
+    public String typeToString(){
+        return "App";
+
     }
 }

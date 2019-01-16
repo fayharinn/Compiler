@@ -9,4 +9,8 @@ public class TVar extends Type {
     public String toString() {
         return v;
     }
+
+    public  String TypeToString(){
+        return "TVar";
+    }
 }

@@ -1,0 +1,9 @@
+let _f y =
+
+if y = 0 then (0
+) else (999
+)
+let _ = 
+let x = 1 in 
+  let z = call _f x in 
+  call _min_caml_print_int z

@@ -22,14 +22,15 @@ public class Save extends Exp {
         return v.visit(this);
     }
 
-    @Override
-    public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<String, Type> env, Type exptype, HashMap<Type, Type> genEqs) {
-        return null;
-    }
 
     @Override
     public void accept(VisitorArgs v, Exp e1) {
         v.visit(this,e1);
+    }
+
+    @Override
+    public Type accept(TypeCheckVisitor typeCheckVisitor) {
+        return null;
     }
 
 

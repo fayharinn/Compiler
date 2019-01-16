@@ -18,8 +18,9 @@ public class ArmVisitorArgs implements VisitorArgs{
     @Override
     public void visit(Add e, Exp e1) {
         if(e1 instanceof Let){
-            System.out.print("add "  + ((Let)e1).id);
+            System.out.print("add "  + ((Let)e1).id + ",");
             e.e1.accept( v);
+            System.out.print(",");
             e.e2.accept( v);
             System.out.println("");
         } else {
@@ -31,8 +32,9 @@ public class ArmVisitorArgs implements VisitorArgs{
     @Override
     public void visit(Sub e, Exp e1) {
         if(e1 instanceof Let){
-            System.out.print("sub "  + ((Let)e1).id);
+            System.out.print("sub "  + ((Let)e1).id + ",");
             e.e1.accept( v);
+            System.out.print(",");
             e.e2.accept( v);
             System.out.println("");
         } else {
@@ -78,8 +80,9 @@ public class ArmVisitorArgs implements VisitorArgs{
     @Override
     public void visit(FAdd e, Exp e1) {
         if(e1 instanceof Let){
-            System.out.print("vadd "  + ((Let)e1).id);
+            System.out.print("vadd "  + ((Let)e1).id + ",");
             e.e1.accept( v);
+            System.out.print(",");
             e.e2.accept( v);
             System.out.println("");
         } else {
@@ -91,8 +94,9 @@ public class ArmVisitorArgs implements VisitorArgs{
     @Override
     public void visit(FSub e, Exp e1) {
         if(e1 instanceof Let){
-            System.out.print("vsub "  + ((Let)e1).id);
+            System.out.print("vsub "  + ((Let)e1).id + ",");
             e.e1.accept( v);
+            System.out.print(",");
             e.e2.accept( v);
             System.out.println("");
         } else {
@@ -103,8 +107,9 @@ public class ArmVisitorArgs implements VisitorArgs{
     @Override
     public void visit(FMul e, Exp e1) {
         if (e1 instanceof Let) {
-            System.out.print("nvmul " + ((Let) e1).id);
+            System.out.print("mul " + ((Let) e1).id + ",");
             e.e1.accept(v);
+            System.out.print(",");
             e.e2.accept(v);
             System.out.println("");
         } else {
@@ -114,8 +119,9 @@ public class ArmVisitorArgs implements VisitorArgs{
     @Override
     public void visit(FDiv e, Exp e1) {
             if(e1 instanceof Let){
-                System.out.print("vdiv "  + ((Let)e1).id);
+                System.out.print("vdiv "  + ((Let)e1).id + ",");
                 e.e1.accept( v);
+                System.out.print(",");
                 e.e2.accept( v);
                 System.out.println("");
             } else {

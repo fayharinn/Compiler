@@ -2,7 +2,6 @@ import ast.Exp;
 import utils.*;
 import visitor.*;
 import java.io.*;
-import java.util.HashMap;
 
 public class Main {
     static public void main(String argv[]) {
@@ -15,6 +14,8 @@ public class Main {
             System.out.println("------ Avant KNormalisation ------");
             expression.accept(new PrintVisitor());
             System.out.println();
+
+            expression.accept(new TypeCheckVisitor());
 
             //Knormalisation
 
@@ -47,17 +48,30 @@ public class Main {
             System.out.println("------ AST Closure Conversion------");
             closConv.accept(new PrintVisitor());
             System.out.println();
-            
-            System.out.println("------ AST Register Allocation ------");
-            HashMap<String, Integer> intervals = closConv.accept(new VariableIntervalVisitor());
-            Exp reg = closConv.accept(new RegisterAllocationVisitor(intervals));
-            reg.accept(new PrintVisitor());
+
+
+            System.out.println();
+
+            System.out.println("------ utils.Height of the AST ----");
+            int height = Height.computeHeight(expression);
+            System.out.println("using utils.Height.computeHeight: " + height);
+
+            ObjVisitor<Integer> v = new HeightVisitor();
+            height = expression.accept(v);
+            System.out.println("using HeightVisitor: " + height);
+
+
+
+            System.out.println("------ utils.Height of the AST ----");
+            height = Height.computeHeight(knorm);
+            System.out.println("using utils.Height.computeHeight: " + height);
+
 
             System.out.println();
             System.out.println("------ AST Conv ARM ------");
-            ArmVisitor v = new ArmVisitor();
-            reg.accept(v);
-            v.epilogue();
+            ArmVisitor va = new ArmVisitor();
+            closConv.accept(va);
+            va.epilogue();
 
             System.out.println();
         } catch (Exception e) {

@@ -243,17 +243,19 @@ public class RegisterAllocationVisitor implements ObjVisitor<Exp>  {
         ArrayList<Id> args = new ArrayList<>();
         HashMap<String, String> regs = new HashMap<String, String>();
         //Allocation des arguments
-        for(int i = 0; i < e.fd.args.size(); i++){
-            if(i < 4){
+        for(int i = 0; i < e.fd.args.size(); i++) {
+            if (i < 4) {
                 args.add(new Id("r" + i));
                 regs.put(e.fd.args.get(i).toString(), "r" + i);
-            }else{
+            } else {
                 args.add(e.fd.args.get(i));
             }
         }
         Exp temp = e.fd.e.accept(new RegisterAllocationVisitor(intervals, regs, -9 * 4)); //Les registres sont sauvegardés donc on deplace le haut de la pile
+        temp = new Let(new Id("r0"), Type.gen(), temp, new Unit());
+        temp = temp.accept(new LetExpressionsVisitor());
         FunDef fd = new FunDef(e.fd.id, e.fd.type, args, temp);
-        return new LetRec(fd, temp);
+        return new LetRec(fd, e.e.accept(this));
     }
     
     public Exp visit(App e) {

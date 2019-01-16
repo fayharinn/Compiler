@@ -1,7 +1,5 @@
 package ast;
 
-import java.util.HashMap;
-
 import type.Type;
 import utils.Id;
 import visitor.ObjVisitor;
@@ -24,15 +22,20 @@ public class Var extends Exp {
         v.visit(this);
     }
     
-	@Override
-	public Type accept(TypeCheckVisitor typeCheckVisitor, HashMap<String, Type> env, Type exptype,
-			HashMap<Type, Type> genEqs) {
-		// TODO Auto-generated method stub
-		return typeCheckVisitor.visit(this, env, exptype, genEqs);
-	}
+
 
     public void accept(VisitorArgs v, Exp e){
         v.visit(this, e);
+    }
+
+
+    public Type accept(TypeCheckVisitor typeCheckVisitor) {
+        // TODO Auto-generated method stub
+        return typeCheckVisitor.visit(this);
+    }
+
+    public String typeToString(){
+        return "TVar";
     }
 
 }

@@ -1,6 +1,9 @@
 #!/bin/sh
-CPARG="-cp ../../java-cup-11b-runtime.jar:../../java-cup-11b.jar:../../out/production/Compiler_Project"
+CPARG="-cp ../../java-cup-11b-runtime.jar:../../java-cup-11b.jar:../../out"
 
+cd "rsc/tests/scripts"
+echo ""
+echo ""
 echo "================> Syntax Tests"
 echo "=====> Valid"
 for test_case in ../tests/syntax/valid/*.ml

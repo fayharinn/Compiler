@@ -1,6 +1,4 @@
 #!/bin/sh
-CPARG="-cp ../../java-cup-11b-runtime.jar:../../java-cup-11b.jar:../../out/production/Compiler_Project"
-
 HELP=0
 VERSION=0
 SYNTAXTEST=0
@@ -42,13 +40,23 @@ fi
 
 if [ $HELP = 1 ]
 then
-    echo "TODO HELP"
+    echo "Command line option :"
+    echo ">> -h : display this help"
+    echo ">> -v : display version"
+    echo ">> -p : run syntax tests"
+    echo ">> -t : run type check tests"
+    echo ">> -asml : generate ASML (and run ASML tests)"
+    echo ">> -o : generate ARM (and run ARM tests)"
+    #echo ">> -my-opt : personnal option"
 fi
 
 if [ $VERSION = 1 ]
 then
-    echo "TODO VERSION"
+    echo "MinCaml to ARM compiler, version 1.0"
 fi
+
+# On va dans le dossier scripts pour executer les scripts
+cd "rsc/scripts"
 
 if [ $SYNTAXTEST = 1 ]
 then
