@@ -106,14 +106,14 @@ public class AsmlTools {
             out.print(x2);
         }
         out.close();
-        correct_indentation(output);
+        //correct_indentation(output);
         System.out.println(output+" Successfuly written");
 	}
 
 
 	public static void correct_indentation(String file) throws FileNotFoundException, IOException {
 		boolean isMain = false;
-		PrintWriter out = new PrintWriter(file); // l'output de l'asml
+		PrintWriter out = new PrintWriter("nooon_"+file); // l'output de l'asml
 		try(BufferedReader br = new BufferedReader(new FileReader(file))) {
 		    for(String line; (line = br.readLine()) != null; ) {
 		    	if(isMain) {
@@ -128,7 +128,9 @@ public class AsmlTools {
 
 		    }
 
-		}
+		} catch (Exception e) {
+		    e.printStackTrace();
+        }
 		out.close();
 	}
 
