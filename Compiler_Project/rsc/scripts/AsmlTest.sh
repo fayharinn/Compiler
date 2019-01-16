@@ -15,10 +15,12 @@ echo "Not implemented yet."
     #rm _tmp1.asml
 #done
 
-test_case="../tests/asml/boolean_if.asml"
+test_case="../tests/asml/1fadd_float_float.ml"
 echo $test_case
 # On génère le code dans un fichier
 java $CPARG AsmlTest $test_case _tmp0.asml
+./../tests/asml/asml _tmp0.asml
+ocaml $test_case
 #TODO génération asml > _tmp1.asml
 #TODO comparer les 2 fichiers
 #TODO affichier OK ou KO suivant la comparaison

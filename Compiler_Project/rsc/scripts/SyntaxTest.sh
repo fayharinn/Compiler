@@ -1,6 +1,7 @@
 #!/bin/sh
 CPARG="-cp ../../java-cup-11b-runtime.jar:../../java-cup-11b.jar:../../out"
 
+cd "rsc/tests/scripts"
 echo ""
 echo ""
 echo "================> Syntax Tests"

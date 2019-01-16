@@ -9,39 +9,20 @@ import java.io.FileReader;
 public class _RandomTest {
     static public void main(String argv[]) {
         try {
-
-            // Normalement pas d'erreur ici car syntaxe OK
+            // On lit le fichier et on crée l'arbre
             Parser p = new Parser(new Lexer(new FileReader(argv[0])));
             Exp expression = (Exp) p.parse().value;
             assert (expression != null);
+            expression = expression.accept(new KNormVisitor());
+            expression = expression.accept(new AlphaConvVisitor());
+            expression = expression.accept(new LetExpressionsVisitor());
+            expression = expression.accept(new ClosureConversion());
 
-            try {
-                //expression.accept(new PrintVisitor());
-                expression = expression.accept(new KNormVisitor());
-                //System.out.println("=================");
-                //expression.accept(new PrintVisitor());
-
-                expression = expression.accept(new AlphaConvVisitor());
-                expression = expression.accept(new LetExpressionsVisitor());
-                //System.out.println("=================");
-                //expression.accept(new PrintVisitor());
-                expression = expression.accept(new ClosureConversion());
-
-                // On écrit l'asml dans un fichier
-                //AsmlTools.save(expression, "test.asml");
-
-                AsmlTools.print(expression);
-
-            } catch (Exception e) {
-                // Erreur, on retourne 1
-                System.exit(1);
-            }
-            // Type correct, on retourne 0
-            System.exit(0);
+            // On écrit l'asml dans un fichier
+            AsmlTools.print(expression);
         } catch (Exception e) {
             e.printStackTrace();
-            // Autre erreur, on retourne 2
-            System.exit(2);
         }
+
     }
 }
