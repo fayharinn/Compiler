@@ -6,7 +6,7 @@ import visitor.*;
 
 import java.io.FileReader;
 
-public class AsmlTest {
+public class _RandomTest {
     static public void main(String argv[]) {
         try {
             // On lit le fichier et on crée l'arbre
@@ -19,11 +19,10 @@ public class AsmlTest {
             expression = expression.accept(new ClosureConversion());
 
             // On écrit l'asml dans un fichier
-            AsmlTools.save(expression, argv[1]);
+            AsmlTools.print(expression);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 }

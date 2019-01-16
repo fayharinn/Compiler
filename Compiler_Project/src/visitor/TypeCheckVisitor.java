@@ -462,7 +462,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 	 * @return le type du noeud
 	 */
 	public Type visit(LetRec e){
-		gho.créerEnvironementLocale();
+		gho.creerEnvironementLocale();
 		FunDef f = e.fd;
 		ArrayList<Type> argsType = new ArrayList<Type>();
 		try {

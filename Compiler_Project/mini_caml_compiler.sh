@@ -55,6 +55,9 @@ then
     echo "MinCaml to ARM compiler, version 1.0"
 fi
 
+# On va dans le dossier scripts pour executer les scripts
+cd "rsc/scripts"
+
 if [ $SYNTAXTEST = 1 ]
 then
     ./SyntaxTest.sh

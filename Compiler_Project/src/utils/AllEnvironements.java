@@ -46,11 +46,15 @@ public class AllEnvironements {
         LesEnvironements = lesEnvironements;
     }
 
+<<<<<<< HEAD
+    public void creerEnvironementLocale(){
+=======
     /**
      * Ajoute une nouveau element à LesEnvironnements puis copie le contenu de l'avant dernier element de LesEnvironnements dans le nouveau element.
      * Cette opération correspond à la creation d'un environements Local.
      */
     public void créerEnvironementLocale(){
+>>>>>>> master
         Environement newEnvLocale = new Environement();
         newEnvLocale.copyEnv(LesEnvironements.get(EnvironementTableSize()-1));
         LesEnvironements.add(newEnvLocale);
