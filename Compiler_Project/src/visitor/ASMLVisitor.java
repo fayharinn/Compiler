@@ -158,7 +158,7 @@ public class ASMLVisitor implements Visitor {
     			code.set(code.size()-1, "0");
     		}
     		else {
-    			fun_code.set(fun_code.size()-1, "1");
+    			code.set(fun_code.size()-1, "1");
     		}
     		//System.out.print("");
     	}

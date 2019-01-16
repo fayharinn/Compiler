@@ -1,1 +1,1 @@
-let _ = ( print_int 5
+lt _ = ( print_int 5
