@@ -13,13 +13,18 @@ public class _RandomTest {
             Parser p = new Parser(new Lexer(new FileReader(argv[0])));
             Exp expression = (Exp) p.parse().value;
             assert (expression != null);
+
+
             expression = expression.accept(new KNormVisitor());
             expression = expression.accept(new AlphaConvVisitor());
             expression = expression.accept(new LetExpressionsVisitor());
-            expression = expression.accept(new ClosureConversion());
+            // Closure converstion
+            ClosureConversion visitorClosure = new ClosureConversion();
+            expression = expression.accept(visitorClosure);
+            expression = visitorClosure.moveToFront(expression);
 
             // On écrit l'asml dans un fichier
-            AsmlTools.print(expression);
+            AsmlTools.save(expression, "test.asml");
         } catch (Exception e) {
             e.printStackTrace();
         }

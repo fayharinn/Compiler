@@ -32,34 +32,18 @@ public class AsmlTools {
         HashMap<String,Type> env = typeCheckVisitor.getEnvironement().getCurentEnvironement().getGho();
         ASMLVisitor asmlv = new ASMLVisitor(env);
         expression.accept(asmlv);
-        String x2 = "";
         for(String x:asmlv.float_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            System.out.print(x2);
+            System.out.print(x);
         }
-        for(String x:asmlv.fun_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            System.out.print(x2);
 
+        for(String x:asmlv.fun_code) {
+            System.out.print(x);
         }
 
         for(String x:asmlv.code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            System.out.print(x2);
+            System.out.print(x);
         }
-        
+
 	}
 
 
@@ -68,7 +52,7 @@ public class AsmlTools {
      *
      * @param expression l'expression du haut de l'arbre.
      * @param output le nom du fichier de sortie.
-     * @throws IOException 
+     * @throws IOException
     *
      */
 	public static void save(Exp expression,String output) throws IOException {
@@ -78,42 +62,28 @@ public class AsmlTools {
         PrintWriter out = new PrintWriter(output); // l'output de l'asml
         ASMLVisitor asmlv = new ASMLVisitor(env);
         expression.accept(asmlv);
-        String x2 = "";
-        for(String x:asmlv.float_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            out.print(x2);
-        }
-        for(String x:asmlv.fun_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            out.print(x2);
 
+        for(String x:asmlv.float_code) {
+            out.print(x);
+        }
+
+        for(String x:asmlv.fun_code) {
+            out.print(x);
         }
 
         for(String x:asmlv.code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            out.print(x2);
+            out.print(x);
         }
         out.close();
-        correct_indentation(output);
-        System.out.println(output+" Successfuly written");
+
+        //correct_indentation(output);
+        //System.out.println(output+" Successfuly written");
 	}
-	
-	
+
+
 	public static void correct_indentation(String file) throws FileNotFoundException, IOException {
 		boolean isMain = false;
-		PrintWriter out = new PrintWriter("indented_"+file); // l'output de l'asml
+		PrintWriter out = new PrintWriter("nooon_"+file); // l'output de l'asml
 		try(BufferedReader br = new BufferedReader(new FileReader(file))) {
 		    for(String line; (line = br.readLine()) != null; ) {
 		    	if(isMain) {
@@ -125,10 +95,12 @@ public class AsmlTools {
 		        if(line.contains("let _ =")) {
 		        	isMain=true;
 		        }
-		        
+
 		    }
-		    
-		}
+
+		} catch (Exception e) {
+		    e.printStackTrace();
+        }
 		out.close();
 	}
 
