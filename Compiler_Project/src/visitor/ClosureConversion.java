@@ -119,7 +119,7 @@ public class ClosureConversion implements ObjVisitor<Exp> {
         Exp e1;
         if (freeVar.isEmpty()) {
             //CAS NON VARIABLE LIBRE
-            System.out.println("PAS DE VARIABLE LIBRE");
+            //System.out.println("PAS DE VARIABLE LIBRE");
             known.add(e.fd.id.toString());
             int size = make_closure.size();
             e1 = e.fd.e.accept(this);
@@ -127,12 +127,12 @@ public class ClosureConversion implements ObjVisitor<Exp> {
                 apply_closure.add(e.fd.id.toString());
             }
         } else {
-            System.out.println("/! DES VARIABLE LIBRE");
+            //System.out.println("/! DES VARIABLE LIBRE");
             for (int i = 0 ; i < freeVar.size(); i++) {
                 Id new_id = Id.gen();
                 e.fd.args.add(0,new_id);
                 replacableVar.put(freeVar.get(i),new_id.toString());
-                System.out.println(freeVar.get(i));
+                //System.out.println(freeVar.get(i));
             }
             e1 = e.fd.e.accept(this);
             for (int i = 0 ; i < freeVar.size(); i++) {

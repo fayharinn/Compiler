@@ -1,0 +1,19 @@
+let _fib n =
+let new_varid_v2 = n in 
+  let new_varid_v3 = 1 in 
+  
+if new_varid_v2 <= new_varid_v3 then (n
+) else (let new_varid_v10 = let new_varid_v4 = let new_varid_v5 = n in 
+  let new_varid_v6 = 1 in 
+  sub new_varid_v5 new_varid_v6 in 
+  call _fib new_varid_v4 in 
+  let new_varid_v11 = let new_varid_v7 = let new_varid_v8 = n in 
+  let new_varid_v9 = 2 in 
+  sub new_varid_v8 new_varid_v9 in 
+  call _fib new_varid_v7 in 
+  add new_varid_v10 new_varid_v11
+)
+let _ = 
+let new_varid_v1 = 30 in 
+  let new_varid_v0 = call _fib new_varid_v1 in 
+  call _min_caml_print_int new_varid_v0

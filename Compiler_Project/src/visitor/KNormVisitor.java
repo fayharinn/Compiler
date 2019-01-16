@@ -4,6 +4,7 @@ import ast.*;
 import ast.Float;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import type.Type;
 import utils.Id;
@@ -159,12 +160,38 @@ public class KNormVisitor implements ObjVisitor<Exp> {
         return res;
     }
 
-    public If visit(If e){
+    public Exp visit(If e){
+
+
         Exp e1 = e.e1.accept(this);
         Exp e2 = e.e2.accept(this);
         Exp e3 = e.e3.accept(this);
-        return new If(e1, e2, e3);
+
+
+        if (e1 instanceof Let) {
+            Let lastLet = (Let) e1;
+            ArrayList<Let> lets = new ArrayList<>();
+
+            while (lastLet.e2 instanceof Let) {
+                lets.add(lastLet);
+                lastLet = (Let) lastLet.e2;
+            }
+
+            If newIf = new If(lastLet.e2, e2, e3);
+            Let ret = new Let(lastLet.id, lastLet.t, lastLet.e1, newIf);
+            Collections.reverse(lets);
+
+
+            for (Let let : lets) {
+                ret = new Let(let.id, let.t, let.e1, ret);
+            }
+            return ret;
+        } else {
+            return new If(e1, e2, e3);
+        }
+
     }
+
 
     public Let visit(Let e) {
       Exp e1 = e.e1.accept(this);
