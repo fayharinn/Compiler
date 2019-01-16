@@ -10,6 +10,9 @@ import java.util.*;
 public class TypeCheckVisitor implements TypeVisitor<Type> {
 	private AllEnvironements gho;
 
+	/**
+	 * Construit un objet TypeChecker avec un environement contenant les fonctions basiques
+	 */
     public TypeCheckVisitor() {
 		try {
 			ArrayList<Type> args = new ArrayList<>();
@@ -22,17 +25,26 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		}
 	}
 
+	/**
+	 * @return Retourne L'ensemble des Environements lu dans l'expression
+	 */
     public AllEnvironements getEnvironement() {
         return gho;
     }
 
-
+	/**
+	 * ecrit dans la console le contenu de l'ensemble des environements
+	 */
 	public void printAllEnvironements(){
     	for (Environement t : gho.getLesEnvironements()){
     		printEnvironement(t);
 		}
 	}
 
+	/**
+	 * ecrit dans la console le contenu de l'environement fourni en paramétre
+	 * @param p : L'environement à afficher
+	 */
    public void printEnvironement(Environement p){
 		   try {
 			   for (String keys: p.getGho().keySet()){
@@ -47,32 +59,61 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 
    }
 
+	/**
+	 * visite un noeud spécifié de type Unit
+	 * @return le type du noeud
+	 */
 	public Type visit(Unit e) {
         return new TUnit();
     }
 
+	/**
+	 * visite un noeud spécifié de type Bool
+	 * @return le type du noeud
+	 */
     public Type visit(Bool e) {
         return new TBool();
     }
 
+	/**
+	 * visite un noeud spécifié de type Int
+	 * @return le type du noeud
+	 */
     public Type visit(Int e) {
         return new TInt();
     }
 
+	/**
+	 * visite un noeud spécifié de type Float
+	 * @return le type du noeud
+	 */
     public Type visit(Float e) {
         return new TFloat();
     }
 
 
+	/**
+	 * visite un noeud spécifié de type Not
+	 * @return le type du noeud
+	 */
     public Type visit(Not e) {
         e.e.accept(this);
         return new TBool();
     }
+
+	/**
+	 * visite un noeud spécifié de type Neg
+	 * @return le type du noeud
+	 */
     public Type visit(Neg e) {
     	e.e.accept(this);
     	return new TInt();
     }
 
+	/**
+	 * visite un noeud spécifié de type Add
+	 * @return le type du noeud
+	 */
     public Type visit(Add e) {
     	Type t1= e.e1.accept(this);
     	Type t2= e.e2.accept(this);
@@ -101,6 +142,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TInt();
     }
 
+	/**
+	 * visite un noeud spécifié de type Sub
+	 * @return le type du noeud
+	 */
     public Type visit(Sub e) {
     	Type t1 = e.e1.accept(this);
     	Type t2 = e.e2.accept(this);
@@ -127,11 +172,19 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TInt();
     }
 
+	/**
+	 * visite un noeud spécifié de type FNeg
+	 * @return le type du noeud
+	 */
     public Type visit(FNeg e){
         e.e.accept(this);
         return new TFloat();
     }
 
+	/**
+	 * visite un noeud spécifié de type FAdd
+	 * @return le type du noeud
+	 */
     public Type visit(FAdd e){
     	Type t1 = e.e1.accept(this);
     	Type t2 = e.e2.accept(this);
@@ -160,6 +213,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TFloat();
     }
 
+	/**
+	 * visite un noeud spécifié de type FSub
+	 * @return le type du noeud
+	 */
     public Type visit(FSub e){
     	Type t1 = e.e1.accept(this);
     	Type t2 = e.e2.accept(this);
@@ -186,6 +243,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TFloat();
     }
 
+	/**
+	 * visite un noeud spécifié de type FMul
+	 * @return le type du noeud
+	 */
     public Type visit(FMul e) {
         Type t1 = e.e1.accept(this);
         Type t2 = e.e2.accept(this);
@@ -212,6 +273,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TFloat();
     }
 
+	/**
+	 * visite un noeud spécifié de type FDiv
+	 * @return le type du noeud
+	 */
     public Type visit(FDiv e){
         Type t1 = e.e1.accept(this);
         Type t2 = e.e2.accept(this);
@@ -238,6 +303,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TFloat();
     }
 
+	/**
+	 * visite un noeud spécifié de type Eq
+	 * @return le type du noeud
+	 */
     public Type visit(Eq e){
     	Type t1 = e.e1.accept(this);
     	Type t2 = e.e2.accept(this);
@@ -264,6 +333,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TBool();
     }
 
+	/**
+	 * visite un noeud spécifié de type LE
+	 * @return le type du noeud
+	 */
     public Type visit(LE e){
     	Type t1 = e.e1.accept(this);
     	Type t2 = e.e2.accept(this);
@@ -291,6 +364,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     	return new TBool();
     }
 
+	/**
+	 * visite un noeud spécifié de type If
+	 * @return le type du noeud
+	 */
     public Type visit(If e){
     	Type t1 = e.e1.accept(this);
 
@@ -330,6 +407,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
         return new TInt();
     }
 
+	/**
+	 * visite un noeud spécifié de type Let
+	 * @return le type du noeud
+	 */
     public Type visit(Let e) {
     	Type t1 = e.e1.accept(this);
     	if(gho.containsKey(e.id.id)) {
@@ -351,6 +432,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
     }
 
 
+	/**
+	 * visite un noeud spécifié de type Var
+	 * @return le type du noeud
+	 */
     public Type visit(Var e) {
 		if(gho.containsKey(e.id.id)){
 			Type t = null;
@@ -372,6 +457,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 	}
 
 
+	/**
+	 * visite un noeud spécifié de type LetRec
+	 * @return le type du noeud
+	 */
 	public Type visit(LetRec e){
 		gho.creerEnvironementLocale();
 		FunDef f = e.fd;
@@ -401,6 +490,10 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		return functionType;
 	}
 
+	/**
+	 * visite un noeud spécifié de type App
+	 * @return le type du noeud
+	 */
 	public Type visit(App e){
 		TFun functionType = null;
 		try {
@@ -445,22 +538,42 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 		return functionType;
 	}
 
+	/**
+	 * visite un noeud spécifié de type Tuple
+	 * @return le type du noeud
+	 */
 	public Type visit(Tuple e){
         return null;
     }
 
+	/**
+	 * visite un noeud spécifié de type LetTuple
+	 * @return le type du noeud
+	 */
     public Type visit(LetTuple e){
         return null;
     }
 
+	/**
+	 * visite un noeud spécifié de type Array
+	 * @return le type du noeud
+	 */
     public Type visit(Array e){
         return null;
     }
 
+	/**
+	 * visite un noeud spécifié de type Get
+	 * @return le type du noeud
+	 */
     public Type visit(Get e){
         return null;
     }
 
+	/**
+	 * visite un noeud spécifié de type Put
+	 * @return le type du noeud
+	 */
     public Type visit(Put e){
         return null;
     }

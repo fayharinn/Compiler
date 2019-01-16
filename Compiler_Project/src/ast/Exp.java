@@ -12,6 +12,10 @@ public abstract class Exp {
 
 	public abstract Type accept(TypeCheckVisitor typeCheckVisitor);
 
+    /**
+     *
+     * @return Le type du noeud courant.
+     */
     public String typeToString(){
         return "Exp";
     }
