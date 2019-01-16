@@ -1,9 +1,8 @@
 package ast;
 
 import type.Type;
-import visitor.ObjVisitor;
-import visitor.TypeCheckVisitor;
-import visitor.Visitor;
+import visitor.*;
+
 
 public class Add extends Exp {
     public final Exp e1;
@@ -28,7 +27,14 @@ public class Add extends Exp {
 		return typeCheckVisitor.visit(this);
 	}
 
+
+    public void accept(VisitorArgs v, Exp e){
+            v.visit(this, e);
+    }
+
+
     public String typeToString(){
         return "TInt";
     }
+
 }

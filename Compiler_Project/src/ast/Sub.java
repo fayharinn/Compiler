@@ -1,9 +1,10 @@
 package ast;
 
 import type.Type;
-import visitor.ObjVisitor;
-import visitor.TypeCheckVisitor;
-import visitor.Visitor;
+
+import utils.Id;
+import visitor.*;
+
 
 public class Sub extends Exp {
     public final Exp e1;
@@ -21,7 +22,12 @@ public class Sub extends Exp {
         v.visit(this);
     }
     
-	@Override
+
+
+    public void accept(VisitorArgs v, Exp e) {
+        v.visit(this, e);
+    }
+
     public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
@@ -29,5 +35,6 @@ public class Sub extends Exp {
 
     public String typeToString(){
         return "TInt";
+
     }
 }

@@ -314,6 +314,16 @@ public class KNormVisitor implements ObjVisitor<Exp> {
                 new Put(new Var(new_var1), new Var(new_var2), new Var(new_var3)))));
         return res;
     }
+
+    @Override
+    public Exp visit(Load load) {
+        return null;
+    }
+
+    @Override
+    public Exp visit(Save save) {
+        return null;
+    }
 }
 
 

@@ -16,6 +16,7 @@ public class Main {
             System.out.println();
 
             expression.accept(new TypeCheckVisitor());
+
             //Knormalisation
 
             Exp knorm = expression.accept(new KNormVisitor());
@@ -33,20 +34,22 @@ public class Main {
 
             //Let-expression/Linearisation du Let
 
-            Exp letexp= exp_alpha_conv.accept(new LetExpressionsVisitor());
+            Exp letexp = exp_alpha_conv.accept(new LetExpressionsVisitor());
 
             System.out.println("------ AST Let Expressions ------");
             letexp.accept(new PrintVisitor());
             System.out.println();
 
-            //Closure Conversion
             ClosureConversion visitorClosure = new ClosureConversion();
+            //Closure Conversion
             Exp closConv = letexp.accept(visitorClosure);
             closConv = visitorClosure.moveToFront(closConv);
 
             System.out.println("------ AST Closure Conversion------");
             closConv.accept(new PrintVisitor());
             System.out.println();
+
+
             System.out.println();
 
             System.out.println("------ utils.Height of the AST ----");
@@ -63,12 +66,16 @@ public class Main {
             height = Height.computeHeight(knorm);
             System.out.println("using utils.Height.computeHeight: " + height);
 
-            height = knorm.accept(v);
-            System.out.println("using HeightVisitor: " + height);
 
+            System.out.println();
+            System.out.println("------ AST Conv ARM ------");
+            ArmVisitor va = new ArmVisitor();
+            closConv.accept(va);
+            va.epilogue();
+
+            System.out.println();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-

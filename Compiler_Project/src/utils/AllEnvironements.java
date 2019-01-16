@@ -8,7 +8,7 @@ public class AllEnvironements {
     private ArrayList<Environement> LesEnvironements;
 
     /**
-     * Construit une liste d'environement à partir dune liste d'environnement fourni
+     * Construit une liste d'environement à partir dune liste d'environnement fournie
      * @param lesEnvironements : liste d'environnement fourni
      */
     public AllEnvironements(ArrayList<Environement> lesEnvironements) {

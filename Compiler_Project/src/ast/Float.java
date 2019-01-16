@@ -4,6 +4,7 @@ import type.Type;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 public class Float extends Exp {
     public float f;
@@ -29,7 +30,13 @@ public class Float extends Exp {
 		return typeCheckVisitor.visit(this);
 	}
 
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
+
+
     public String typeToString(){
         return "TFloat";
     }
+
 }

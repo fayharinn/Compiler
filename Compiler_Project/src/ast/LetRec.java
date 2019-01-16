@@ -5,6 +5,7 @@ import type.Type;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 public class LetRec extends Exp {
     public final FunDef fd;
@@ -22,9 +23,16 @@ public class LetRec extends Exp {
         v.visit(this);
     }
     
-	@Override
+
+
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
+
+
     public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
     }
+
 }

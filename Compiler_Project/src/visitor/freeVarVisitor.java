@@ -190,4 +190,14 @@ public class freeVarVisitor implements  ObjVisitor<ArrayList<String>>{
         e1.addAll(e.e3.accept(this));
         return e1;
     }
+
+    @Override
+    public ArrayList<String> visit(Load load) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<String> visit(Save save) {
+        return null;
+    }
 }

@@ -1,8 +1,6 @@
 package ast;
 
-import visitor.ObjVisitor;
-import visitor.TypeCheckVisitor;
-import visitor.Visitor;
+import visitor.*;
 
 import java.util.List;
 
@@ -30,7 +28,15 @@ public class App extends Exp {
 		return typeCheckVisitor.visit(this);
 	}
 
+
+
+
+    public void accept(VisitorArgs v, Exp e) {
+        v.visit(this, e);
+    }
+
     public String typeToString(){
         return "App";
+
     }
 }

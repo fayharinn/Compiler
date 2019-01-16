@@ -9,8 +9,7 @@ import java.util.HashMap;
 
 import ast.Exp;
 import type.Type;
-import visitor.ASMLVisitor;
-import visitor.TypeCheckVisitor;
+import visitor.*;
 
 
 /**

@@ -4,6 +4,7 @@ import type.Type;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 public class If extends Exp {
     public final Exp e1;
@@ -24,8 +25,16 @@ public class If extends Exp {
     }
     
 	@Override
+
+
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
+
+
     public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
     }
+
 }

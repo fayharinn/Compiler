@@ -4,6 +4,7 @@ import type.Type;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 public class Neg extends Exp {
     public final Exp e;
@@ -19,7 +20,12 @@ public class Neg extends Exp {
         v.visit(this);
     }
     
-	@Override
+
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
+
+
     public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
@@ -27,4 +33,5 @@ public class Neg extends Exp {
     public String typeToString(){
         return "TBool";
     }
+
 }

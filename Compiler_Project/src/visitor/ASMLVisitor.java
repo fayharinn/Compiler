@@ -1,5 +1,20 @@
 package visitor;
 
+import ast.Get;
+
+
+import utils.*;
+import type.*;
+import ast.*;
+import ast.Float;
+import utils.Id;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+
 import utils.*;
 import type.*;
 import ast.*;
@@ -874,4 +889,15 @@ public class ASMLVisitor implements Visitor {
         e.e3.accept(this);
         //System.out.print(")");
     }
+
+	@Override
+	public void visit(Save save) {
+		//useless for ASML
+	}
+
+	@Override
+	public void visit(Load load) {
+		//useless too
+	}
 }
+

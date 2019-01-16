@@ -5,6 +5,7 @@ import utils.Id;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 public class Let extends Exp {
     public final Id id;
@@ -26,9 +27,16 @@ public class Let extends Exp {
         v.visit(this);
     }
     
-	@Override
+
+
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
+
+
     public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
     }
+
 }

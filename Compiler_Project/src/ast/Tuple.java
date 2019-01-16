@@ -1,12 +1,13 @@
 package ast;
 
-import visitor.ObjVisitor;
-import visitor.TypeCheckVisitor;
-import visitor.Visitor;
 
 import java.util.List;
 
 import type.Type;
+
+import utils.Id;
+import visitor.*;
+
 
 public class Tuple extends Exp {
     public final List<Exp> es;
@@ -24,8 +25,15 @@ public class Tuple extends Exp {
     }
     
 	@Override
+
+    public void accept(VisitorArgs v, Exp e){
+        v.visit(this, e);
+    }
+
+
     public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
     }
+
 }

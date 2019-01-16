@@ -5,6 +5,7 @@ import utils.Id;
 import visitor.ObjVisitor;
 import visitor.TypeCheckVisitor;
 import visitor.Visitor;
+import visitor.VisitorArgs;
 
 import java.util.List;
 
@@ -27,10 +28,14 @@ public class LetTuple extends Exp {
     public void accept(Visitor v) {
         v.visit(this);
     }
-    
-	@Override
+
+    public void accept(VisitorArgs v, Exp e) {
+        v.visit(this, e);
+    }
+
     public Type accept(TypeCheckVisitor typeCheckVisitor) {
         // TODO Auto-generated method stub
         return typeCheckVisitor.visit(this);
+
     }
 }

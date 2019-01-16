@@ -146,6 +146,16 @@ public class HeightVisitor implements ObjVisitor<Integer> {
         int res3 = e.e3.accept(this);
         return Math.max(res1, Math.max(res2, res3)) + 1 ;
     }
+
+    @Override
+    public Integer visit(Load load) {
+        return null;
+    }
+
+    @Override
+    public Integer visit(Save save) {
+        return null;
+    }
 }
 
 
