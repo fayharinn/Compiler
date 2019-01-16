@@ -17,7 +17,7 @@ do
         then
             if [ -f _tmpres1 ]
             then
-                if [ $DIFF = "" ]
+                if [ "$DIFF" = "" ]
                 then
                     echo "OK"
                 else

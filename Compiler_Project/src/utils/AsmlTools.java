@@ -32,32 +32,16 @@ public class AsmlTools {
         HashMap<String,Type> env = typeCheckVisitor.getEnvironement().getCurentEnvironement().getGho();
         ASMLVisitor asmlv = new ASMLVisitor(env);
         expression.accept(asmlv);
-        String x2 = "";
         for(String x:asmlv.float_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            System.out.print(x2);
+            System.out.print(x);
         }
-        for(String x:asmlv.fun_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            System.out.print(x2);
 
+        for(String x:asmlv.fun_code) {
+            System.out.print(x);
         }
 
         for(String x:asmlv.code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            System.out.print(x2);
+            System.out.print(x);
         }
 
 	}
@@ -78,36 +62,22 @@ public class AsmlTools {
         PrintWriter out = new PrintWriter(output); // l'output de l'asml
         ASMLVisitor asmlv = new ASMLVisitor(env);
         expression.accept(asmlv);
-        String x2 = "";
-        for(String x:asmlv.float_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            out.print(x2);
-        }
-        for(String x:asmlv.fun_code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            out.print(x2);
 
+        for(String x:asmlv.float_code) {
+            out.print(x);
+        }
+
+        for(String x:asmlv.fun_code) {
+            out.print(x);
         }
 
         for(String x:asmlv.code) {
-            if(x.contains("?")) {
-                x2 = x.replace("?","new_varid_");
-            } else {
-                x2 = x;
-            }
-            out.print(x2);
+            out.print(x);
         }
         out.close();
+
         //correct_indentation(output);
-        System.out.println(output+" Successfuly written");
+        //System.out.println(output+" Successfuly written");
 	}
 
 
