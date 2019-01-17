@@ -508,17 +508,7 @@ public class TypeCheckVisitor implements TypeVisitor<Type> {
 				if (!argsTab.equals(ourArgs)){
 					switch (e.es.get(i).typeToString()){
 						case "App" :
-											//e.accept(this);
-
-
-								e.es.get(i).accept(this);
-
-
-										/*String calledfunctionType = functionType.getReturnType().toString();
-										String argsFunction = this.gho.getTypeOfVar(((Var) e.e).id.id).getReturnType().toString();
-										if (!calledfunctionType.equals(argsFunction)){
-											throw new Exception("Not the same arguments Types");
-										}*/
+										e.es.get(i).accept(this);
 										break;
 						case "TInt" :
 										if (!argsTab.equals("Int")){
