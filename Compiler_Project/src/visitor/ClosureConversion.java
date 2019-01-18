@@ -7,15 +7,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
-
+/**
+ * Classe permmettant de dé-imbriquer les fonctions et de traiter les variables libres dans les fonctions
+ * Les closures ne sont pas totalement complétés
+ */
 public class ClosureConversion implements ObjVisitor<Exp> {
 
+    /**
+     * La pile des differentes declaration de function, utile pour remonter les declarations
+     */
     private Stack<LetRec> declarationFun = new Stack<>();
+    /**
+     * Liste des fonctions simples sans variable libre
+     */
     private ArrayList<String> known = new ArrayList<>();
+    /**
+     * HashMap qui lie une fonction avec ses variables libres
+     */
     private HashMap<String,ArrayList<String>> make_closure = new HashMap<>();
+    /**
+     * Liste des fonctions qui necessite une closure
+     */
     private ArrayList<String> apply_closure = new ArrayList<>();
+    /**
+     * HashMap qui lie une variable libre à la nouvelle variable en parametre de la fonction
+     */
     private HashMap<String,String> replacableVar = new HashMap<>();
 
+    /**
+     * Fonction qui permet de remettre les declarations de fonctions au debut du programme
+     * @param e L'arbre complet, vidé des déclarations de fonctions
+     * @return Renvoie l'arbre complet avec les declarations au debut de l'arbre
+     */
     public Exp moveToFront(Exp e) {
         Exp res = e;
 
@@ -151,7 +174,7 @@ public class ClosureConversion implements ObjVisitor<Exp> {
             if (known.contains(((Var) e.e).id.toString())) {
                 return e;
             } if (apply_closure.contains(((Var) e.e).id.toString())) {
-              // LetTuple tuple = new LetTuple() ;
+              // Closure non implementee
                 return  e;
             } else {
                 return e;

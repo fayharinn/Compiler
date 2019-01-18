@@ -6,7 +6,14 @@ import utils.Id;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Classe permettant de renommer les variables pour que chaque variable ait un nom unique
+ */
 public class AlphaConvVisitor implements ObjVisitor<Exp> {
+
+    /**
+     * HashMap liant une variable a son nouveau Id
+     */
     private HashMap<String,String> hashmap = new HashMap<>();
 
     public Unit visit(Unit e) {
