@@ -9,11 +9,45 @@ do
     echo $test_case
     fileName=${test_case%.*}
     fileName=${fileName##*/}
-    pathName='../tests/ARM/arm/'$fileName'.s'
-    java $CPARG ArmTest $test_case $pathName
-    arm-eabi-as -o $fileName'.o' $fileName'.s' libmincaml.S 2> /dev/null
-    arm-eabi-ld -o $fileName'.arm' $fileName'.o' 2> /dev/null
+    path='../tests/ARM/generated_ARM/'
+    pathName=$path''$fileName
+    java $CPARG ArmTest $test_case $pathName'.s'
+    if [ -f $pathName'.s' ]
+    then
+        /opt/gnu/arm/bin/arm-eabi-as -o $pathName'.o' $pathName'.s' $path'libmincaml.S'
+        if [ -f $pathName'.o' ]
+        then
+            /opt/gnu/arm/bin/arm-eabi-ld -o $pathName'.arm' $pathName'.o'
+            if [ -f $pathName'.arm' ]
+            then
+                qemu-arm $pathName'.arm' > _tmpres0
+                if [ -f _tmpres0 ]
+                then
+                    ocaml $test_case > _tmpres1
+                    if [ -f _tmpres1 ]
+                    then
+                        DIFF=`diff _tmpres0 _tmpres1`
+                        if [ "$DIFF" = "" ]
+                        then
+                            echo "OK"
+                        else
+                            echo "KO"
+                        fi
+                    else
+                        echo "KO"
+                    fi
+                else
+                    echo "KO"
+                fi
+            else
+                echo "KO"
+            fi
+        else
+            echo "KO"
+        fi
+    else
+        echo "KO"
+    fi
+    rm _tmpres0 _tmpres1 $pathName'.o' $pathName'.arm' #$pathName'.s'
 
-    qemu-arm $fileName'.arm' > _tmpres0 2> /dev/null
-    ocaml $test_case > _tmpres1 2> /dev/null
 done

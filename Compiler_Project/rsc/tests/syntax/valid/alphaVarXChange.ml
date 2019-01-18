@@ -13,7 +13,7 @@ in let rec succ x =
 in let rec double x =
    let v5 = 2 in
    let v6 = x in
-   v5 - v6
+   v5 *. v6
 
 in let v7 =
    let v8 =

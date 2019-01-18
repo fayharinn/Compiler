@@ -5,18 +5,19 @@ echo "================> ASML Tests"
 for test_case in ../tests/asml/*.ml
 do
     echo $test_case
-    java $CPARG AsmlTest $test_case _tmp.asml
-    ./../tests/asml/asml _tmp.asml > _tmpres0 2> /dev/null
-    ocaml $test_case > _tmpres1 2> /dev/null
-
-    DIFF=`diff _tmpres0 _tmpres1`
-
-    if [ -f _tmp.asml ]
+    fileName=${test_case%.*}
+    fileName=${fileName##*/}
+    pathName='../tests/asml/generated_asml/'$fileName'.asml'
+    java $CPARG AsmlTest $test_case $pathName 2> /dev/null
+    if [ -f $pathName ]
     then
+        ./../tests/asml/asml $pathName > _tmpres0 2> /dev/null
         if [ -f _tmpres0 ]
         then
+            ocaml $test_case > _tmpres1 2> /dev/null
             if [ -f _tmpres1 ]
             then
+                DIFF=`diff _tmpres0 _tmpres1`
                 if [ "$DIFF" = "" ]
                 then
                     echo "OK"
@@ -32,5 +33,5 @@ do
     else
         echo "KO"
     fi
-    rm _tmp.asml _tmpres0 _tmpres1
+    rm _tmpres0 _tmpres1 #$pathName
 done
