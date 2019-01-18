@@ -1,4 +1,5 @@
 (* bla bla *)
-(* bli 
+(* bli
  * bli *)
-let x = (* bla *) 1 in 2
+let x = (* bla *) 1 in
+print_int x
