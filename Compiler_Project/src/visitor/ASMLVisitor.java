@@ -38,7 +38,7 @@ public class ASMLVisitor implements Visitor {
     *
      */
 
-	private HashMap<String,Type> h; // les variables 
+	private HashMap<String,Type> h; // les variables
 	private HashMap<String,String> varfloat; // les variables flottantes
 	public HashMap<String,String> new_varfloat; // les flottants non déclarés
 	public ArrayList<String> code; // le code asml principal
@@ -46,8 +46,8 @@ public class ASMLVisitor implements Visitor {
 	public ArrayList<String> fun_code; // le code asml pour les fonctions
 	public HashMap<String,ArrayList<String>> ff; // nom_fonction : (liste des arguments)
 	private boolean isFun = false;
-	
-	
+
+
 	public ASMLVisitor(HashMap<String,Type> env) {
 		code = new ArrayList<String>();
 		float_code = new ArrayList<String>();
@@ -56,20 +56,20 @@ public class ASMLVisitor implements Visitor {
 		h = new HashMap<String,Type>(env);
 		fun_code = new ArrayList<String>();
 		ff = new HashMap<String,ArrayList<String>>();
-		
+
 		code.add("\nlet _ = \n");
-		
+
 		//System.out.println("let _ =");
 		//expression.accept(this);
 	}
-	
-	
-	
+
+
+
 	public void float_op(String operateur) {
-		
+
 	}
-	
-	
+
+
     @Override
     public void visit(Unit e) {
     	if(isFun) {
@@ -96,8 +96,8 @@ public class ASMLVisitor implements Visitor {
     		}
     	}
     	else {
-    		
-    	
+
+
     	if(e.b) {
     		fun_code.add("1");
     	}
@@ -149,14 +149,14 @@ public class ASMLVisitor implements Visitor {
 
 
     		}
-    		s = s.replaceAll(",","."); 
+    		s = s.replaceAll(",",".");
     		float_code.add(s);
     		return;
     	}
-    	
-    	
+
+
     }
-    
+
 
     /**
      * Visitor qui affiche le code ASML généré
@@ -548,7 +548,7 @@ public class ASMLVisitor implements Visitor {
     @Override
     public void visit(Eq e) {
     	if(!isFun) {
-    		
+
 	        e.e1.accept(this);
 	        code.add(" = ");
 	        e.e2.accept(this);
@@ -631,7 +631,7 @@ public class ASMLVisitor implements Visitor {
     			e.e1.accept(this);
     			code.add(" in \n  ");
     		}
-    		
+
     		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une déclaration de float directe
     			varfloat.put(e.id.id,""+(varfloat.size()+1));
     			float_code.add("\nlet _x"+varfloat.size()+" = ");
@@ -660,7 +660,7 @@ public class ASMLVisitor implements Visitor {
     			e.e1.accept(this);
     			fun_code.add(" in \n  ");
     		}
-    		
+
     		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une déclaration de float directe
     			varfloat.put(e.id.id,""+(varfloat.size()+1));
     			float_code.add("\nlet _x"+varfloat.size()+" = ");
@@ -683,7 +683,7 @@ public class ASMLVisitor implements Visitor {
     		e.e2.accept(this);
     		//System.out.print("");
     	}
-        
+
     }
 
     /**
@@ -778,7 +778,7 @@ public class ASMLVisitor implements Visitor {
 
 
 
-    // print sequence of identifiers 
+    // print sequence of identifiers
     static <E> void printInfix(List<E> l, String op) {
         if (l.isEmpty()) {
             return;
@@ -801,13 +801,13 @@ public class ASMLVisitor implements Visitor {
             //System.out.print(op);
         	code.add(" ");
             it.next().accept(this);
-            
+
         }
     }
 
     public void visit(LetRec e){
     	isFun = true;
-        System.out.print(e.fd.id);
+        //System.out.print(e.fd.id);
         ArrayList<String> tmp_arraylist = new ArrayList<String>();
         for(Id id:e.fd.args) {
         	tmp_arraylist.add(id.id);
@@ -819,13 +819,13 @@ public class ASMLVisitor implements Visitor {
         	fun_code.add(s+ " ");
         }
         fun_code.add("=\n");
-        System.out.println(ff);
+        //System.out.println(ff);
         //System.out.print(" = ");
         e.fd.e.accept(this);
         //System.out.print(" in ");
         isFun = false;
         e.e.accept(this);
-        //System.out.print(")");     
+        //System.out.print(")");
     }
 
     public void visit(App e){
@@ -900,4 +900,3 @@ public class ASMLVisitor implements Visitor {
 		//useless too
 	}
 }
-

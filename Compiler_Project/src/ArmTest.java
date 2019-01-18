@@ -33,7 +33,7 @@ public class ArmTest {
             expression = expression.accept(new RegisterAllocationVisitor(intervals));
 
             //generation ARM
-            System.setOut(new PrintStream(new File("rsc/ARM/out.s")));
+            System.setOut(new PrintStream(new File(argv[1])));
             ArmVisitor visitorArm = new ArmVisitor();
             expression.accept(visitorArm);
 

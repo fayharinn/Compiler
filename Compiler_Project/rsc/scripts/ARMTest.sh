@@ -2,15 +2,18 @@
 CPARG="-cp ../../java-cup-11b-runtime.jar:../../java-cup-11b.jar:../../out"
 
 echo "================> ARM Tests"
-echo "Not implemented yet."
-#for test_case in ../tests/arm/*.ml
-#do
-    #echo $test_case
-    # On génère le code dans un fichier
-    #java $CPARG ArmTest $test_case > _tmp0.asml
-    #TODO génération asml > _tmp1.asml
-    #TODO comparer les 2 fichiers
-    #TODO affichier OK ou KO suivant la comparaison
-    #rm _tmp0.asml
-    #rm _tmp1.asml
-#done
+echo "========> Generating .s"
+
+for test_case in ../tests/ARM/*.ml
+do
+    echo $test_case
+    fileName=${test_case%.*}
+    fileName=${fileName##*/}
+    pathName='../tests/ARM/arm/'$fileName'.s'
+    java $CPARG ArmTest $test_case $pathName
+    arm-eabi-as -o $fileName'.o' $fileName'.s' libmincaml.S 2> /dev/null
+    arm-eabi-ld -o $fileName'.arm' $fileName'.o' 2> /dev/null
+
+    qemu-arm $fileName'.arm' > _tmpres0 2> /dev/null
+    ocaml $test_case > _tmpres1 2> /dev/null
+done

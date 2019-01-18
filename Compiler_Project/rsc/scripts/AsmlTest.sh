@@ -6,8 +6,8 @@ for test_case in ../tests/asml/*.ml
 do
     echo $test_case
     java $CPARG AsmlTest $test_case _tmp.asml
-    ./../tests/asml/asml _tmp.asml > _tmpres0
-    ocaml $test_case > _tmpres1
+    ./../tests/asml/asml _tmp.asml > _tmpres0 2> /dev/null
+    ocaml $test_case > _tmpres1 2> /dev/null
 
     DIFF=`diff _tmpres0 _tmpres1`
 
