@@ -1,20 +1,5 @@
 package visitor;
 
-import ast.Get;
-
-
-import utils.*;
-import type.*;
-import ast.*;
-import ast.Float;
-import utils.Id;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-
 import utils.*;
 import type.*;
 import ast.*;
@@ -27,31 +12,34 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Visiteur non terminé pour générer du ASML
+ * Visiteur pour g�n�rer du ASML
  *
  */
 public class ASMLVisitor implements Visitor {
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
-     * @param e input Exp Expression
+     * @param e input HashMap<String,Type> pour chaque variable du programme son type
     *
      */
 
 	private HashMap<String,Type> h; // les variables
-	private HashMap<String,String> varfloat; // les variables flottantes
-	public HashMap<String,String> new_varfloat; // les flottants non déclarés
+	private HashMap<String,String> varfloat; // les variables flottantes (x : _x1)
+	private HashMap<String,String> varfloat2; // les variables flottantes de type x : 1.5
+	public HashMap<String,String> new_varfloat; // les flottants non d�clar�s
 	public ArrayList<String> code; // le code asml principal
-	public ArrayList<String> float_code; // le code asml contenant les déclarations de flottants en début de fichier
+	public ArrayList<String> float_code; // le code asml contenant les d�clarations de flottants en d�but de fichier
 	public ArrayList<String> fun_code; // le code asml pour les fonctions
 	public HashMap<String,ArrayList<String>> ff; // nom_fonction : (liste des arguments)
-	private boolean isFun = false;
+	private boolean isFun = false; // savoir si le code g�n�r� appartient � une fonction
+
 
 
 	public ASMLVisitor(HashMap<String,Type> env) {
 		code = new ArrayList<String>();
 		float_code = new ArrayList<String>();
 		varfloat = new HashMap<String,String>();
+		varfloat2 = new HashMap<String,String>();
 		new_varfloat = new HashMap<String,String>();
 		h = new HashMap<String,Type>(env);
 		fun_code = new ArrayList<String>();
@@ -64,12 +52,6 @@ public class ASMLVisitor implements Visitor {
 	}
 
 
-
-	public void float_op(String operateur) {
-
-	}
-
-
     @Override
     public void visit(Unit e) {
     	if(isFun) {
@@ -79,7 +61,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Bool expression
     *
@@ -110,7 +92,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Int expression
     *
@@ -126,7 +108,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Float expression
     *
@@ -159,7 +141,7 @@ public class ASMLVisitor implements Visitor {
 
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Not expression
     *
@@ -173,7 +155,7 @@ public class ASMLVisitor implements Visitor {
     			code.set(code.size()-1, "0");
     		}
     		else {
-    			code.set(code.size()-1, "1");
+    			fun_code.set(fun_code.size()-1, "1");
     		}
     		//System.out.print("");
     	}
@@ -189,7 +171,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Neg expression
     *
@@ -209,7 +191,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Add expression
     *
@@ -238,7 +220,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Sub expression
     *
@@ -266,7 +248,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input FNeg expression
     *
@@ -282,7 +264,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input FAdd expression
     *
@@ -348,7 +330,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input FSub expression
     *
@@ -413,7 +395,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input FMul expression
     *
@@ -477,7 +459,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input FDiv expression
     *
@@ -540,7 +522,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Eq expression
     *
@@ -561,7 +543,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input LE expression
     *
@@ -585,7 +567,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input If expression
     *
@@ -618,7 +600,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Let expression
     *
@@ -632,16 +614,24 @@ public class ASMLVisitor implements Visitor {
     			code.add(" in \n  ");
     		}
 
-    		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une déclaration de float directe
+    		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une d�claration de float directe
     			varfloat.put(e.id.id,""+(varfloat.size()+1));
     			float_code.add("\nlet _x"+varfloat.size()+" = ");
     			e.e1.accept(this);
-    			code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
-    			code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    			if(code.get(code.size()-1).charAt(0)=="r".charAt(0)) { // si a =x par exemple
+    				String ss = code.get(code.size()-1);
+    				code.remove(code.size()-1);
+        			code.add("let r"+varfloat.size()+" = "+ss+" in\n");
+    			}
+    			else {
+    				code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
+        			code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    			}
+
     		}
 
 
-    		else { // si c'est une déclaration d'entiers ou de float avec une opération (ex : 1.2+2.5)
+    		else { // si c'est une d�claration d'entiers ou de float avec une op�ration (ex : 1.2+2.5)
     			code.add("let "+e.id+" = ");
     			//System.out.print("  let ");
     			//System.out.print(e.id);
@@ -661,16 +651,23 @@ public class ASMLVisitor implements Visitor {
     			fun_code.add(" in \n  ");
     		}
 
-    		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une déclaration de float directe
+    		else if(h.get(e.id.id).getClass()==TFloat.class && e.e1.getClass()!=FAdd.class && e.e1.getClass()!=FSub.class && e.e1.getClass()!=FMul.class && e.e1.getClass()!=FDiv.class) { // si c'est une d�claration de float directe
     			varfloat.put(e.id.id,""+(varfloat.size()+1));
     			float_code.add("\nlet _x"+varfloat.size()+" = ");
     			e.e1.accept(this);
-    			fun_code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
-    			fun_code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    			if(fun_code.get(fun_code.size()-1).charAt(0)=="r".charAt(0)) { // si a =x par exemple
+    				String ss = fun_code.get(fun_code.size()-1);
+    				fun_code.remove(fun_code.size()-1);
+        			fun_code.add("let r"+varfloat.size()+" = "+ss+" in\n");
+    			}
+    			else {
+    				fun_code.add("let addr"+varfloat.size()+" = _x"+varfloat.size()+" in \n");
+        			fun_code.add("let r"+varfloat.size()+" = mem(addr"+varfloat.size()+" + 0) in \n");
+    			}
     		}
 
 
-    		else { // si c'est une déclaration d'entiers ou de float avec une opération (ex : 1.2+2.5)
+    		else { // si c'est une d�claration d'entiers ou de float avec une op�ration (ex : 1.2+2.5)
     			fun_code.add("let "+e.id+" = ");
     			//System.out.print("  let ");
     			//System.out.print(e.id);
@@ -687,7 +684,7 @@ public class ASMLVisitor implements Visitor {
     }
 
     /**
-     * Visitor qui affiche le code ASML généré
+     * Visitor qui affiche le code ASML g�n�r�
      *
      * @param e input Var expression
     *
@@ -726,11 +723,18 @@ public class ASMLVisitor implements Visitor {
     			break;
     		default:
     			//System.out.print(e.id);
-    			if(varfloat.containsKey(e.id.id)) {
+    			if(varfloat.containsKey(e.id.id)) { // si c'est un float
     				code.add("r"+varfloat.get(e.id.id));
+
     			}
+
     			else
     				code.add(String.valueOf(e.id));
+    			if(float_code.get(float_code.size()-1).contains("= ") && !float_code.get(float_code.size()-1).contains("tmp")) {
+    				float_code.remove(float_code.size()-1);
+    				//float_code.add(e.id.id);
+
+    			}
     			break;
     		}
     	}
@@ -771,6 +775,11 @@ public class ASMLVisitor implements Visitor {
     			}
     			else
     				fun_code.add(String.valueOf(e.id));
+    			if(float_code.get(float_code.size()-1).contains("= ")) {
+    				float_code.remove(float_code.size()-1);
+    				//float_code.add(e.id.id);
+
+    			}
     			break;
     		}
     	}
@@ -807,7 +816,7 @@ public class ASMLVisitor implements Visitor {
 
     public void visit(LetRec e){
     	isFun = true;
-        //System.out.print(e.fd.id);
+        System.out.print(e.fd.id);
         ArrayList<String> tmp_arraylist = new ArrayList<String>();
         for(Id id:e.fd.args) {
         	tmp_arraylist.add(id.id);
@@ -819,7 +828,7 @@ public class ASMLVisitor implements Visitor {
         	fun_code.add(s+ " ");
         }
         fun_code.add("=\n");
-        //System.out.println(ff);
+        System.out.println(ff);
         //System.out.print(" = ");
         e.fd.e.accept(this);
         //System.out.print(" in ");
@@ -889,14 +898,4 @@ public class ASMLVisitor implements Visitor {
         e.e3.accept(this);
         //System.out.print(")");
     }
-
-	@Override
-	public void visit(Save save) {
-		//useless for ASML
-	}
-
-	@Override
-	public void visit(Load load) {
-		//useless too
-	}
 }
