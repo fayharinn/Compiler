@@ -7,24 +7,11 @@ import utils.Id;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Classe permettant de trouver les variables libres à l'interieur d'une fonction LetRec
- */
 public class freeVarVisitor implements  ObjVisitor<ArrayList<String>>{
 
-    /**
-     * Liste des variables connues dans le programme
-     */
     private ArrayList<String> knownVar ;
-    /**
-     * Liste des variables qui n'apparaissent pas dans knownVar : des variables libres
-     */
     private ArrayList<String> freeVar;
 
-    /**
-     * Constructor avec la liste des arguments de la fonction pour remplir knownVar
-     * @param args liste des arguments de la fonction appelante
-     */
     freeVarVisitor(List<Id> args) {
         knownVar = new ArrayList<>();
         freeVar = new ArrayList<>();

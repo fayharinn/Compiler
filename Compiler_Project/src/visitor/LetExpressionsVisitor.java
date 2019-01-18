@@ -3,17 +3,8 @@ package visitor;
 import ast.*;
 import ast.Float;
 
-/**
- * Classe permettant d'applatir les noeuds Let imbriqués
- */
 public class LetExpressionsVisitor implements ObjVisitor<Exp> {
 
-    /**
-     * Fonction permettant de "recoller" la suite du code au bon endroit dans l'arbre
-     * @param e2 la branche e2 lors de l'appel de la fonction
-     * @param e le noeud plus haut pour interchanger
-     * @return Renvoie un noeud "applati" dans l'ordre
-     */
     public Exp concat(Let e2, Let e) {
         if (e2.e2 instanceof Let) {
             return new Let(e2.id,e2.t,e2.e1, concat((Let) e2.e2,e));
